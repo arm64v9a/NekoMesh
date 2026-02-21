@@ -544,10 +544,12 @@ bool EnvironmentSensorManager::setSettingValue(const char* name, const char* val
   return false;  // not supported
 }
 
-#if ENV_INCLUDE_GPS
+#if ENV_INCLUDE_GPS == 1
 void EnvironmentSensorManager::initBasicGPS() {
 
+  #if defined (PIN_GPS_TX) && defined (PIN_GPS_RX)
   Serial1.setPins(PIN_GPS_TX, PIN_GPS_RX);
+  #endif
 
   #ifdef GPS_BAUD_RATE
   Serial1.begin(GPS_BAUD_RATE);

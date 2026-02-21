@@ -26,11 +26,11 @@ class SSD1306Display : public DisplayDriver {
 
   bool i2c_probe(TwoWire& wire, uint8_t addr);
 public:
-  SSD1306Display(RefCountedDigitalPin* peripher_power=NULL) : DisplayDriver(128, 64), 
+  SSD1306Display(RefCountedDigitalPin* peripher_power=NULL) : DisplayDriver(128, 64),
       display(128, 64, &Wire, PIN_OLED_RESET),
       _peripher_power(peripher_power)
   {
-    _isOn = false; 
+    _isOn = false;
   }
   bool begin();
 

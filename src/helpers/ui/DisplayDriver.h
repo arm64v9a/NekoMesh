@@ -21,6 +21,7 @@ public:
   virtual void setTextSize(int sz) = 0;
   virtual void setColor(Color c) = 0;
   virtual void setCursor(int x, int y) = 0;
+  virtual void setBrightness(uint8_t b) { };
   virtual void print(const char* str) = 0;
   virtual void printWordWrap(const char* str, int max_width) { print(str); }   // fallback to basic print() if no override
   virtual void fillRect(int x, int y, int w, int h) = 0;
@@ -41,18 +42,18 @@ public:
     setCursor(x_anch, y);
     print(str);
   }
-  
+
   // convert UTF-8 characters to displayable block characters for compatibility
   virtual void translateUTF8ToBlocks(char* dest, const char* src, size_t dest_size) {
     size_t j = 0;
-#ifdef OLED_RU	  
+#ifdef OLED_RU
 	char last_char = 0;
 	char cc = 0;
 #endif
     for (size_t i = 0; src[i] != 0 && j < dest_size - 1; i++) {
       unsigned char c = (unsigned char)src[i];
       if (c >= 32 && c <= 126) {
-#ifdef OLED_RU 		  
+#ifdef OLED_RU
 		last_char = 0;
         dest[j++] = c;  // ASCII printable
 	  } else if (last_char == 0 && (c == 0xD0 || c == 0xD1 || c == 0xD2)) { // Cyrillic UTF-8 start byte for 2 bytes sequence
@@ -87,7 +88,7 @@ public:
               cc = (c + 112);
             break;
           }
-          case 0xD2: {            
+          case 0xD2: {
             if (c == 144)
               cc = (165); // Ґ
             if (c == 145)
@@ -107,13 +108,13 @@ public:
       } else if (c >= 0x80) {
         dest[j++] = '\xDB';  // CP437 full block █
 #endif
-        while (src[i+1] && (src[i+1] & 0xC0) == 0x80) 
+        while (src[i+1] && (src[i+1] & 0xC0) == 0x80)
           i++;  // skip UTF-8 continuation bytes
       }
     }
     dest[j] = 0;
   }
-  
+
   // draw text with ellipsis if it exceeds max_width
   virtual void drawTextEllipsized(int x, int y, int max_width, const char* str) {
     char temp_str[256];  // reasonable buffer size
@@ -121,13 +122,13 @@ public:
     if (len >= sizeof(temp_str)) len = sizeof(temp_str) - 1;
     memcpy(temp_str, str, len);
     temp_str[len] = 0;
-    
+
     if (getTextWidth(temp_str) <= max_width) {
       setCursor(x, y);
       print(temp_str);
       return;
     }
-    
+
     // for variable-width fonts (GxEPD), add space after ellipsis
     // for fixed-width fonts (OLED), keep tight spacing to save precious characters
     const char* ellipsis;
@@ -139,18 +140,18 @@ public:
     } else {
       ellipsis = "...";   // fixed-width fonts: no space
     }
-    
+
     int ellipsis_width = getTextWidth(ellipsis);
     int str_len = strlen(temp_str);
-    
+
     while (str_len > 0 && getTextWidth(temp_str) > max_width - ellipsis_width) {
       temp_str[--str_len] = 0;
     }
     strcat(temp_str, ellipsis);
-    
+
     setCursor(x, y);
     print(temp_str);
   }
-  
+
   virtual void endFrame() = 0;
 };

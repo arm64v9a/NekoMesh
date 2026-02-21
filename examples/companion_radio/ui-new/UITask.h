@@ -78,7 +78,7 @@ public:
   bool hasDisplay() const { return _display != NULL; }
   bool isButtonPressed() const;
 
-  bool isBuzzerQuiet() { 
+  bool isBuzzerQuiet() {
 #ifdef PIN_BUZZER
     return buzzer.isQuiet();
 #else

@@ -1,5 +1,7 @@
 #include "UITask.h"
+#include <cstdint>
 #include <helpers/TxtDataHelpers.h>
+#include <time.h>
 #include "../MyMesh.h"
 #include "target.h"
 #ifdef WIFI_SSID
@@ -31,10 +33,13 @@
 
 #include "icons.h"
 
+bool allowTurnOff = true;
+
 class SplashScreen : public UIScreen {
   UITask* _task;
   unsigned long dismiss_after;
   char _version_info[12];
+  NodePrefs* _node_prefs;
 
 public:
   SplashScreen(UITask* task) : _task(task) {
@@ -81,6 +86,44 @@ public:
   }
 };
 
+class ClockScreen : public UIScreen {
+  UITask* _task;
+  mesh::RTCClock* _rtc;
+  NodePrefs* _node_prefs;
+
+public:
+  ClockScreen(UITask* task, mesh::RTCClock* rtc, NodePrefs* node_prefs) : _task(task), _rtc(rtc), _node_prefs(node_prefs) {}
+
+  int render(DisplayDriver& display) override {
+    allowTurnOff = false    ;
+    display.setTextSize(1);
+    display.setColor(DisplayDriver::GREEN);
+    char filtered_name[sizeof(_node_prefs->node_name)];
+    display.translateUTF8ToBlocks(filtered_name, _node_prefs->node_name, sizeof(filtered_name));
+    display.setCursor(0, 0);
+    display.print(filtered_name);
+
+    time_t now = (time_t)_rtc->getCurrentTime() + (3 * 60 * 60); // msk tz
+    struct tm *timeinfo = localtime(&now);
+    char buf[11];
+    strftime(buf, sizeof(buf), "%d.%m.%Y", timeinfo);
+    display.drawTextRightAlign(display.width()-1, 0, buf);
+
+    display.setTextSize(3);
+    strftime(buf, sizeof(buf), "%R", timeinfo);
+    display.drawTextCentered(display.width() / 2, 20, buf);
+    display.setTextSize(1);
+
+    return 10000;
+  }
+
+  bool handleInput(char c) override {
+      _task->gotoHomeScreen();
+      allowTurnOff = true;
+      return true;
+  }
+};
+
 class HomeScreen : public UIScreen {
   enum HomePage {
     FIRST,
@@ -97,6 +140,7 @@ class HomeScreen : public UIScreen {
 #if UI_SENSORS_PAGE == 1
     SENSORS,
 #endif
+    CLOCK,
     SHUTDOWN,
     Count    // keep as last
   };
@@ -407,6 +451,20 @@ public:
       if (sensors_scroll) sensors_scroll_offset = (sensors_scroll_offset+1)%sensors_nb;
       else sensors_scroll_offset = 0;
 #endif
+    } else if (_page == HomePage::CLOCK) {
+        time_t now = (time_t)_rtc->getCurrentTime() + (3 * 60 * 60);
+        struct tm *timeinfo = localtime(&now);
+        char buf[11];
+        strftime(buf, sizeof(buf), "%d.%m.%Y", timeinfo);
+        display.drawTextCentered(display.width() / 2, 20, buf);
+
+        display.setTextSize(2);
+        strftime(buf, sizeof(buf), "%R", timeinfo);
+        display.drawTextCentered(display.width() / 2, 35, buf);
+        display.setTextSize(1);
+        display.drawTextCentered(display.width() / 2, 64 - 11, "aod: " PRESS_LABEL);
+
+        return 5000; // next draw in 5 seconds
     } else if (_page == HomePage::SHUTDOWN) {
       display.setColor(DisplayDriver::GREEN);
       display.setTextSize(1);
@@ -448,6 +506,9 @@ public:
         _task->showAlert("Advert failed..", 1000);
       }
       return true;
+    }
+    if (c == KEY_ENTER && _page == HomePage::CLOCK){
+        _task->gotoClockScreen();
     }
 #if DISABLE_REPEATER_RESTRUCTIONS == 1
     if (c == KEY_ENTER && _page == HomePage::REPEAT) {
@@ -621,6 +682,7 @@ void UITask::begin(DisplayDriver* display, SensorManager* sensors, NodePrefs* no
   _alert_expiry = 0;
 
   splash = new SplashScreen(this);
+  clockScr = new ClockScreen(this, &rtc_clock, node_prefs);
   home = new HomeScreen(this, &rtc_clock, sensors, node_prefs);
   msg_preview = new MsgPreviewScreen(this, &rtc_clock);
   setCurrScreen(splash);
@@ -844,8 +906,8 @@ void UITask::loop() {
       _display->endFrame();
     }
 #if AUTO_OFF_MILLIS > 0
-    if (millis() > _auto_off) {
-      _display->turnOff();
+    if (millis() > _auto_off && _display->isOn() && allowTurnOff) {
+        _display->turnOff();
     }
 #endif
   }
@@ -893,7 +955,7 @@ char UITask::checkDisplayOn(char c) {
 }
 
 char UITask::handleLongPress(char c) {
-  if (millis() - ui_started_at < 8000) {   // long press in first 8 seconds since startup -> CLI/rescue
+  if (millis() - ui_started_at < 15000) {   // long press in first 8 seconds since startup -> CLI/rescue
     the_mesh.enterCLIRescue();
     c = 0;   // consume event
   }

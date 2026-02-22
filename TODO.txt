@@ -5,4 +5,4 @@
 [✕] cjk handling
 [✕] remake ui
 [✕] t114 color ui
-[✕] announce as repeater+node in
+[✕] announce as repeater+node

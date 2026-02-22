@@ -1,0 +1,7 @@
+[ DONE = ✓ | TODO = ✕ ]
+
+[✕] cyrillic handling (50% - exists but will be improved)
+[✕] emoji handling
+[✕] cjk handling
+[✕] remake ui
+[✕] t114 color ui

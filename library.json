@@ -1,6 +1,6 @@
 {
     "name": "MeshCore",
-    "version" : "1.10.0",
+    "version": "1.10.0",
     "dependencies": {
         "SPI": "*",
         "Wire": "*",
@@ -11,6 +11,6 @@
         "electroniccats/CayenneLPP": "1.6.1"
     },
     "build": {
-        "extraScript": "build_as_lib.py"
+        "extraScript": "scripts/build_as_lib.py"
     }
 }

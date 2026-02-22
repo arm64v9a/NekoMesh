@@ -739,7 +739,7 @@ void UITask::notify(UIEventType t) {
 
 void UITask::msgRead(int msgcount) {
   _msgcount = msgcount;
-  if (msgcount == 0) {
+  if (msgcount == 0 && allowTurnOff()) {
     gotoHomeScreen();
   }
 }

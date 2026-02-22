@@ -1,7 +1,8 @@
 [ DONE = ✓ | TODO = ✕ ]
 
-[✕] cyrillic handling (50% - exists but will be improved)
+[✕] cyrillic handling (50% - exists but need to be improved)
 [✕] emoji handling
 [✕] cjk handling
 [✕] remake ui
 [✕] t114 color ui
+[✕] announce as repeater+node in

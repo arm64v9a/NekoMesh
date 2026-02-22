@@ -35,8 +35,6 @@
 
 #include "icons.h"
 
-bool allowTurnOff = true;
-
 class SplashScreen : public UIScreen {
   UITask *_task;
   unsigned long dismiss_after;
@@ -98,7 +96,6 @@ public:
       : _task(task), _rtc(rtc), _node_prefs(node_prefs) {}
 
   int render(DisplayDriver &display) override {
-    allowTurnOff = false;
     display.setTextSize(1);
     display.setColor(DisplayDriver::GREEN);
     char filtered_name[sizeof(_node_prefs->node_name)];
@@ -122,7 +119,6 @@ public:
 
   bool handleInput(char c) override {
     _task->gotoHomeScreen();
-    allowTurnOff = true;
     return true;
   }
 };
@@ -915,7 +911,7 @@ void UITask::loop() {
       _display->endFrame();
     }
 #if AUTO_OFF_MILLIS > 0
-    if (millis() > _auto_off && _display->isOn() && allowTurnOff) {
+    if (millis() > _auto_off && _display->isOn()) {
       _display->turnOff();
     }
 #endif

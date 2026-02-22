@@ -35,7 +35,7 @@ class UITask : public AbstractUITask {
   NodePrefs *_node_prefs;
   char _alert[80];
   unsigned long _alert_expiry;
-  int _msgcount;
+  uint16_t _msgcount; // 65384 msg max :)
   unsigned long ui_started_at, next_batt_chck;
   int next_backlight_btn_check = 0;
 #ifdef PIN_STATUS_LED
@@ -75,6 +75,7 @@ public:
 
   void gotoHomeScreen() { setCurrScreen(home); }
   void gotoClockScreen() { setCurrScreen(clockScr); }
+  bool allowTurnOff() { return curr != clockScr; }
   void showAlert(const char *text, int duration_millis);
   int getMsgCount() const { return _msgcount; }
   bool hasDisplay() const { return _display != NULL; }

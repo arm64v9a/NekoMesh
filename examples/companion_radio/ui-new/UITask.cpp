@@ -90,6 +90,7 @@ class ClockScreen : public UIScreen {
   UITask *_task;
   mesh::RTCClock *_rtc;
   NodePrefs *_node_prefs;
+  bool s = true;
 
 public:
   ClockScreen(UITask *task, mesh::RTCClock *rtc, NodePrefs *node_prefs)
@@ -105,16 +106,24 @@ public:
 
     time_t now = (time_t)_rtc->getCurrentTime() + (3 * 60 * 60); // msk tz
     struct tm *timeinfo = localtime(&now);
-    char buf[11];
+    char buf[14];
     strftime(buf, sizeof(buf), "%d.%m.%Y", timeinfo);
     display.drawTextRightAlign(display.width() - 1, 0, buf);
 
     display.setTextSize(3);
-    strftime(buf, sizeof(buf), "%R", timeinfo);
+    strftime(buf, sizeof(buf), s ? "%H:%M" : "%H %M", timeinfo);
+    s = !s;
     display.drawTextCentered(display.width() / 2, 20, buf);
     display.setTextSize(1);
 
-    return 10000;
+    if (_task->getMsgCount() > 0)
+    {
+        display.setCursor(0, 64 - 11);
+        sprintf(buf, "unread: %d", _task->getMsgCount());
+        display.print(buf);
+    }
+
+    return 1000; // blink
   }
 
   bool handleInput(char c) override {
@@ -363,7 +372,7 @@ public:
         display.drawTextRightAlign(display.width() - 1, y, buf);
         y = y + 12;
         display.drawTextLeftAlign(0, y, "sat");
-        sprintf(buf, "%d", nmea->satellitesCount());
+        sprintf(buf, "%ld", nmea->satellitesCount());
         display.drawTextRightAlign(display.width() - 1, y, buf);
         y = y + 12;
         display.drawTextLeftAlign(0, y, "pos");
@@ -738,10 +747,11 @@ void UITask::msgRead(int msgcount) {
 void UITask::newMsg(uint8_t path_len, const char *from_name, const char *text, int msgcount) {
   _msgcount = msgcount;
 
-  ((MsgPreviewScreen *)msg_preview)->addPreview(path_len, from_name, text);
-  setCurrScreen(msg_preview);
-
   if (_display != NULL) {
+    if (!hasConnection() && allowTurnOff()) {
+        ((MsgPreviewScreen *)msg_preview)->addPreview(path_len, from_name, text);
+        setCurrScreen(msg_preview);
+    }
     if (!_display->isOn() && !hasConnection()) {
       _display->turnOn();
     }
@@ -911,7 +921,7 @@ void UITask::loop() {
       _display->endFrame();
     }
 #if AUTO_OFF_MILLIS > 0
-    if (millis() > _auto_off && _display->isOn()) {
+    if (millis() > _auto_off && _display->isOn() && allowTurnOff()) {
       _display->turnOff();
     }
 #endif

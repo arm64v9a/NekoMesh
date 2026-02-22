@@ -45,12 +45,13 @@
 #ifndef BLE_L2CAP_H__
 #define BLE_L2CAP_H__
 
-#include <stdint.h>
-#include "nrf_svc.h"
-#include "nrf_error.h"
+#include "ble_err.h"
 #include "ble_ranges.h"
 #include "ble_types.h"
-#include "ble_err.h"
+#include "nrf_error.h"
+#include "nrf_svc.h"
+
+#include <stdint.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -82,35 +83,34 @@ extern "C" {
  * @{ */
 
 /**@brief L2CAP API SVC numbers. */
-enum BLE_L2CAP_SVCS
-{
-  SD_BLE_L2CAP_CH_SETUP        = BLE_L2CAP_SVC_BASE + 0, /**< Set up an L2CAP channel. */
-  SD_BLE_L2CAP_CH_RELEASE      = BLE_L2CAP_SVC_BASE + 1, /**< Release an L2CAP channel. */
-  SD_BLE_L2CAP_CH_RX           = BLE_L2CAP_SVC_BASE + 2, /**< Receive an SDU on an L2CAP channel. */
-  SD_BLE_L2CAP_CH_TX           = BLE_L2CAP_SVC_BASE + 3, /**< Transmit an SDU on an L2CAP channel. */
+enum BLE_L2CAP_SVCS {
+  SD_BLE_L2CAP_CH_SETUP = BLE_L2CAP_SVC_BASE + 0,        /**< Set up an L2CAP channel. */
+  SD_BLE_L2CAP_CH_RELEASE = BLE_L2CAP_SVC_BASE + 1,      /**< Release an L2CAP channel. */
+  SD_BLE_L2CAP_CH_RX = BLE_L2CAP_SVC_BASE + 2,           /**< Receive an SDU on an L2CAP channel. */
+  SD_BLE_L2CAP_CH_TX = BLE_L2CAP_SVC_BASE + 3,           /**< Transmit an SDU on an L2CAP channel. */
   SD_BLE_L2CAP_CH_FLOW_CONTROL = BLE_L2CAP_SVC_BASE + 4, /**< Advanced SDU reception flow control. */
 };
 
 /**@brief L2CAP Event IDs. */
-enum BLE_L2CAP_EVTS
-{
-  BLE_L2CAP_EVT_CH_SETUP_REQUEST    = BLE_L2CAP_EVT_BASE + 0,    /**< L2CAP Channel Setup Request event.
-                                                                   \n Reply with @ref sd_ble_l2cap_ch_setup.
-                                                                   \n See @ref ble_l2cap_evt_ch_setup_request_t. */
-  BLE_L2CAP_EVT_CH_SETUP_REFUSED    = BLE_L2CAP_EVT_BASE + 1,    /**< L2CAP Channel Setup Refused event.
-                                                                   \n See @ref ble_l2cap_evt_ch_setup_refused_t. */
-  BLE_L2CAP_EVT_CH_SETUP            = BLE_L2CAP_EVT_BASE + 2,    /**< L2CAP Channel Setup Completed event.
-                                                                   \n See @ref ble_l2cap_evt_ch_setup_t. */
-  BLE_L2CAP_EVT_CH_RELEASED         = BLE_L2CAP_EVT_BASE + 3,    /**< L2CAP Channel Released event.
-                                                                   \n No additional event structure applies. */
-  BLE_L2CAP_EVT_CH_SDU_BUF_RELEASED = BLE_L2CAP_EVT_BASE + 4,    /**< L2CAP Channel SDU data buffer released event.
-                                                                   \n See @ref ble_l2cap_evt_ch_sdu_buf_released_t. */
-  BLE_L2CAP_EVT_CH_CREDIT           = BLE_L2CAP_EVT_BASE + 5,    /**< L2CAP Channel Credit received.
-                                                                   \n See @ref ble_l2cap_evt_ch_credit_t. */
-  BLE_L2CAP_EVT_CH_RX               = BLE_L2CAP_EVT_BASE + 6,    /**< L2CAP Channel SDU received.
-                                                                   \n See @ref ble_l2cap_evt_ch_rx_t. */
-  BLE_L2CAP_EVT_CH_TX               = BLE_L2CAP_EVT_BASE + 7,   /**< L2CAP Channel SDU transmitted.
-                                                                   \n See @ref ble_l2cap_evt_ch_tx_t. */
+enum BLE_L2CAP_EVTS {
+  BLE_L2CAP_EVT_CH_SETUP_REQUEST = BLE_L2CAP_EVT_BASE + 0, /**< L2CAP Channel Setup Request event.
+                                                             \n Reply with @ref sd_ble_l2cap_ch_setup.
+                                                             \n See @ref ble_l2cap_evt_ch_setup_request_t. */
+  BLE_L2CAP_EVT_CH_SETUP_REFUSED = BLE_L2CAP_EVT_BASE + 1, /**< L2CAP Channel Setup Refused event.
+                                                             \n See @ref ble_l2cap_evt_ch_setup_refused_t. */
+  BLE_L2CAP_EVT_CH_SETUP = BLE_L2CAP_EVT_BASE + 2,         /**< L2CAP Channel Setup Completed event.
+                                                             \n See @ref ble_l2cap_evt_ch_setup_t. */
+  BLE_L2CAP_EVT_CH_RELEASED = BLE_L2CAP_EVT_BASE + 3,      /**< L2CAP Channel Released event.
+                                                             \n No additional event structure applies. */
+  BLE_L2CAP_EVT_CH_SDU_BUF_RELEASED =
+      BLE_L2CAP_EVT_BASE + 4,                       /**< L2CAP Channel SDU data buffer released event.
+                                                      \n See @ref ble_l2cap_evt_ch_sdu_buf_released_t. */
+  BLE_L2CAP_EVT_CH_CREDIT = BLE_L2CAP_EVT_BASE + 5, /**< L2CAP Channel Credit received.
+                                                      \n See @ref ble_l2cap_evt_ch_credit_t. */
+  BLE_L2CAP_EVT_CH_RX = BLE_L2CAP_EVT_BASE + 6,     /**< L2CAP Channel SDU received.
+                                                      \n See @ref ble_l2cap_evt_ch_rx_t. */
+  BLE_L2CAP_EVT_CH_TX = BLE_L2CAP_EVT_BASE + 7,     /**< L2CAP Channel SDU transmitted.
+                                                       \n See @ref ble_l2cap_evt_ch_tx_t. */
 };
 
 /** @} */
@@ -119,40 +119,41 @@ enum BLE_L2CAP_EVTS
  * @{ */
 
 /**@brief Maximum number of L2CAP channels per connection. */
-#define BLE_L2CAP_CH_COUNT_MAX    (64)
+#define BLE_L2CAP_CH_COUNT_MAX                         (64)
 
 /**@brief Minimum L2CAP MTU, in bytes. */
-#define BLE_L2CAP_MTU_MIN         (23)
+#define BLE_L2CAP_MTU_MIN                              (23)
 
 /**@brief Minimum L2CAP MPS, in bytes. */
-#define BLE_L2CAP_MPS_MIN         (23)
+#define BLE_L2CAP_MPS_MIN                              (23)
 
 /**@brief Invalid CID. */
-#define BLE_L2CAP_CID_INVALID     (0x0000)
+#define BLE_L2CAP_CID_INVALID                          (0x0000)
 
 /**@brief Default number of credits for @ref sd_ble_l2cap_ch_flow_control. */
-#define BLE_L2CAP_CREDITS_DEFAULT (1)
+#define BLE_L2CAP_CREDITS_DEFAULT                      (1)
 
 /**@defgroup BLE_L2CAP_CH_SETUP_REFUSED_SRCS L2CAP channel setup refused sources
  * @{ */
-#define BLE_L2CAP_CH_SETUP_REFUSED_SRC_LOCAL            (0x01)    /**< Local. */
-#define BLE_L2CAP_CH_SETUP_REFUSED_SRC_REMOTE           (0x02)    /**< Remote. */
- /** @}  */
+#define BLE_L2CAP_CH_SETUP_REFUSED_SRC_LOCAL           (0x01) /**< Local. */
+#define BLE_L2CAP_CH_SETUP_REFUSED_SRC_REMOTE          (0x02) /**< Remote. */
+                                                              /** @}  */
 
- /** @defgroup BLE_L2CAP_CH_STATUS_CODES L2CAP channel status codes
+/** @defgroup BLE_L2CAP_CH_STATUS_CODES L2CAP channel status codes
  * @{ */
-#define BLE_L2CAP_CH_STATUS_CODE_SUCCESS                (0x0000)  /**< Success. */
-#define BLE_L2CAP_CH_STATUS_CODE_LE_PSM_NOT_SUPPORTED   (0x0002)  /**< LE_PSM not supported. */
-#define BLE_L2CAP_CH_STATUS_CODE_NO_RESOURCES           (0x0004)  /**< No resources available. */
-#define BLE_L2CAP_CH_STATUS_CODE_INSUFF_AUTHENTICATION  (0x0005)  /**< Insufficient authentication. */
-#define BLE_L2CAP_CH_STATUS_CODE_INSUFF_AUTHORIZATION   (0x0006)  /**< Insufficient authorization. */
-#define BLE_L2CAP_CH_STATUS_CODE_INSUFF_ENC_KEY_SIZE    (0x0007)  /**< Insufficient encryption key size. */
-#define BLE_L2CAP_CH_STATUS_CODE_INSUFF_ENC             (0x0008)  /**< Insufficient encryption. */
-#define BLE_L2CAP_CH_STATUS_CODE_INVALID_SCID           (0x0009)  /**< Invalid Source CID. */
-#define BLE_L2CAP_CH_STATUS_CODE_SCID_ALLOCATED         (0x000A)  /**< Source CID already allocated. */
-#define BLE_L2CAP_CH_STATUS_CODE_UNACCEPTABLE_PARAMS    (0x000B)  /**< Unacceptable parameters. */
-#define BLE_L2CAP_CH_STATUS_CODE_NOT_UNDERSTOOD         (0x8000)  /**< Command Reject received instead of LE Credit Based Connection Response. */
-#define BLE_L2CAP_CH_STATUS_CODE_TIMEOUT                (0xC000)  /**< Operation timed out. */
+#define BLE_L2CAP_CH_STATUS_CODE_SUCCESS               (0x0000) /**< Success. */
+#define BLE_L2CAP_CH_STATUS_CODE_LE_PSM_NOT_SUPPORTED  (0x0002) /**< LE_PSM not supported. */
+#define BLE_L2CAP_CH_STATUS_CODE_NO_RESOURCES          (0x0004) /**< No resources available. */
+#define BLE_L2CAP_CH_STATUS_CODE_INSUFF_AUTHENTICATION (0x0005) /**< Insufficient authentication. */
+#define BLE_L2CAP_CH_STATUS_CODE_INSUFF_AUTHORIZATION  (0x0006) /**< Insufficient authorization. */
+#define BLE_L2CAP_CH_STATUS_CODE_INSUFF_ENC_KEY_SIZE   (0x0007) /**< Insufficient encryption key size. */
+#define BLE_L2CAP_CH_STATUS_CODE_INSUFF_ENC            (0x0008) /**< Insufficient encryption. */
+#define BLE_L2CAP_CH_STATUS_CODE_INVALID_SCID          (0x0009) /**< Invalid Source CID. */
+#define BLE_L2CAP_CH_STATUS_CODE_SCID_ALLOCATED        (0x000A) /**< Source CID already allocated. */
+#define BLE_L2CAP_CH_STATUS_CODE_UNACCEPTABLE_PARAMS   (0x000B) /**< Unacceptable parameters. */
+#define BLE_L2CAP_CH_STATUS_CODE_NOT_UNDERSTOOD                                            \
+  (0x8000) /**< Command Reject received instead of LE Credit Based Connection Response. */
+#define BLE_L2CAP_CH_STATUS_CODE_TIMEOUT (0xC000) /**< Operation timed out. */
 /** @} */
 
 /** @} */
@@ -172,134 +173,122 @@ enum BLE_L2CAP_EVTS
  *                                    - ch_count is greater than @ref BLE_L2CAP_CH_COUNT_MAX.
  * @retval ::NRF_ERROR_NO_MEM         rx_mps or tx_mps is set too high.
  */
-typedef struct
-{
-  uint16_t    rx_mps;        /**< The maximum L2CAP PDU payload size, in bytes, that L2CAP shall
-                                  be able to receive on L2CAP channels on connections with this
-                                  configuration. The minimum value is @ref BLE_L2CAP_MPS_MIN. */
-  uint16_t    tx_mps;        /**< The maximum L2CAP PDU payload size, in bytes, that L2CAP shall
-                                  be able to transmit on L2CAP channels on connections with this
-                                  configuration. The minimum value is @ref BLE_L2CAP_MPS_MIN. */
-  uint8_t     rx_queue_size; /**< Number of SDU data buffers that can be queued for reception per
-                                  L2CAP channel. The minimum value is one. */
-  uint8_t     tx_queue_size; /**< Number of SDU data buffers that can be queued for transmission
-                                  per L2CAP channel. The minimum value is one. */
-  uint8_t     ch_count;      /**< Number of L2CAP channels the application can create per connection
-                                  with this configuration. The default value is zero, the maximum
-                                  value is @ref BLE_L2CAP_CH_COUNT_MAX.
-                                  @note if this parameter is set to zero, all other parameters in
-                                  @ref ble_l2cap_conn_cfg_t are ignored. */
+typedef struct {
+  uint16_t rx_mps;       /**< The maximum L2CAP PDU payload size, in bytes, that L2CAP shall
+                              be able to receive on L2CAP channels on connections with this
+                              configuration. The minimum value is @ref BLE_L2CAP_MPS_MIN. */
+  uint16_t tx_mps;       /**< The maximum L2CAP PDU payload size, in bytes, that L2CAP shall
+                              be able to transmit on L2CAP channels on connections with this
+                              configuration. The minimum value is @ref BLE_L2CAP_MPS_MIN. */
+  uint8_t rx_queue_size; /**< Number of SDU data buffers that can be queued for reception per
+                              L2CAP channel. The minimum value is one. */
+  uint8_t tx_queue_size; /**< Number of SDU data buffers that can be queued for transmission
+                              per L2CAP channel. The minimum value is one. */
+  uint8_t ch_count;      /**< Number of L2CAP channels the application can create per connection
+                              with this configuration. The default value is zero, the maximum
+                              value is @ref BLE_L2CAP_CH_COUNT_MAX.
+                              @note if this parameter is set to zero, all other parameters in
+                              @ref ble_l2cap_conn_cfg_t are ignored. */
 } ble_l2cap_conn_cfg_t;
 
 /**@brief L2CAP channel RX parameters. */
-typedef struct
-{
-  uint16_t    rx_mtu;        /**< The maximum L2CAP SDU size, in bytes, that L2CAP shall be able to
-                                  receive on this L2CAP channel.
-                                  - Must be equal to or greater than @ref BLE_L2CAP_MTU_MIN. */
-  uint16_t    rx_mps;        /**< The maximum L2CAP PDU payload size, in bytes, that L2CAP shall be
-                                  able to receive on this L2CAP channel.
-                                  - Must be equal to or greater than @ref BLE_L2CAP_MPS_MIN.
-                                  - Must be equal to or less than @ref ble_l2cap_conn_cfg_t::rx_mps. */
-  ble_data_t  sdu_buf;       /**< SDU data buffer for reception.
-                                  - If @ref ble_data_t::p_data is non-NULL, initial credits are
-                                    issued to the peer.
-                                  - If @ref ble_data_t::p_data is NULL, no initial credits are
-                                    issued to the peer. */
+typedef struct {
+  uint16_t rx_mtu;    /**< The maximum L2CAP SDU size, in bytes, that L2CAP shall be able to
+                           receive on this L2CAP channel.
+                           - Must be equal to or greater than @ref BLE_L2CAP_MTU_MIN. */
+  uint16_t rx_mps;    /**< The maximum L2CAP PDU payload size, in bytes, that L2CAP shall be
+                           able to receive on this L2CAP channel.
+                           - Must be equal to or greater than @ref BLE_L2CAP_MPS_MIN.
+                           - Must be equal to or less than @ref ble_l2cap_conn_cfg_t::rx_mps. */
+  ble_data_t sdu_buf; /**< SDU data buffer for reception.
+                           - If @ref ble_data_t::p_data is non-NULL, initial credits are
+                             issued to the peer.
+                           - If @ref ble_data_t::p_data is NULL, no initial credits are
+                             issued to the peer. */
 } ble_l2cap_ch_rx_params_t;
 
 /**@brief L2CAP channel setup parameters. */
-typedef struct
-{
-  ble_l2cap_ch_rx_params_t      rx_params;  /**< L2CAP channel RX parameters. */
-  uint16_t                      le_psm;     /**< LE Protocol/Service Multiplexer. Used when requesting
-                                                 setup of an L2CAP channel, ignored otherwise. */
-  uint16_t                      status;     /**< Status code, see @ref BLE_L2CAP_CH_STATUS_CODES.
-                                                 Used when replying to a setup request of an L2CAP
-                                                 channel, ignored otherwise. */
+typedef struct {
+  ble_l2cap_ch_rx_params_t rx_params; /**< L2CAP channel RX parameters. */
+  uint16_t le_psm;                    /**< LE Protocol/Service Multiplexer. Used when requesting
+                                           setup of an L2CAP channel, ignored otherwise. */
+  uint16_t status;                    /**< Status code, see @ref BLE_L2CAP_CH_STATUS_CODES.
+                                           Used when replying to a setup request of an L2CAP
+                                           channel, ignored otherwise. */
 } ble_l2cap_ch_setup_params_t;
 
 /**@brief L2CAP channel TX parameters. */
-typedef struct
-{
-  uint16_t    tx_mtu;        /**< The maximum L2CAP SDU size, in bytes, that L2CAP is able to
-                                  transmit on this L2CAP channel. */
-  uint16_t    peer_mps;      /**< The maximum L2CAP PDU payload size, in bytes, that the peer is
-                                  able to receive on this L2CAP channel. */
-  uint16_t    tx_mps;        /**< The maximum L2CAP PDU payload size, in bytes, that L2CAP is able
-                                  to transmit on this L2CAP channel. This is effective tx_mps,
-                                  selected by the SoftDevice as
-                                  MIN( @ref ble_l2cap_ch_tx_params_t::peer_mps, @ref ble_l2cap_conn_cfg_t::tx_mps ) */
-  uint16_t    credits;       /**< Initial credits given by the peer. */
+typedef struct {
+  uint16_t tx_mtu;   /**< The maximum L2CAP SDU size, in bytes, that L2CAP is able to
+                          transmit on this L2CAP channel. */
+  uint16_t peer_mps; /**< The maximum L2CAP PDU payload size, in bytes, that the peer is
+                          able to receive on this L2CAP channel. */
+  uint16_t tx_mps;   /**< The maximum L2CAP PDU payload size, in bytes, that L2CAP is able
+                          to transmit on this L2CAP channel. This is effective tx_mps,
+                          selected by the SoftDevice as
+                          MIN( @ref ble_l2cap_ch_tx_params_t::peer_mps, @ref ble_l2cap_conn_cfg_t::tx_mps ) */
+  uint16_t credits;  /**< Initial credits given by the peer. */
 } ble_l2cap_ch_tx_params_t;
 
 /**@brief L2CAP Channel Setup Request event. */
-typedef struct
-{
-  ble_l2cap_ch_tx_params_t  tx_params;  /**< L2CAP channel TX parameters. */
-  uint16_t                  le_psm;     /**< LE Protocol/Service Multiplexer. */
+typedef struct {
+  ble_l2cap_ch_tx_params_t tx_params; /**< L2CAP channel TX parameters. */
+  uint16_t le_psm;                    /**< LE Protocol/Service Multiplexer. */
 } ble_l2cap_evt_ch_setup_request_t;
 
 /**@brief L2CAP Channel Setup Refused event. */
-typedef struct
-{
-  uint8_t  source;           /**< Source, see @ref BLE_L2CAP_CH_SETUP_REFUSED_SRCS */
-  uint16_t status;           /**< Status code, see @ref BLE_L2CAP_CH_STATUS_CODES */
+typedef struct {
+  uint8_t source;  /**< Source, see @ref BLE_L2CAP_CH_SETUP_REFUSED_SRCS */
+  uint16_t status; /**< Status code, see @ref BLE_L2CAP_CH_STATUS_CODES */
 } ble_l2cap_evt_ch_setup_refused_t;
 
 /**@brief L2CAP Channel Setup Completed event. */
-typedef struct
-{
-  ble_l2cap_ch_tx_params_t tx_params;  /**< L2CAP channel TX parameters. */
+typedef struct {
+  ble_l2cap_ch_tx_params_t tx_params; /**< L2CAP channel TX parameters. */
 } ble_l2cap_evt_ch_setup_t;
 
 /**@brief L2CAP Channel SDU Data Buffer Released event. */
-typedef struct
-{
-  ble_data_t  sdu_buf;       /**< Returned reception or transmission SDU data buffer. The SoftDevice
-                                  returns SDU data buffers supplied by the application, which have
-                                  not yet been returned previously via a @ref BLE_L2CAP_EVT_CH_RX or
-                                  @ref BLE_L2CAP_EVT_CH_TX event. */
+typedef struct {
+  ble_data_t sdu_buf; /**< Returned reception or transmission SDU data buffer. The SoftDevice
+                           returns SDU data buffers supplied by the application, which have
+                           not yet been returned previously via a @ref BLE_L2CAP_EVT_CH_RX or
+                           @ref BLE_L2CAP_EVT_CH_TX event. */
 } ble_l2cap_evt_ch_sdu_buf_released_t;
 
 /**@brief L2CAP Channel Credit received event. */
-typedef struct
-{
-  uint16_t  credits;         /**< Additional credits given by the peer. */
+typedef struct {
+  uint16_t credits; /**< Additional credits given by the peer. */
 } ble_l2cap_evt_ch_credit_t;
 
 /**@brief L2CAP Channel received SDU event. */
-typedef struct
-{
-  uint16_t    sdu_len;       /**< Total SDU length, in bytes. */
-  ble_data_t  sdu_buf;       /**< SDU data buffer.
-                                  @note If there is not enough space in the buffer
-                                        (sdu_buf.len < sdu_len) then the rest of the SDU will be
-                                        silently discarded by the SoftDevice. */
+typedef struct {
+  uint16_t sdu_len;   /**< Total SDU length, in bytes. */
+  ble_data_t sdu_buf; /**< SDU data buffer.
+                           @note If there is not enough space in the buffer
+                                 (sdu_buf.len < sdu_len) then the rest of the SDU will be
+                                 silently discarded by the SoftDevice. */
 } ble_l2cap_evt_ch_rx_t;
 
 /**@brief L2CAP Channel transmitted SDU event. */
-typedef struct
-{
-  ble_data_t  sdu_buf;       /**< SDU data buffer. */
+typedef struct {
+  ble_data_t sdu_buf; /**< SDU data buffer. */
 } ble_l2cap_evt_ch_tx_t;
 
 /**@brief L2CAP event structure. */
-typedef struct
-{
-  uint16_t conn_handle;                                     /**< Connection Handle on which the event occured. */
-  uint16_t local_cid;                                       /**< Local Channel ID of the L2CAP channel, or
-                                                                 @ref BLE_L2CAP_CID_INVALID if not present. */
-  union
-  {
-    ble_l2cap_evt_ch_setup_request_t    ch_setup_request;   /**< L2CAP Channel Setup Request Event Parameters. */
-    ble_l2cap_evt_ch_setup_refused_t    ch_setup_refused;   /**< L2CAP Channel Setup Refused Event Parameters. */
-    ble_l2cap_evt_ch_setup_t            ch_setup;           /**< L2CAP Channel Setup Completed Event Parameters. */
-    ble_l2cap_evt_ch_sdu_buf_released_t ch_sdu_buf_released;/**< L2CAP Channel SDU Data Buffer Released Event Parameters. */
-    ble_l2cap_evt_ch_credit_t           credit;             /**< L2CAP Channel Credit Received Event Parameters. */
-    ble_l2cap_evt_ch_rx_t               rx;                 /**< L2CAP Channel SDU Received Event Parameters. */
-    ble_l2cap_evt_ch_tx_t               tx;                 /**< L2CAP Channel SDU Transmitted Event Parameters. */
-  } params;                                                 /**< Event Parameters. */
+typedef struct {
+  uint16_t conn_handle; /**< Connection Handle on which the event occured. */
+  uint16_t local_cid;   /**< Local Channel ID of the L2CAP channel, or
+                             @ref BLE_L2CAP_CID_INVALID if not present. */
+  union {
+    ble_l2cap_evt_ch_setup_request_t ch_setup_request; /**< L2CAP Channel Setup Request Event Parameters. */
+    ble_l2cap_evt_ch_setup_refused_t ch_setup_refused; /**< L2CAP Channel Setup Refused Event Parameters. */
+    ble_l2cap_evt_ch_setup_t ch_setup;                 /**< L2CAP Channel Setup Completed Event Parameters. */
+    ble_l2cap_evt_ch_sdu_buf_released_t
+        ch_sdu_buf_released;          /**< L2CAP Channel SDU Data Buffer Released Event Parameters. */
+    ble_l2cap_evt_ch_credit_t credit; /**< L2CAP Channel Credit Received Event Parameters. */
+    ble_l2cap_evt_ch_rx_t rx;         /**< L2CAP Channel SDU Received Event Parameters. */
+    ble_l2cap_evt_ch_tx_t tx;         /**< L2CAP Channel SDU Transmitted Event Parameters. */
+  } params;                           /**< Event Parameters. */
 } ble_l2cap_evt_t;
 
 /** @} */
@@ -347,7 +336,9 @@ typedef struct
  * @retval ::NRF_ERROR_RESOURCES            The limit has been reached for available L2CAP channels,
  *                                          see @ref ble_l2cap_conn_cfg_t::ch_count.
  */
-SVCALL(SD_BLE_L2CAP_CH_SETUP, uint32_t, sd_ble_l2cap_ch_setup(uint16_t conn_handle, uint16_t *p_local_cid, ble_l2cap_ch_setup_params_t const *p_params));
+SVCALL(SD_BLE_L2CAP_CH_SETUP, uint32_t,
+       sd_ble_l2cap_ch_setup(uint16_t conn_handle, uint16_t *p_local_cid,
+                             ble_l2cap_ch_setup_params_t const *p_params));
 
 /**@brief Release an L2CAP channel.
  *
@@ -404,7 +395,8 @@ SVCALL(SD_BLE_L2CAP_CH_RELEASE, uint32_t, sd_ble_l2cap_ch_release(uint16_t conn_
  * @retval ::NRF_ERROR_RESOURCES            Too many SDU data buffers supplied. Wait for a
  *                                          @ref BLE_L2CAP_EVT_CH_RX event and retry.
  */
-SVCALL(SD_BLE_L2CAP_CH_RX, uint32_t, sd_ble_l2cap_ch_rx(uint16_t conn_handle, uint16_t local_cid, ble_data_t const *p_sdu_buf));
+SVCALL(SD_BLE_L2CAP_CH_RX, uint32_t,
+       sd_ble_l2cap_ch_rx(uint16_t conn_handle, uint16_t local_cid, ble_data_t const *p_sdu_buf));
 
 /**@brief Transmit an SDU on an L2CAP channel.
  *
@@ -449,7 +441,8 @@ SVCALL(SD_BLE_L2CAP_CH_RX, uint32_t, sd_ble_l2cap_ch_rx(uint16_t conn_handle, ui
  * @retval ::NRF_ERROR_RESOURCES            Too many SDUs queued for transmission. Wait for a
  *                                          @ref BLE_L2CAP_EVT_CH_TX event and retry.
  */
-SVCALL(SD_BLE_L2CAP_CH_TX, uint32_t, sd_ble_l2cap_ch_tx(uint16_t conn_handle, uint16_t local_cid, ble_data_t const *p_sdu_buf));
+SVCALL(SD_BLE_L2CAP_CH_TX, uint32_t,
+       sd_ble_l2cap_ch_tx(uint16_t conn_handle, uint16_t local_cid, ble_data_t const *p_sdu_buf));
 
 /**@brief Advanced SDU reception flow control.
  *
@@ -493,7 +486,9 @@ SVCALL(SD_BLE_L2CAP_CH_TX, uint32_t, sd_ble_l2cap_ch_tx(uint16_t conn_handle, ui
  *                                          in progress for an L2CAP channel).
  * @retval ::NRF_ERROR_NOT_FOUND            CID not found.
  */
-SVCALL(SD_BLE_L2CAP_CH_FLOW_CONTROL, uint32_t, sd_ble_l2cap_ch_flow_control(uint16_t conn_handle, uint16_t local_cid, uint16_t credits, uint16_t *p_credits));
+SVCALL(SD_BLE_L2CAP_CH_FLOW_CONTROL, uint32_t,
+       sd_ble_l2cap_ch_flow_control(uint16_t conn_handle, uint16_t local_cid, uint16_t credits,
+                                    uint16_t *p_credits));
 
 /** @} */
 

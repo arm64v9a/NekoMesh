@@ -1,9 +1,9 @@
 #include "SSD1306Display.h"
 #ifdef OLED_RU
-  #include "glcdfont6x8.h"
+#include "glcdfont6x8.h"
 #endif
 
-bool SSD1306Display::i2c_probe(TwoWire& wire, uint8_t addr) {
+bool SSD1306Display::i2c_probe(TwoWire &wire, uint8_t addr) {
   wire.beginTransmission(addr);
   uint8_t error = wire.endTransmission();
   return (error == 0);
@@ -14,17 +14,18 @@ bool SSD1306Display::begin() {
     if (_peripher_power) _peripher_power->claim();
     _isOn = true;
   }
-  #ifdef DISPLAY_ROTATION
+#ifdef DISPLAY_ROTATION
   display.setRotation(DISPLAY_ROTATION);
-  #endif
-  return display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_ADDRESS, true, false) && i2c_probe(Wire, DISPLAY_ADDRESS);
+#endif
+  return display.begin(SSD1306_SWITCHCAPVCC, DISPLAY_ADDRESS, true, false) &&
+         i2c_probe(Wire, DISPLAY_ADDRESS);
 }
 
 void SSD1306Display::turnOn() {
   if (!_isOn) {
     if (_peripher_power) _peripher_power->claim();
-    _isOn = true;  // set before begin() to prevent double claim
-    if (_peripher_power) begin();  // re-init display after power was cut
+    _isOn = true;                 // set before begin() to prevent double claim
+    if (_peripher_power) begin(); // re-init display after power was cut
   }
   display.ssd1306_command(SSD1306_DISPLAYON);
 }
@@ -48,14 +49,14 @@ void SSD1306Display::clear() {
 }
 
 void SSD1306Display::startFrame(Color bkg) {
-  display.clearDisplay();  // TODO: apply 'bkg'
+  display.clearDisplay(); // TODO: apply 'bkg'
   _color = SSD1306_WHITE;
 #ifdef OLED_RU
   display.setFont(&glcdfont6x8);
 #endif
   display.setTextColor(_color);
   display.setTextSize(1);
-  display.cp437(true);         // Use full 256 char 'Code Page 437' font
+  display.cp437(true); // Use full 256 char 'Code Page 437' font
 #ifdef OLED_RU
   display.setCursor(0, 7);
 #endif
@@ -81,7 +82,7 @@ void SSD1306Display::setCursor(int x, int y) {
 #endif
 }
 
-void SSD1306Display::print(const char* str) {
+void SSD1306Display::print(const char *str) {
   display.print(str);
 }
 
@@ -93,11 +94,11 @@ void SSD1306Display::drawRect(int x, int y, int w, int h) {
   display.drawRect(x, y, w, h, _color);
 }
 
-void SSD1306Display::drawXbm(int x, int y, const uint8_t* bits, int w, int h) {
+void SSD1306Display::drawXbm(int x, int y, const uint8_t *bits, int w, int h) {
   display.drawBitmap(x, y, bits, w, h, SSD1306_WHITE);
 }
 
-uint16_t SSD1306Display::getTextWidth(const char* str) {
+uint16_t SSD1306Display::getTextWidth(const char *str) {
   int16_t x1, y1;
   uint16_t w, h;
   display.getTextBounds(str, 0, 0, &x1, &y1, &w, &h);

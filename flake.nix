@@ -38,5 +38,19 @@
           };
         }
       );
+      formatter = forEachSupportedSystem (
+        { pkgs }:
+        pkgs.writeShellApplication {
+          name = "fmt";
+          runtimeInputs = with pkgs; [
+            clang-tools
+            fd
+          ];
+
+          text = ''
+            fd -e h -e cpp -e c -x clang-format -i
+          '';
+        }
+      );
     };
 }

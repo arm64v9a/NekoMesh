@@ -48,7 +48,8 @@ extern "C" {
 /** @brief Supervisor call declaration.
  *
  * A call to a function marked with @ref SVCALL, will trigger a Supervisor Call (SVC) Exception.
- * The SVCs with SVC numbers 0x00-0x0F are forwared to the application. All other SVCs are handled by the SoftDevice.
+ * The SVCs with SVC numbers 0x00-0x0F are forwared to the application. All other SVCs are handled by the
+ * SoftDevice.
  *
  * @param[in] number      The SVC number to be used.
  * @param[in] return_type The return type of the SVC function.
@@ -60,41 +61,38 @@ extern "C" {
 #else
 
 #ifndef SVCALL
-#if defined (__CC_ARM)
+#if defined(__CC_ARM)
 #define SVCALL(number, return_type, signature) return_type __svc(number) signature
-#elif defined (__GNUC__)
+#elif defined(__GNUC__)
 #ifdef __cplusplus
 #define GCC_CAST_CPP (uint16_t)
 #else
 #define GCC_CAST_CPP
 #endif
-#define SVCALL(number, return_type, signature)          \
-  _Pragma("GCC diagnostic push")                        \
-  _Pragma("GCC diagnostic ignored \"-Wreturn-type\"")   \
-  __attribute__((naked))                                \
-  __attribute__((unused))                               \
-  static return_type signature                          \
-  {                                                     \
-    __asm(                                              \
-        "svc %0\n"                                      \
-        "bx r14" : : "I" (GCC_CAST_CPP number) : "r0"   \
-    );                                                  \
-  }                                                     \
+#define SVCALL(number, return_type, signature)                                                              \
+  _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wreturn-type\"") __attribute__((naked)) \
+  __attribute__((unused)) static return_type signature {                                                    \
+    __asm("svc %0\n"                                                                                        \
+          "bx r14"                                                                                          \
+          :                                                                                                 \
+          : "I"(GCC_CAST_CPP number)                                                                        \
+          : "r0");                                                                                          \
+  }                                                                                                         \
   _Pragma("GCC diagnostic pop")
 
-#elif defined (__ICCARM__)
+#elif defined(__ICCARM__)
 #define PRAGMA(x) _Pragma(#x)
-#define SVCALL(number, return_type, signature)          \
-PRAGMA(swi_number = (number))                           \
- __swi return_type signature;
+#define SVCALL(number, return_type, signature) \
+  PRAGMA(swi_number = (number))                \
+  __swi return_type signature;
 #else
 #define SVCALL(number, return_type, signature) return_type signature
 #endif
-#endif  // SVCALL
+#endif // SVCALL
 
-#endif  // SVCALL_AS_NORMAL_FUNCTION
+#endif // SVCALL_AS_NORMAL_FUNCTION
 
 #ifdef __cplusplus
 }
 #endif
-#endif  // NRF_SVC__
+#endif // NRF_SVC__

@@ -36,13 +36,13 @@
  * OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
- /**
-  @addtogroup nrf_sdm_api
-  @{
-  @defgroup nrf_sdm_error SoftDevice Manager Error Codes
-  @{
+/**
+ @addtogroup nrf_sdm_api
+ @{
+ @defgroup nrf_sdm_error SoftDevice Manager Error Codes
+ @{
 
-  @brief Error definitions for the SDM API
+ @brief Error definitions for the SDM API
 */
 
 /* Header guard */
@@ -55,9 +55,12 @@
 extern "C" {
 #endif
 
-#define NRF_ERROR_SDM_LFCLK_SOURCE_UNKNOWN              (NRF_ERROR_SDM_BASE_NUM + 0)  ///< Unknown LFCLK source.
-#define NRF_ERROR_SDM_INCORRECT_INTERRUPT_CONFIGURATION (NRF_ERROR_SDM_BASE_NUM + 1)  ///< Incorrect interrupt configuration (can be caused by using illegal priority levels, or having enabled SoftDevice interrupts).
-#define NRF_ERROR_SDM_INCORRECT_CLENR0                  (NRF_ERROR_SDM_BASE_NUM + 2)  ///< Incorrect CLENR0 (can be caused by erroneous SoftDevice flashing).
+#define NRF_ERROR_SDM_LFCLK_SOURCE_UNKNOWN (NRF_ERROR_SDM_BASE_NUM + 0) ///< Unknown LFCLK source.
+#define NRF_ERROR_SDM_INCORRECT_INTERRUPT_CONFIGURATION \
+  (NRF_ERROR_SDM_BASE_NUM + 1) ///< Incorrect interrupt configuration (can be caused by using illegal priority
+                               ///< levels, or having enabled SoftDevice interrupts).
+#define NRF_ERROR_SDM_INCORRECT_CLENR0                                                                 \
+  (NRF_ERROR_SDM_BASE_NUM + 2) ///< Incorrect CLENR0 (can be caused by erroneous SoftDevice flashing).
 
 #ifdef __cplusplus
 }

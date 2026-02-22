@@ -892,8 +892,8 @@ struct FreqRange {
 };
 
 static FreqRange repeat_freq_ranges[] = {
-    #if DISABLE_REPEATER_RESTRUCTIONS == 1
-#warning "DISABLE_REPEATER_RESTRUCTIONS defined! Please enable on your own risk!"
+    #if DISABLE_REPEATER_RESTRICTIONS == 1
+#warning "DISABLE_REPEATER_RESTRICTIONS defined! Please enable on your own risk!"
   { 300000, 2500000 }
 #else
   { 433000, 433000 },
@@ -903,7 +903,7 @@ static FreqRange repeat_freq_ranges[] = {
 };
 
 bool MyMesh::isValidClientRepeatFreq(uint32_t f) const {
-#if DISABLE_REPEATER_RESTRUCTIONS == 1
+#if DISABLE_REPEATER_RESTRICTIONS == 1
   return true;
 #else
   for (int i = 0; i < sizeof(repeat_freq_ranges)/sizeof(repeat_freq_ranges[0]); i++) {

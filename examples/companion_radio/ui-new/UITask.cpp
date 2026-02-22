@@ -131,7 +131,7 @@ class HomeScreen : public UIScreen {
     RADIO,
     BLUETOOTH,
     ADVERT,
-#if DISABLE_REPEATER_RESTRUCTIONS == 1
+#if DISABLE_REPEATER_RESTRICTIONS == 1
     REPEAT,
 #endif
 #if ENV_INCLUDE_GPS == 1
@@ -334,7 +334,7 @@ public:
       display.setColor(DisplayDriver::GREEN);
       display.drawXbm((display.width() - 32) / 2, 18, advert_icon, 32, 32);
       display.drawTextCentered(display.width() / 2, 64 - 11, "advert: " PRESS_LABEL);
-#if DISABLE_REPEATER_RESTRUCTIONS == 1
+#if DISABLE_REPEATER_RESTRICTIONS == 1
     } else if (_page == HomePage::REPEAT) {
       display.setColor(DisplayDriver::GREEN);
       display.drawXbm((display.width() - 32) / 2, 18, _node_prefs->client_repeat ? repeater_on : repeater_off, 32, 32);
@@ -510,7 +510,7 @@ public:
     if (c == KEY_ENTER && _page == HomePage::CLOCK){
         _task->gotoClockScreen();
     }
-#if DISABLE_REPEATER_RESTRUCTIONS == 1
+#if DISABLE_REPEATER_RESTRICTIONS == 1
     if (c == KEY_ENTER && _page == HomePage::REPEAT) {
       _node_prefs->client_repeat = !_node_prefs->client_repeat;
       the_mesh.savePrefs();

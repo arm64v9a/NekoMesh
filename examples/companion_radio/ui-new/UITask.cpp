@@ -96,7 +96,6 @@ class ClockScreen : public UIScreen
   UITask *_task;
   mesh::RTCClock *_rtc;
   NodePrefs *_node_prefs;
-  bool s = true;
 
 public:
   ClockScreen(UITask *task, mesh::RTCClock *rtc, NodePrefs *node_prefs)
@@ -120,8 +119,7 @@ public:
     display.drawTextRightAlign(display.width() - 1, 0, buf);
 
     display.setTextSize(3);
-    strftime(buf, sizeof(buf), s ? "%H:%M" : "%H %M", timeinfo);
-    s = !s;
+    strftime(buf, sizeof(buf), "%H:%M", timeinfo);
     display.drawTextCentered(display.width() / 2, 20, buf);
     display.setTextSize(1);
 

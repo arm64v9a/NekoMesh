@@ -130,7 +130,7 @@ public:
       display.print(buf);
     }
 
-    return 1000; // blink
+    return 5000;
   }
 
   bool handleInput(char c) override

@@ -2581,6 +2581,30 @@ void MyMesh::loop()
 #endif
 }
 
+mesh::Packet *BaseChatMesh::createSelfAdvertRouter(const char *name)
+{
+  uint8_t app_data[MAX_ADVERT_DATA_SIZE];
+  uint8_t app_data_len;
+  {
+    AdvertDataBuilder builder(ADV_TYPE_REPEATER, name);
+    app_data_len = builder.encodeTo(app_data);
+  }
+
+  return createAdvert(self_id, app_data, app_data_len);
+}
+
+mesh::Packet *BaseChatMesh::createSelfAdvertRouter(const char *name, double lat, double lon)
+{
+  uint8_t app_data[MAX_ADVERT_DATA_SIZE];
+  uint8_t app_data_len;
+  {
+    AdvertDataBuilder builder(ADV_TYPE_REPEATER, name, lat, lon);
+    app_data_len = builder.encodeTo(app_data);
+  }
+
+  return createAdvert(self_id, app_data, app_data_len);
+}
+
 bool MyMesh::advert()
 {
   mesh::Packet *pkt;

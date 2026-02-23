@@ -2,7 +2,8 @@
 
 #include <MeshCore.h>
 
-namespace mesh {
+namespace mesh
+{
 
 // Packet::header values
 #define PH_ROUTE_MASK               0x03 // 2-bits
@@ -46,7 +47,8 @@ namespace mesh {
 /**
  * \brief  The fundamental transmission unit.
  */
-class Packet {
+class Packet
+{
 public:
   Packet();
 
@@ -68,14 +70,17 @@ public:
    */
   uint8_t getRouteType() const { return header & PH_ROUTE_MASK; }
 
-  bool isRouteFlood() const {
+  bool isRouteFlood() const
+  {
     return getRouteType() == ROUTE_TYPE_FLOOD || getRouteType() == ROUTE_TYPE_TRANSPORT_FLOOD;
   }
-  bool isRouteDirect() const {
+  bool isRouteDirect() const
+  {
     return getRouteType() == ROUTE_TYPE_DIRECT || getRouteType() == ROUTE_TYPE_TRANSPORT_DIRECT;
   }
 
-  bool hasTransportCodes() const {
+  bool hasTransportCodes() const
+  {
     return getRouteType() == ROUTE_TYPE_TRANSPORT_FLOOD || getRouteType() == ROUTE_TYPE_TRANSPORT_DIRECT;
   }
 

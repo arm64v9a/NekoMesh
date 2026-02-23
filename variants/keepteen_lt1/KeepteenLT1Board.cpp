@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void KeepteenLT1Board::begin() {
+void KeepteenLT1Board::begin()
+{
   NRF52Board::begin();
   btn_prev_state = HIGH;
 

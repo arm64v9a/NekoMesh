@@ -15,7 +15,8 @@
 #define DISPLAY_ADDRESS 0x3C
 #endif
 
-class SH1106Display : public DisplayDriver {
+class SH1106Display : public DisplayDriver
+{
   Adafruit_SH1106G display;
   bool _isOn;
   uint8_t _color;

@@ -13,7 +13,8 @@
 #define PIN_VBAT_READ        (4)
 #define REAL_VBAT_MV_PER_LSB (VBAT_DIVIDER_COMP * VBAT_MV_PER_LSB)
 
-class TechoBoard : public NRF52BoardDCDC {
+class TechoBoard : public NRF52BoardDCDC
+{
 public:
   TechoBoard() : NRF52Board("TECHO_OTA") {}
   void begin();
@@ -21,7 +22,8 @@ public:
 
   const char *getManufacturerName() const override { return "LilyGo T-Echo"; }
 
-  void powerOff() override {
+  void powerOff() override
+  {
 #ifdef LED_RED
     digitalWrite(LED_RED, HIGH);
 #endif

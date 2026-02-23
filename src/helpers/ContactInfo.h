@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Mesh.h>
 
-struct ContactInfo {
+struct ContactInfo
+{
   mesh::Identity id;
   char name[32];
   uint8_t type; // on of ADV_TYPE_*
@@ -16,8 +17,10 @@ struct ContactInfo {
   int32_t gps_lat, gps_lon;       // 6 dec places
   uint32_t sync_since;
 
-  const uint8_t *getSharedSecret(const mesh::LocalIdentity &self_id) const {
-    if (!shared_secret_valid) {
+  const uint8_t *getSharedSecret(const mesh::LocalIdentity &self_id) const
+  {
+    if (!shared_secret_valid)
+    {
       self_id.calcSharedSecret(shared_secret, id.pub_key);
       shared_secret_valid = true;
     }

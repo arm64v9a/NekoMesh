@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void XiaoRP2040Board::begin() {
+void XiaoRP2040Board::begin()
+{
   // for future use, sub-classes SHOULD call this from their begin()
   startup_reason = BD_STARTUP_NORMAL;
 
@@ -25,6 +26,7 @@ void XiaoRP2040Board::begin() {
   delay(10); // give sx1262 some time to power up
 }
 
-bool XiaoRP2040Board::startOTAUpdate(const char *id, char reply[]) {
+bool XiaoRP2040Board::startOTAUpdate(const char *id, char reply[])
+{
   return false;
 }

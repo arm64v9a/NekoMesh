@@ -4,21 +4,25 @@
 #include <MeshCore.h>
 #include <helpers/NRF52Board.h>
 
-class SenseCapSolarBoard : public NRF52BoardDCDC {
+class SenseCapSolarBoard : public NRF52BoardDCDC
+{
 public:
   SenseCapSolarBoard() : NRF52Board("SENSECAP_SOLAR_OTA") {}
   void begin();
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED off
   }
 #endif
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     digitalWrite(VBAT_ENABLE, LOW);
     int adcvalue = 0;
     analogReadResolution(12);

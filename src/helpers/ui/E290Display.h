@@ -7,7 +7,8 @@
 #include <heltec-eink-modules.h>
 
 // Display driver for E290 e-ink display
-class E290Display : public DisplayDriver {
+class E290Display : public DisplayDriver
+{
   EInkDisplay_VisionMasterE290 display;
   bool _init = false;
   bool _isOn = false;

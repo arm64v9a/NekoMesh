@@ -18,9 +18,11 @@
 extern NullDisplayDriver display;
 #endif
 
-class WIOE5Board : public STM32Board {
+class WIOE5Board : public STM32Board
+{
 public:
-  void begin() override {
+  void begin() override
+  {
     STM32Board::begin();
 
     pinMode(LED_RED, OUTPUT);
@@ -30,17 +32,20 @@ public:
 
   const char *getManufacturerName() const override { return "Seeed Wio E5 mini"; }
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     analogReadResolution(12);
     uint32_t raw = 0;
-    for (int i = 0; i < 8; i++) {
+    for (int i = 0; i < 8; i++)
+    {
       raw += analogRead(PIN_A3);
     }
     return ((double)raw) * 1.73 * 5 * 1000 / 8 / 4096;
   }
 };
 
-class WIOE5SensorManager : public SensorManager {
+class WIOE5SensorManager : public SensorManager
+{
   BME280I2C bme;
   bool has_bme = false;
 

@@ -4,7 +4,8 @@
 
 uint32_t deviceOnline = 0x00;
 
-void TDeckBoard::begin() {
+void TDeckBoard::begin()
+{
 
   ESP32Board::begin();
 
@@ -24,9 +25,11 @@ void TDeckBoard::begin() {
 #endif
 
   esp_reset_reason_t reason = esp_reset_reason();
-  if (reason == ESP_RST_DEEPSLEEP) {
+  if (reason == ESP_RST_DEEPSLEEP)
+  {
     long wakeup_source = esp_sleep_get_ext1_wakeup_status();
-    if (wakeup_source & (1 << P_LORA_DIO_1)) {
+    if (wakeup_source & (1 << P_LORA_DIO_1))
+    {
       startup_reason = BD_STARTUP_RX_PACKET; // received a LoRa packet (while in deep sleep)
     }
 

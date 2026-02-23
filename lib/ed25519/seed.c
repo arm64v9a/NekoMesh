@@ -9,15 +9,18 @@
 #include <stdio.h>
 #endif
 
-int ed25519_create_seed(unsigned char *seed) {
+int ed25519_create_seed(unsigned char *seed)
+{
 #ifdef _WIN32
   HCRYPTPROV prov;
 
-  if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT)) {
+  if (!CryptAcquireContext(&prov, NULL, NULL, PROV_RSA_FULL, CRYPT_VERIFYCONTEXT))
+  {
     return 1;
   }
 
-  if (!CryptGenRandom(prov, 32, seed)) {
+  if (!CryptGenRandom(prov, 32, seed))
+  {
     CryptReleaseContext(prov, 0);
     return 1;
   }
@@ -26,7 +29,8 @@ int ed25519_create_seed(unsigned char *seed) {
 #else
   FILE *f = fopen("/dev/urandom", "rb");
 
-  if (f == NULL) {
+  if (f == NULL)
+  {
     return 1;
   }
 

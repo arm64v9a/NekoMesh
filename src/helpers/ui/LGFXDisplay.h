@@ -9,7 +9,8 @@
 #define UI_ZOOM 1
 #endif
 
-class LGFXDisplay : public DisplayDriver {
+class LGFXDisplay : public DisplayDriver
+{
 protected:
   LGFX_Device *display;
   LGFX_Sprite buffer;

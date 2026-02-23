@@ -22,7 +22,8 @@ static const uint8_t meshcore_logo[] PROGMEM = {
   0x3c, 0x0e, 0x1f, 0xf8, 0xff, 0xf8, 0x70, 0x3c, 0x7f, 0xf8,
 };
 
-void UITask::begin(NodePrefs *node_prefs, const char *build_date, const char *firmware_version) {
+void UITask::begin(NodePrefs *node_prefs, const char *build_date, const char *firmware_version)
+{
   _prevBtnState = HIGH;
   _auto_off = millis() + AUTO_OFF_MILLIS;
   _node_prefs = node_prefs;
@@ -32,7 +33,8 @@ void UITask::begin(NodePrefs *node_prefs, const char *build_date, const char *fi
   // e.g: v1.2.3-abcdef -> v1.2.3
   char *version = strdup(firmware_version);
   char *dash = strchr(version, '-');
-  if (dash) {
+  if (dash)
+  {
     *dash = 0;
   }
 
@@ -40,9 +42,11 @@ void UITask::begin(NodePrefs *node_prefs, const char *build_date, const char *fi
   sprintf(_version_info, "%s (%s)", version, build_date);
 }
 
-void UITask::renderCurrScreen() {
+void UITask::renderCurrScreen()
+{
   char tmp[80];
-  if (millis() < BOOT_SCREEN_MILLIS) { // boot screen
+  if (millis() < BOOT_SCREEN_MILLIS)
+  { // boot screen
     // meshcore logo
     _display->setColor(DisplayDriver::BLUE);
     int logoWidth = 128;
@@ -60,7 +64,9 @@ void UITask::renderCurrScreen() {
     uint16_t typeWidth = _display->getTextWidth(node_type);
     _display->setCursor((_display->width() - typeWidth) / 2, 35);
     _display->print(node_type);
-  } else { // home screen
+  }
+  else
+  { // home screen
     // node name
     _display->setCursor(0, 0);
     _display->setTextSize(1);
@@ -80,15 +86,22 @@ void UITask::renderCurrScreen() {
   }
 }
 
-void UITask::loop() {
+void UITask::loop()
+{
 #ifdef PIN_USER_BTN
-  if (millis() >= _next_read) {
+  if (millis() >= _next_read)
+  {
     int btnState = digitalRead(PIN_USER_BTN);
-    if (btnState != _prevBtnState) {
-      if (btnState == LOW) { // pressed?
-        if (_display->isOn()) {
+    if (btnState != _prevBtnState)
+    {
+      if (btnState == LOW)
+      { // pressed?
+        if (_display->isOn())
+        {
           // TODO: any action ?
-        } else {
+        }
+        else
+        {
           _display->turnOn();
         }
         _auto_off = millis() + AUTO_OFF_MILLIS; // extend auto-off timer
@@ -99,15 +112,18 @@ void UITask::loop() {
   }
 #endif
 
-  if (_display->isOn()) {
-    if (millis() >= _next_refresh) {
+  if (_display->isOn())
+  {
+    if (millis() >= _next_refresh)
+    {
       _display->startFrame();
       renderCurrScreen();
       _display->endFrame();
 
       _next_refresh = millis() + 1000; // refresh every second
     }
-    if (millis() > _auto_off) {
+    if (millis() > _auto_off)
+    {
       _display->turnOff();
     }
   }

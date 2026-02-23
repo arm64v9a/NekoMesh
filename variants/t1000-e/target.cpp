@@ -37,7 +37,8 @@ static const Module::RfSwitchMode_t rfswitch_table[] = {
 };
 #endif
 
-bool radio_init() {
+bool radio_init()
+{
   // rtc_clock.begin(Wire);
 
 #ifdef LR11X0_DIO3_TCXO_VOLTAGE
@@ -50,7 +51,8 @@ bool radio_init() {
   SPI.begin();
   int status = radio.begin(LORA_FREQ, LORA_BW, LORA_SF, LORA_CR, RADIOLIB_LR11X0_LORA_SYNC_WORD_PRIVATE,
                            LORA_TX_POWER, 16, tcxo);
-  if (status != RADIOLIB_ERR_NONE) {
+  if (status != RADIOLIB_ERR_NONE)
+  {
     Serial.print("ERROR: radio init failed: ");
     Serial.println(status);
     return false; // fail
@@ -69,27 +71,32 @@ bool radio_init() {
   return true; // success
 }
 
-uint32_t radio_get_rng_seed() {
+uint32_t radio_get_rng_seed()
+{
   return radio.random(0x7FFFFFFF);
 }
 
-void radio_set_params(float freq, float bw, uint8_t sf, uint8_t cr) {
+void radio_set_params(float freq, float bw, uint8_t sf, uint8_t cr)
+{
   radio.setFrequency(freq);
   radio.setSpreadingFactor(sf);
   radio.setBandwidth(bw);
   radio.setCodingRate(cr);
 }
 
-void radio_set_tx_power(int8_t dbm) {
+void radio_set_tx_power(int8_t dbm)
+{
   radio.setOutputPower(dbm);
 }
 
-mesh::LocalIdentity radio_new_identity() {
+mesh::LocalIdentity radio_new_identity()
+{
   RadioNoiseListener rng(radio);
   return mesh::LocalIdentity(&rng); // create new random identity
 }
 
-void T1000SensorManager::start_gps() {
+void T1000SensorManager::start_gps()
+{
   gps_active = true;
   //_nmea->begin();
   // this init sequence should be better
@@ -113,7 +120,8 @@ void T1000SensorManager::start_gps() {
   pinMode(GPS_RESETB, INPUT_PULLUP);
 }
 
-void T1000SensorManager::sleep_gps() {
+void T1000SensorManager::sleep_gps()
+{
   gps_active = false;
   digitalWrite(GPS_VRTC_EN, HIGH);
   digitalWrite(GPS_EN, LOW);
@@ -125,7 +133,8 @@ void T1000SensorManager::sleep_gps() {
   //_nmea->stop();
 }
 
-void T1000SensorManager::stop_gps() {
+void T1000SensorManager::stop_gps()
+{
   gps_active = false;
   digitalWrite(GPS_VRTC_EN, LOW);
   digitalWrite(GPS_EN, LOW);
@@ -137,17 +146,21 @@ void T1000SensorManager::stop_gps() {
   //_nmea->stop();
 }
 
-bool T1000SensorManager::begin() {
+bool T1000SensorManager::begin()
+{
   // init GPS
   Serial1.begin(115200);
   return true;
 }
 
-bool T1000SensorManager::querySensors(uint8_t requester_permissions, CayenneLPP &telemetry) {
-  if (requester_permissions & TELEM_PERM_LOCATION) { // does requester have permission?
+bool T1000SensorManager::querySensors(uint8_t requester_permissions, CayenneLPP &telemetry)
+{
+  if (requester_permissions & TELEM_PERM_LOCATION)
+  { // does requester have permission?
     telemetry.addGPS(TELEM_CHANNEL_SELF, node_lat, node_lon, node_altitude);
   }
-  if (requester_permissions & TELEM_PERM_ENVIRONMENT) {
+  if (requester_permissions & TELEM_PERM_ENVIRONMENT)
+  {
     // Firmware reports light as a 0-100 % scale, but expose it via Luminosity so app labels it "Luminosity".
     telemetry.addLuminosity(TELEM_CHANNEL_SELF, t1000e_get_light());
     telemetry.addTemperature(TELEM_CHANNEL_SELF, t1000e_get_temperature());
@@ -155,13 +168,16 @@ bool T1000SensorManager::querySensors(uint8_t requester_permissions, CayenneLPP 
   return true;
 }
 
-void T1000SensorManager::loop() {
+void T1000SensorManager::loop()
+{
   static long next_gps_update = 0;
 
   _nmea->loop();
 
-  if (millis() > next_gps_update) {
-    if (gps_active && _nmea->isValid()) {
+  if (millis() > next_gps_update)
+  {
+    if (gps_active && _nmea->isValid())
+    {
       node_lat = ((double)_nmea->getLatitude()) / 1000000.;
       node_lon = ((double)_nmea->getLongitude()) / 1000000.;
       node_altitude = ((double)_nmea->getAltitude()) / 1000.0;
@@ -171,24 +187,33 @@ void T1000SensorManager::loop() {
   }
 }
 
-int T1000SensorManager::getNumSettings() const {
+int T1000SensorManager::getNumSettings() const
+{
   return 1;
 } // just one supported: "gps" (power switch)
 
-const char *T1000SensorManager::getSettingName(int i) const {
+const char *T1000SensorManager::getSettingName(int i) const
+{
   return i == 0 ? "gps" : NULL;
 }
-const char *T1000SensorManager::getSettingValue(int i) const {
-  if (i == 0) {
+const char *T1000SensorManager::getSettingValue(int i) const
+{
+  if (i == 0)
+  {
     return gps_active ? "1" : "0";
   }
   return NULL;
 }
-bool T1000SensorManager::setSettingValue(const char *name, const char *value) {
-  if (strcmp(name, "gps") == 0) {
-    if (strcmp(value, "0") == 0) {
+bool T1000SensorManager::setSettingValue(const char *name, const char *value)
+{
+  if (strcmp(name, "gps") == 0)
+  {
+    if (strcmp(value, "0") == 0)
+    {
       sleep_gps(); // sleep for faster fix !
-    } else {
+    }
+    else
+    {
       start_gps();
     }
     return true;

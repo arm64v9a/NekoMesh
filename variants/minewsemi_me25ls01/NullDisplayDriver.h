@@ -2,7 +2,8 @@
 
 #include <helpers/ui/DisplayDriver.h>
 
-class NullDisplayDriver : public DisplayDriver {
+class NullDisplayDriver : public DisplayDriver
+{
 public:
   NullDisplayDriver() : DisplayDriver(128, 64) {}
   bool begin() { return false; } // not present

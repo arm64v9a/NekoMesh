@@ -33,7 +33,8 @@
 #define LFS_BLOCK_SIZE      (2048)
 #define LFS_FLASH_ADDR_BASE (FLASH_END_ADDR - LFS_FLASH_TOTAL_SIZE + 1)
 
-class InternalFileSystem : public Adafruit_LittleFS {
+class InternalFileSystem : public Adafruit_LittleFS
+{
 public:
   InternalFileSystem(void);
 

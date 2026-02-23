@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void RAKWismeshTagBoard::begin() {
+void RAKWismeshTagBoard::begin()
+{
   NRF52BoardDCDC::begin();
 
   pinMode(PIN_VBAT_READ, INPUT);

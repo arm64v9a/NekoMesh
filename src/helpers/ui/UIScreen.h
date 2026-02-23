@@ -14,7 +14,8 @@
 #define KEY_PREV         0xF2
 #define KEY_CONTEXT_MENU 0xF3
 
-class UIScreen {
+class UIScreen
+{
 protected:
   UIScreen() {}
 

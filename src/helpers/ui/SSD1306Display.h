@@ -16,7 +16,8 @@
 #define DISPLAY_ADDRESS 0x3C
 #endif
 
-class SSD1306Display : public DisplayDriver {
+class SSD1306Display : public DisplayDriver
+{
   Adafruit_SSD1306 display;
   bool _isOn;
   uint8_t _color;
@@ -29,7 +30,8 @@ class SSD1306Display : public DisplayDriver {
 
 public:
   SSD1306Display(RefCountedDigitalPin *peripher_power = NULL)
-      : DisplayDriver(128, 64), display(128, 64, &Wire, PIN_OLED_RESET), _peripher_power(peripher_power) {
+      : DisplayDriver(128, 64), display(128, 64, &Wire, PIN_OLED_RESET), _peripher_power(peripher_power)
+  {
     _isOn = false;
   }
   bool begin();

@@ -8,7 +8,8 @@
 #include <Wire.h>
 #include <helpers/RefCountedDigitalPin.h>
 
-class ST7735Display : public DisplayDriver {
+class ST7735Display : public DisplayDriver
+{
   Adafruit_ST7735 display;
   bool _isOn;
   uint16_t _color;
@@ -20,13 +21,15 @@ public:
 #ifdef USE_PIN_TFT
   ST7735Display(RefCountedDigitalPin *peripher_power = NULL)
       : DisplayDriver(128, 64), display(PIN_TFT_CS, PIN_TFT_DC, PIN_TFT_SDA, PIN_TFT_SCL, PIN_TFT_RST),
-        _peripher_power(peripher_power) {
+        _peripher_power(peripher_power)
+  {
     _isOn = false;
   }
 #else
   ST7735Display(RefCountedDigitalPin *peripher_power = NULL)
       : DisplayDriver(128, 64), display(&SPI1, PIN_TFT_CS, PIN_TFT_DC, PIN_TFT_RST),
-        _peripher_power(peripher_power) {
+        _peripher_power(peripher_power)
+  {
     _isOn = false;
   }
 #endif

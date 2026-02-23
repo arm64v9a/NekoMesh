@@ -7,7 +7,8 @@
 #include <SPI.h>
 #include <Wire.h>
 
-class ST7789Display : public DisplayDriver {
+class ST7789Display : public DisplayDriver
+{
   ST7789Spi display;
   bool _isOn;
   uint16_t _color;
@@ -19,13 +20,15 @@ public:
 #ifdef HELTEC_VISION_MASTER_T190
   ST7789Display()
       : DisplayDriver(128, 64), display(&SPI, PIN_TFT_RST, PIN_TFT_DC, PIN_TFT_CS, GEOMETRY_RAWMODE, 320, 170,
-                                        PIN_TFT_SDA, -1, PIN_TFT_SCL) {
+                                        PIN_TFT_SDA, -1, PIN_TFT_SCL)
+  {
     _isOn = false;
   }
 #else
   ST7789Display()
       : DisplayDriver(128, 64),
-        display(&SPI1, PIN_TFT_RST, PIN_TFT_DC, PIN_TFT_CS, GEOMETRY_RAWMODE, 240, 135) {
+        display(&SPI1, PIN_TFT_RST, PIN_TFT_DC, PIN_TFT_CS, GEOMETRY_RAWMODE, 240, 135)
+  {
     _isOn = false;
   }
 #endif

@@ -3,12 +3,14 @@
 #include <Arduino.h>
 #include <Mesh.h>
 
-struct MinMaxAvg {
+struct MinMaxAvg
+{
   float _min, _max, _avg;
   uint8_t _lpp_type, _channel;
 };
 
-class TimeSeriesData {
+class TimeSeriesData
+{
   float *data;
   int num_slots, next;
   uint32_t last_timestamp;
@@ -16,10 +18,12 @@ class TimeSeriesData {
 
 public:
   TimeSeriesData(float *array, int num, uint32_t secs)
-      : num_slots(num), data(array), last_timestamp(0), next(0), interval_secs(secs) {
+      : num_slots(num), data(array), last_timestamp(0), next(0), interval_secs(secs)
+  {
     memset(data, 0, sizeof(float) * num);
   }
-  TimeSeriesData(int num, uint32_t secs) : num_slots(num), last_timestamp(0), next(0), interval_secs(secs) {
+  TimeSeriesData(int num, uint32_t secs) : num_slots(num), last_timestamp(0), next(0), interval_secs(secs)
+  {
     data = new float[num];
     memset(data, 0, sizeof(float) * num);
   }

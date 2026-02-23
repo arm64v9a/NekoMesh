@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void T1000eBoard::begin() {
+void T1000eBoard::begin()
+{
   NRF52BoardDCDC::begin();
   btn_prev_state = HIGH;
 

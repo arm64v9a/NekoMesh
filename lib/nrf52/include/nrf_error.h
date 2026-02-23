@@ -48,7 +48,8 @@
 #define NRF_ERROR_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @defgroup NRF_ERRORS_BASE Error Codes Base number definitions
@@ -57,7 +58,7 @@ extern "C" {
 #define NRF_ERROR_SDM_BASE_NUM           (0x1000) ///< SDM error base
 #define NRF_ERROR_SOC_BASE_NUM           (0x2000) ///< SoC error base
 #define NRF_ERROR_STK_BASE_NUM           (0x3000) ///< STK error base
-/** @} */
+  /** @} */
 
 #define NRF_SUCCESS                      (NRF_ERROR_BASE_NUM + 0) ///< Successful command
 #define NRF_ERROR_SVC_HANDLER_MISSING    (NRF_ERROR_BASE_NUM + 1) ///< SVC handler is missing

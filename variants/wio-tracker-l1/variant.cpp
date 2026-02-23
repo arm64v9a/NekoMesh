@@ -64,7 +64,8 @@ const uint32_t g_ADigitalPinMap[] = {
   0xFF, // 37 MISO
 };
 
-void initVariant() {
+void initVariant()
+{
   pinMode(PIN_QSPI_CS, OUTPUT);
   digitalWrite(PIN_QSPI_CS, HIGH);
 

@@ -4,7 +4,8 @@
 #include <helpers/SensorManager.h>
 #include <helpers/sensors/LocationProvider.h>
 
-class EnvironmentSensorManager : public SensorManager {
+class EnvironmentSensorManager : public SensorManager
+{
 protected:
   int next_available_channel = TELEM_CHANNEL_SELF + 1;
 

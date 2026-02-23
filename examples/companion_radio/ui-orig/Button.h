@@ -9,9 +9,19 @@
 #define BUTTON_LONG_PRESS_TIME_MS 3000 // Time to trigger long press (3 seconds)
 #define BUTTON_READ_INTERVAL_MS   10   // How often to read the button
 
-class Button {
+class Button
+{
 public:
-  enum EventType { NONE, SHORT_PRESS, DOUBLE_PRESS, TRIPLE_PRESS, QUADRUPLE_PRESS, LONG_PRESS, ANY_PRESS };
+  enum EventType
+  {
+    NONE,
+    SHORT_PRESS,
+    DOUBLE_PRESS,
+    TRIPLE_PRESS,
+    QUADRUPLE_PRESS,
+    LONG_PRESS,
+    ANY_PRESS
+  };
 
   using EventCallback = std::function<void()>;
 
@@ -34,7 +44,13 @@ public:
   EventType getLastEvent() const { return _lastEvent; }
 
 private:
-  enum State { IDLE, PRESSED, RELEASED, WAITING_FOR_MULTI_CLICK };
+  enum State
+  {
+    IDLE,
+    PRESSED,
+    RELEASED,
+    WAITING_FOR_MULTI_CLICK
+  };
 
   uint8_t _pin;
   bool _activeState;

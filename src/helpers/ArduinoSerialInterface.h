@@ -4,7 +4,8 @@
 
 #include <Arduino.h>
 
-class ArduinoSerialInterface : public BaseSerialInterface {
+class ArduinoSerialInterface : public BaseSerialInterface
+{
   bool _isEnabled;
   uint8_t _state;
   uint16_t _frame_len;
@@ -13,12 +14,14 @@ class ArduinoSerialInterface : public BaseSerialInterface {
   uint8_t rx_buf[MAX_FRAME_SIZE];
 
 public:
-  ArduinoSerialInterface() {
+  ArduinoSerialInterface()
+  {
     _isEnabled = false;
     _state = 0;
   }
 
-  void begin(Stream &serial) {
+  void begin(Stream &serial)
+  {
     _serial = &serial;
 #ifdef RAK_4631
     pinMode(WB_IO2, OUTPUT);

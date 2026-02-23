@@ -28,15 +28,18 @@
 // Forward declaration
 class Adafruit_LittleFS;
 
-namespace Adafruit_LittleFS_Namespace {
+namespace Adafruit_LittleFS_Namespace
+{
 
 // avoid conflict with other FileSystem FILE_READ/FILE_WRITE
-enum {
+enum
+{
   FILE_O_READ = 0,
   FILE_O_WRITE = 1,
 };
 
-class File : public Stream {
+class File : public Stream
+{
 public:
   File(Adafruit_LittleFS &fs);
   File(char const *filename, uint8_t mode, Adafruit_LittleFS &fs);
@@ -47,7 +50,8 @@ public:
   //------------- Stream API -------------//
   virtual size_t write(uint8_t ch);
   virtual size_t write(uint8_t const *buf, size_t size);
-  size_t write(const char *str) {
+  size_t write(const char *str)
+  {
     if (str == NULL) return 0;
     return write((const uint8_t *)str, strlen(str));
   }
@@ -83,7 +87,8 @@ private:
 
   bool _is_dir;
 
-  union {
+  union
+  {
     lfs_file_t *_file;
     lfs_dir_t *_dir;
   };

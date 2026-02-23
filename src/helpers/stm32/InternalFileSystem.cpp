@@ -30,7 +30,8 @@
 // LFS Disk IO
 //--------------------------------------------------------------------+
 static int _internal_flash_read(const struct lfs_config *c, lfs_block_t block, lfs_off_t off, void *buffer,
-                                lfs_size_t size) {
+                                lfs_size_t size)
+{
   if (!buffer || !size) return LFS_ERR_INVAL;
   lfs_block_t address = LFS_FLASH_ADDR_BASE + (block * FLASH_PAGE_SIZE + off);
   memcpy(buffer, (void *)address, size);
@@ -41,14 +42,17 @@ static int _internal_flash_read(const struct lfs_config *c, lfs_block_t block, l
 // been erased. Negative error codes are propogated to the user.
 // May return LFS_ERR_CORRUPT if the block should be considered bad.
 static int _internal_flash_prog(const struct lfs_config *c, lfs_block_t block, lfs_off_t off,
-                                const void *buffer, lfs_size_t size) {
+                                const void *buffer, lfs_size_t size)
+{
   HAL_StatusTypeDef hal_rc = HAL_OK;
   lfs_block_t addr = LFS_FLASH_ADDR_BASE + (block * FLASH_PAGE_SIZE + off);
   uint64_t *bufp = (uint64_t *)buffer;
 
   if (HAL_FLASH_Unlock() != HAL_OK) return LFS_ERR_IO;
-  for (uint32_t i = 0; i < size / 8; i++) {
-    if ((addr < LFS_FLASH_ADDR_BASE) || (addr > FLASH_END_ADDR)) {
+  for (uint32_t i = 0; i < size / 8; i++)
+  {
+    if ((addr < LFS_FLASH_ADDR_BASE) || (addr > FLASH_END_ADDR))
+    {
       HAL_FLASH_Lock();
       return LFS_ERR_INVAL;
     }
@@ -65,13 +69,15 @@ static int _internal_flash_prog(const struct lfs_config *c, lfs_block_t block, l
 // The state of an erased block is undefined. Negative error codes
 // are propogated to the user.
 // May return LFS_ERR_CORRUPT if the block should be considered bad.
-static int _internal_flash_erase(const struct lfs_config *c, lfs_block_t block) {
+static int _internal_flash_erase(const struct lfs_config *c, lfs_block_t block)
+{
   HAL_StatusTypeDef hal_rc;
   lfs_block_t address = LFS_FLASH_ADDR_BASE + (block * FLASH_PAGE_SIZE);
   uint32_t pageError = 0;
   FLASH_EraseInitTypeDef EraseInitStruct = { .TypeErase = FLASH_TYPEERASE_PAGES, .Page = 0, .NbPages = 1 };
 
-  if ((address < LFS_FLASH_ADDR_BASE) || (address > FLASH_END_ADDR)) {
+  if ((address < LFS_FLASH_ADDR_BASE) || (address > FLASH_END_ADDR))
+  {
     return LFS_ERR_INVAL;
   }
   EraseInitStruct.Page = (address - FLASH_BASE) / FLASH_PAGE_SIZE;
@@ -84,7 +90,8 @@ static int _internal_flash_erase(const struct lfs_config *c, lfs_block_t block) 
 
 // Sync the state of the underlying block device. Negative error codes
 // are propogated to the user.
-static int _internal_flash_sync(const struct lfs_config *c) {
+static int _internal_flash_sync(const struct lfs_config *c)
+{
   return LFS_ERR_OK; // don't need sync
 }
 
@@ -113,7 +120,8 @@ InternalFileSystem InternalFS;
 
 InternalFileSystem::InternalFileSystem(void) : Adafruit_LittleFS(&_InternalFSConfig) {}
 
-bool InternalFileSystem::begin(void) {
+bool InternalFileSystem::begin(void)
+{
   volatile bool format_fs;
 #ifdef FORMAT_FS
   format_fs = true;
@@ -121,7 +129,8 @@ bool InternalFileSystem::begin(void) {
   format_fs = false; // you can always use debugger to force formatting ;)
 #endif
   // failed to mount, erase all sector then format and mount again
-  if (format_fs || !Adafruit_LittleFS::begin()) {
+  if (format_fs || !Adafruit_LittleFS::begin())
+  {
     // lfs format
     this->format();
     // mount again if still failed, give up

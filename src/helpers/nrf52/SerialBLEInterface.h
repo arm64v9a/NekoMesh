@@ -8,7 +8,8 @@
 #define BLE_TX_POWER 4
 #endif
 
-class SerialBLEInterface : public BaseSerialInterface {
+class SerialBLEInterface : public BaseSerialInterface
+{
   BLEUart bleuart;
   bool _isEnabled;
   bool _isDeviceConnected;
@@ -16,7 +17,8 @@ class SerialBLEInterface : public BaseSerialInterface {
   unsigned long _last_health_check;
   unsigned long _last_retry_attempt;
 
-  struct Frame {
+  struct Frame
+  {
     uint8_t len;
     uint8_t buf[MAX_FRAME_SIZE];
   };
@@ -43,7 +45,8 @@ class SerialBLEInterface : public BaseSerialInterface {
   static void onBleUartRX(uint16_t conn_handle);
 
 public:
-  SerialBLEInterface() {
+  SerialBLEInterface()
+  {
     _isEnabled = false;
     _isDeviceConnected = false;
     _conn_handle = BLE_CONN_HANDLE_INVALID;

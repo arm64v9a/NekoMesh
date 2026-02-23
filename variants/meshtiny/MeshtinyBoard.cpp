@@ -6,19 +6,22 @@
 
 static BLEDfu bledfu;
 
-static void connect_callback(uint16_t conn_handle) {
+static void connect_callback(uint16_t conn_handle)
+{
   (void)conn_handle;
   MESH_DEBUG_PRINTLN("BLE client connected");
 }
 
-static void disconnect_callback(uint16_t conn_handle, uint8_t reason) {
+static void disconnect_callback(uint16_t conn_handle, uint8_t reason)
+{
   (void)conn_handle;
   (void)reason;
 
   MESH_DEBUG_PRINTLN("BLE client disconnected");
 }
 
-void MeshtinyBoard::begin() {
+void MeshtinyBoard::begin()
+{
   NRF52BoardDCDC::begin();
   btn_prev_state = HIGH;
 

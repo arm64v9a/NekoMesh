@@ -13,24 +13,28 @@
 #define PIN_VBAT_READ        (4)
 #define REAL_VBAT_MV_PER_LSB (VBAT_DIVIDER_COMP * VBAT_MV_PER_LSB)
 
-class ThinkNodeM1Board : public NRF52Board {
+class ThinkNodeM1Board : public NRF52Board
+{
 public:
   ThinkNodeM1Board() : NRF52Board("THINKNODE_M1_OTA") {}
   void begin();
   uint16_t getBattMilliVolts() override;
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED off
   }
 #endif
 
   const char *getManufacturerName() const override { return "Elecrow ThinkNode-M1"; }
 
-  void powerOff() override {
+  void powerOff() override
+  {
 
 // turn off all leds, sd_power_system_off will not do this for us
 #ifdef P_LORA_TX_LED

@@ -4,7 +4,8 @@
 
 KissModem::KissModem(Stream &serial, mesh::LocalIdentity &identity, mesh::RNG &rng, mesh::Radio &radio,
                      mesh::MainBoard &board, SensorManager &sensors)
-    : _serial(serial), _identity(identity), _rng(rng), _radio(radio), _board(board), _sensors(sensors) {
+    : _serial(serial), _identity(identity), _rng(rng), _radio(radio), _board(board), _sensors(sensors)
+{
   _rx_len = 0;
   _rx_escaped = false;
   _rx_active = false;
@@ -25,7 +26,8 @@ KissModem::KissModem(Stream &serial, mesh::LocalIdentity &identity, mesh::RNG &r
   _signal_report_enabled = true;
 }
 
-void KissModem::begin() {
+void KissModem::begin()
+{
   _rx_len = 0;
   _rx_escaped = false;
   _rx_active = false;
@@ -33,47 +35,62 @@ void KissModem::begin() {
   _tx_state = TX_IDLE;
 }
 
-void KissModem::writeByte(uint8_t b) {
-  if (b == KISS_FEND) {
+void KissModem::writeByte(uint8_t b)
+{
+  if (b == KISS_FEND)
+  {
     _serial.write(KISS_FESC);
     _serial.write(KISS_TFEND);
-  } else if (b == KISS_FESC) {
+  }
+  else if (b == KISS_FESC)
+  {
     _serial.write(KISS_FESC);
     _serial.write(KISS_TFESC);
-  } else {
+  }
+  else
+  {
     _serial.write(b);
   }
 }
 
-void KissModem::writeFrame(uint8_t type, const uint8_t *data, uint16_t len) {
+void KissModem::writeFrame(uint8_t type, const uint8_t *data, uint16_t len)
+{
   _serial.write(KISS_FEND);
   writeByte(type);
-  for (uint16_t i = 0; i < len; i++) {
+  for (uint16_t i = 0; i < len; i++)
+  {
     writeByte(data[i]);
   }
   _serial.write(KISS_FEND);
 }
 
-void KissModem::writeHardwareFrame(uint8_t sub_cmd, const uint8_t *data, uint16_t len) {
+void KissModem::writeHardwareFrame(uint8_t sub_cmd, const uint8_t *data, uint16_t len)
+{
   _serial.write(KISS_FEND);
   writeByte(KISS_CMD_SETHARDWARE);
   writeByte(sub_cmd);
-  for (uint16_t i = 0; i < len; i++) {
+  for (uint16_t i = 0; i < len; i++)
+  {
     writeByte(data[i]);
   }
   _serial.write(KISS_FEND);
 }
 
-void KissModem::writeHardwareError(uint8_t error_code) {
+void KissModem::writeHardwareError(uint8_t error_code)
+{
   writeHardwareFrame(HW_RESP_ERROR, &error_code, 1);
 }
 
-void KissModem::loop() {
-  while (_serial.available()) {
+void KissModem::loop()
+{
+  while (_serial.available())
+  {
     uint8_t b = _serial.read();
 
-    if (b == KISS_FEND) {
-      if (_rx_active && _rx_len > 0) {
+    if (b == KISS_FEND)
+    {
+      if (_rx_active && _rx_len > 0)
+      {
         processFrame();
       }
       _rx_len = 0;
@@ -84,12 +101,14 @@ void KissModem::loop() {
 
     if (!_rx_active) continue;
 
-    if (b == KISS_FESC) {
+    if (b == KISS_FESC)
+    {
       _rx_escaped = true;
       continue;
     }
 
-    if (_rx_escaped) {
+    if (_rx_escaped)
+    {
       _rx_escaped = false;
       if (b == KISS_TFEND)
         b = KISS_FEND;
@@ -99,9 +118,12 @@ void KissModem::loop() {
         continue;
     }
 
-    if (_rx_len < KISS_MAX_FRAME_SIZE) {
+    if (_rx_len < KISS_MAX_FRAME_SIZE)
+    {
       _rx_buf[_rx_len++] = b;
-    } else {
+    }
+    else
+    {
       /* Buffer full with no FEND; reset so we don't stay stuck ignoring input. */
       _rx_len = 0;
       _rx_escaped = false;
@@ -112,7 +134,8 @@ void KissModem::loop() {
   processTx();
 }
 
-void KissModem::processFrame() {
+void KissModem::processFrame()
+{
   if (_rx_len < 1) return;
 
   uint8_t type_byte = _rx_buf[0];
@@ -127,9 +150,11 @@ void KissModem::processFrame() {
   const uint8_t *data = &_rx_buf[1];
   uint16_t data_len = _rx_len - 1;
 
-  switch (cmd) {
+  switch (cmd)
+  {
   case KISS_CMD_DATA:
-    if (data_len > 0 && data_len <= KISS_MAX_PACKET_SIZE && !_has_pending_tx) {
+    if (data_len > 0 && data_len <= KISS_MAX_PACKET_SIZE && !_has_pending_tx)
+    {
       memcpy(_pending_tx, data, data_len);
       _pending_tx_len = data_len;
       _has_pending_tx = true;
@@ -157,7 +182,8 @@ void KissModem::processFrame() {
     break;
 
   case KISS_CMD_SETHARDWARE:
-    if (data_len >= 1) {
+    if (data_len >= 1)
+    {
       handleHardwareCommand(data[0], data + 1, data_len - 1);
     }
     break;
@@ -167,8 +193,10 @@ void KissModem::processFrame() {
   }
 }
 
-void KissModem::handleHardwareCommand(uint8_t sub_cmd, const uint8_t *data, uint16_t len) {
-  switch (sub_cmd) {
+void KissModem::handleHardwareCommand(uint8_t sub_cmd, const uint8_t *data, uint16_t len)
+{
+  switch (sub_cmd)
+  {
   case HW_CMD_GET_IDENTITY:
     handleGetIdentity();
     break;
@@ -253,27 +281,37 @@ void KissModem::handleHardwareCommand(uint8_t sub_cmd, const uint8_t *data, uint
   }
 }
 
-void KissModem::processTx() {
-  switch (_tx_state) {
+void KissModem::processTx()
+{
+  switch (_tx_state)
+  {
   case TX_IDLE:
-    if (_has_pending_tx) {
-      if (_fullduplex) {
+    if (_has_pending_tx)
+    {
+      if (_fullduplex)
+      {
         _tx_timer = millis();
         _tx_state = TX_DELAY;
-      } else {
+      }
+      else
+      {
         _tx_state = TX_WAIT_CLEAR;
       }
     }
     break;
 
   case TX_WAIT_CLEAR:
-    if (!_radio.isReceiving()) {
+    if (!_radio.isReceiving())
+    {
       uint8_t rand_val;
       _rng.random(&rand_val, 1);
-      if (rand_val <= _persistence) {
+      if (rand_val <= _persistence)
+      {
         _tx_timer = millis();
         _tx_state = TX_DELAY;
-      } else {
+      }
+      else
+      {
         _tx_timer = millis();
         _tx_state = TX_SLOT_WAIT;
       }
@@ -281,20 +319,23 @@ void KissModem::processTx() {
     break;
 
   case TX_SLOT_WAIT:
-    if (millis() - _tx_timer >= (uint32_t)_slottime * 10) {
+    if (millis() - _tx_timer >= (uint32_t)_slottime * 10)
+    {
       _tx_state = TX_WAIT_CLEAR;
     }
     break;
 
   case TX_DELAY:
-    if (millis() - _tx_timer >= (uint32_t)_txdelay * 10) {
+    if (millis() - _tx_timer >= (uint32_t)_txdelay * 10)
+    {
       _radio.startSendRaw(_pending_tx, _pending_tx_len);
       _tx_state = TX_SENDING;
     }
     break;
 
   case TX_SENDING:
-    if (_radio.isSendComplete()) {
+    if (_radio.isSendComplete())
+    {
       _radio.onSendFinished();
       uint8_t result = 0x01;
       writeHardwareFrame(HW_RESP_TX_DONE, &result, 1);
@@ -305,26 +346,32 @@ void KissModem::processTx() {
   }
 }
 
-void KissModem::onPacketReceived(int8_t snr, int8_t rssi, const uint8_t *packet, uint16_t len) {
+void KissModem::onPacketReceived(int8_t snr, int8_t rssi, const uint8_t *packet, uint16_t len)
+{
   writeFrame(KISS_CMD_DATA, packet, len);
-  if (_signal_report_enabled) {
+  if (_signal_report_enabled)
+  {
     uint8_t meta[2] = { (uint8_t)snr, (uint8_t)rssi };
     writeHardwareFrame(HW_RESP_RX_META, meta, 2);
   }
 }
 
-void KissModem::handleGetIdentity() {
+void KissModem::handleGetIdentity()
+{
   writeHardwareFrame(HW_RESP(HW_CMD_GET_IDENTITY), _identity.pub_key, PUB_KEY_SIZE);
 }
 
-void KissModem::handleGetRandom(const uint8_t *data, uint16_t len) {
-  if (len < 1) {
+void KissModem::handleGetRandom(const uint8_t *data, uint16_t len)
+{
+  if (len < 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
 
   uint8_t requested = data[0];
-  if (requested < 1 || requested > 64) {
+  if (requested < 1 || requested > 64)
+  {
     writeHardwareError(HW_ERR_INVALID_PARAM);
     return;
   }
@@ -334,8 +381,10 @@ void KissModem::handleGetRandom(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP(HW_CMD_GET_RANDOM), buf, requested);
 }
 
-void KissModem::handleVerifySignature(const uint8_t *data, uint16_t len) {
-  if (len < PUB_KEY_SIZE + SIGNATURE_SIZE + 1) {
+void KissModem::handleVerifySignature(const uint8_t *data, uint16_t len)
+{
+  if (len < PUB_KEY_SIZE + SIGNATURE_SIZE + 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
@@ -349,8 +398,10 @@ void KissModem::handleVerifySignature(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP(HW_CMD_VERIFY_SIGNATURE), &result, 1);
 }
 
-void KissModem::handleSignData(const uint8_t *data, uint16_t len) {
-  if (len < 1) {
+void KissModem::handleSignData(const uint8_t *data, uint16_t len)
+{
+  if (len < 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
@@ -360,8 +411,10 @@ void KissModem::handleSignData(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP(HW_CMD_SIGN_DATA), signature, SIGNATURE_SIZE);
 }
 
-void KissModem::handleEncryptData(const uint8_t *data, uint16_t len) {
-  if (len < PUB_KEY_SIZE + 1) {
+void KissModem::handleEncryptData(const uint8_t *data, uint16_t len)
+{
+  if (len < PUB_KEY_SIZE + 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
@@ -373,15 +426,20 @@ void KissModem::handleEncryptData(const uint8_t *data, uint16_t len) {
   uint8_t buf[KISS_MAX_FRAME_SIZE];
   int encrypted_len = mesh::Utils::encryptThenMAC(key, buf, plaintext, plaintext_len);
 
-  if (encrypted_len > 0) {
+  if (encrypted_len > 0)
+  {
     writeHardwareFrame(HW_RESP(HW_CMD_ENCRYPT_DATA), buf, encrypted_len);
-  } else {
+  }
+  else
+  {
     writeHardwareError(HW_ERR_ENCRYPT_FAILED);
   }
 }
 
-void KissModem::handleDecryptData(const uint8_t *data, uint16_t len) {
-  if (len < PUB_KEY_SIZE + CIPHER_MAC_SIZE + 1) {
+void KissModem::handleDecryptData(const uint8_t *data, uint16_t len)
+{
+  if (len < PUB_KEY_SIZE + CIPHER_MAC_SIZE + 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
@@ -393,15 +451,20 @@ void KissModem::handleDecryptData(const uint8_t *data, uint16_t len) {
   uint8_t buf[KISS_MAX_FRAME_SIZE];
   int decrypted_len = mesh::Utils::MACThenDecrypt(key, buf, ciphertext, ciphertext_len);
 
-  if (decrypted_len > 0) {
+  if (decrypted_len > 0)
+  {
     writeHardwareFrame(HW_RESP(HW_CMD_DECRYPT_DATA), buf, decrypted_len);
-  } else {
+  }
+  else
+  {
     writeHardwareError(HW_ERR_MAC_FAILED);
   }
 }
 
-void KissModem::handleKeyExchange(const uint8_t *data, uint16_t len) {
-  if (len < PUB_KEY_SIZE) {
+void KissModem::handleKeyExchange(const uint8_t *data, uint16_t len)
+{
+  if (len < PUB_KEY_SIZE)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
@@ -411,8 +474,10 @@ void KissModem::handleKeyExchange(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP(HW_CMD_KEY_EXCHANGE), shared_secret, PUB_KEY_SIZE);
 }
 
-void KissModem::handleHash(const uint8_t *data, uint16_t len) {
-  if (len < 1) {
+void KissModem::handleHash(const uint8_t *data, uint16_t len)
+{
+  if (len < 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
@@ -422,12 +487,15 @@ void KissModem::handleHash(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP(HW_CMD_HASH), hash, 32);
 }
 
-void KissModem::handleSetRadio(const uint8_t *data, uint16_t len) {
-  if (len < 10) {
+void KissModem::handleSetRadio(const uint8_t *data, uint16_t len)
+{
+  if (len < 10)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
-  if (!_setRadioCallback) {
+  if (!_setRadioCallback)
+  {
     writeHardwareError(HW_ERR_NO_CALLBACK);
     return;
   }
@@ -441,12 +509,15 @@ void KissModem::handleSetRadio(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP_OK, nullptr, 0);
 }
 
-void KissModem::handleSetTxPower(const uint8_t *data, uint16_t len) {
-  if (len < 1) {
+void KissModem::handleSetTxPower(const uint8_t *data, uint16_t len)
+{
+  if (len < 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
-  if (!_setTxPowerCallback) {
+  if (!_setTxPowerCallback)
+  {
     writeHardwareError(HW_ERR_NO_CALLBACK);
     return;
   }
@@ -456,7 +527,8 @@ void KissModem::handleSetTxPower(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP_OK, nullptr, 0);
 }
 
-void KissModem::handleGetRadio() {
+void KissModem::handleGetRadio()
+{
   uint8_t buf[10];
   memcpy(buf, &_config.freq_hz, 4);
   memcpy(buf + 4, &_config.bw_hz, 4);
@@ -465,19 +537,23 @@ void KissModem::handleGetRadio() {
   writeHardwareFrame(HW_RESP(HW_CMD_GET_RADIO), buf, 10);
 }
 
-void KissModem::handleGetTxPower() {
+void KissModem::handleGetTxPower()
+{
   writeHardwareFrame(HW_RESP(HW_CMD_GET_TX_POWER), &_config.tx_power, 1);
 }
 
-void KissModem::handleGetVersion() {
+void KissModem::handleGetVersion()
+{
   uint8_t buf[2];
   buf[0] = KISS_FIRMWARE_VERSION;
   buf[1] = 0;
   writeHardwareFrame(HW_RESP(HW_CMD_GET_VERSION), buf, 2);
 }
 
-void KissModem::handleGetCurrentRssi() {
-  if (!_getCurrentRssiCallback) {
+void KissModem::handleGetCurrentRssi()
+{
+  if (!_getCurrentRssiCallback)
+  {
     writeHardwareError(HW_ERR_NO_CALLBACK);
     return;
   }
@@ -487,13 +563,16 @@ void KissModem::handleGetCurrentRssi() {
   writeHardwareFrame(HW_RESP(HW_CMD_GET_CURRENT_RSSI), (uint8_t *)&rssi_byte, 1);
 }
 
-void KissModem::handleIsChannelBusy() {
+void KissModem::handleIsChannelBusy()
+{
   uint8_t busy = _radio.isReceiving() ? 0x01 : 0x00;
   writeHardwareFrame(HW_RESP(HW_CMD_IS_CHANNEL_BUSY), &busy, 1);
 }
 
-void KissModem::handleGetAirtime(const uint8_t *data, uint16_t len) {
-  if (len < 1) {
+void KissModem::handleGetAirtime(const uint8_t *data, uint16_t len)
+{
+  if (len < 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
@@ -503,13 +582,16 @@ void KissModem::handleGetAirtime(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP(HW_CMD_GET_AIRTIME), (uint8_t *)&airtime, 4);
 }
 
-void KissModem::handleGetNoiseFloor() {
+void KissModem::handleGetNoiseFloor()
+{
   int16_t noise_floor = _radio.getNoiseFloor();
   writeHardwareFrame(HW_RESP(HW_CMD_GET_NOISE_FLOOR), (uint8_t *)&noise_floor, 2);
 }
 
-void KissModem::handleGetStats() {
-  if (!_getStatsCallback) {
+void KissModem::handleGetStats()
+{
+  if (!_getStatsCallback)
+  {
     writeHardwareError(HW_ERR_NO_CALLBACK);
     return;
   }
@@ -523,33 +605,42 @@ void KissModem::handleGetStats() {
   writeHardwareFrame(HW_RESP(HW_CMD_GET_STATS), buf, 12);
 }
 
-void KissModem::handleGetBattery() {
+void KissModem::handleGetBattery()
+{
   uint16_t mv = _board.getBattMilliVolts();
   writeHardwareFrame(HW_RESP(HW_CMD_GET_BATTERY), (uint8_t *)&mv, 2);
 }
 
-void KissModem::handlePing() {
+void KissModem::handlePing()
+{
   writeHardwareFrame(HW_RESP(HW_CMD_PING), nullptr, 0);
 }
 
-void KissModem::handleGetSensors(const uint8_t *data, uint16_t len) {
-  if (len < 1) {
+void KissModem::handleGetSensors(const uint8_t *data, uint16_t len)
+{
+  if (len < 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
 
   uint8_t permissions = data[0];
   CayenneLPP telemetry(255);
-  if (_sensors.querySensors(permissions, telemetry)) {
+  if (_sensors.querySensors(permissions, telemetry))
+  {
     writeHardwareFrame(HW_RESP(HW_CMD_GET_SENSORS), telemetry.getBuffer(), telemetry.getSize());
-  } else {
+  }
+  else
+  {
     writeHardwareFrame(HW_RESP(HW_CMD_GET_SENSORS), nullptr, 0);
   }
 }
 
-void KissModem::handleGetMCUTemp() {
+void KissModem::handleGetMCUTemp()
+{
   float temp = _board.getMCUTemperature();
-  if (isnan(temp)) {
+  if (isnan(temp))
+  {
     writeHardwareError(HW_ERR_NO_CALLBACK);
     return;
   }
@@ -557,20 +648,24 @@ void KissModem::handleGetMCUTemp() {
   writeHardwareFrame(HW_RESP(HW_CMD_GET_MCU_TEMP), (uint8_t *)&temp_tenths, 2);
 }
 
-void KissModem::handleReboot() {
+void KissModem::handleReboot()
+{
   writeHardwareFrame(HW_RESP_OK, nullptr, 0);
   _serial.flush();
   delay(50);
   _board.reboot();
 }
 
-void KissModem::handleGetDeviceName() {
+void KissModem::handleGetDeviceName()
+{
   const char *name = _board.getManufacturerName();
   writeHardwareFrame(HW_RESP(HW_CMD_GET_DEVICE_NAME), (const uint8_t *)name, strlen(name));
 }
 
-void KissModem::handleSetSignalReport(const uint8_t *data, uint16_t len) {
-  if (len < 1) {
+void KissModem::handleSetSignalReport(const uint8_t *data, uint16_t len)
+{
+  if (len < 1)
+  {
     writeHardwareError(HW_ERR_INVALID_LENGTH);
     return;
   }
@@ -579,7 +674,8 @@ void KissModem::handleSetSignalReport(const uint8_t *data, uint16_t len) {
   writeHardwareFrame(HW_RESP(HW_CMD_GET_SIGNAL_REPORT), &val, 1);
 }
 
-void KissModem::handleGetSignalReport() {
+void KissModem::handleGetSignalReport()
+{
   uint8_t val = _signal_report_enabled ? 0x01 : 0x00;
   writeHardwareFrame(HW_RESP(HW_CMD_GET_SIGNAL_REPORT), &val, 1);
 }

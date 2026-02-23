@@ -2,7 +2,8 @@
 
 #include <Mesh.h>
 
-class AbstractBridge {
+class AbstractBridge
+{
 public:
   virtual ~AbstractBridge() {}
 

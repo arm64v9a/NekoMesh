@@ -32,7 +32,8 @@
 #include "WVariant.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif // __cplusplus
 
 // Number of pins defined in PinDescription array
@@ -69,7 +70,7 @@ extern "C" {
 
 #define BATTERY_PIN        PIN_A4
 
-static const uint8_t A4 = PIN_A4;
+  static const uint8_t A4 = PIN_A4;
 
 #define ADC_RESOLUTION         14
 
@@ -105,9 +106,9 @@ External serial flash W25Q16JV_IQ
 #define EXTERNAL_FLASH_DEVICES W25Q16JV_IQ
 #define EXTERNAL_FLASH_USE_QSPI
 
-/*
- * Lora radio
- */
+  /*
+   * Lora radio
+   */
 
 #define USE_SX1262
 #define SX126X_CS    (32 + 13) // FIXME - we really should define LORA_CS instead
@@ -122,13 +123,13 @@ External serial flash W25Q16JV_IQ
 #define SX126X_DIO2_AS_RF_SWITCH
 #define SX126X_DIO3_TCXO_VOLTAGE 1.8
 
-// #define LORA_DISABLE_SENDING // Define this to disable transmission for testing (power testing etc...)
+  // #define LORA_DISABLE_SENDING // Define this to disable transmission for testing (power testing etc...)
 
-// #undef SX126X_CS
+  // #undef SX126X_CS
 
-/*
- * GPS pins
- */
+  /*
+   * GPS pins
+   */
 
 #define HAS_GPS                  1
 #define GPS_L76K
@@ -140,7 +141,7 @@ External serial flash W25Q16JV_IQ
 #define GPS_RX_PIN                    PIN_GPS_RX
 #define GPS_TX_PIN                    PIN_GPS_TX
 
-// #define GPS_THREAD_INTERVAL 50
+  // #define GPS_THREAD_INTERVAL 50
 
 #define PIN_SERIAL1_RX                PIN_GPS_TX
 #define PIN_SERIAL1_TX                PIN_GPS_RX

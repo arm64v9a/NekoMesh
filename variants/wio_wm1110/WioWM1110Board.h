@@ -11,7 +11,8 @@
 #endif
 #define Serial Serial1
 
-class WioWM1110Board : public NRF52BoardDCDC {
+class WioWM1110Board : public NRF52BoardDCDC
+{
 public:
   WioWM1110Board() : NRF52Board("WM1110_OTA") {}
   void begin();
@@ -21,7 +22,8 @@ public:
   void onAfterTransmit() override { digitalWrite(LED_RED, LOW); }
 #endif
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     int adcvalue = 0;
     analogReadResolution(12);
     analogReference(AR_INTERNAL_3_0);
@@ -32,9 +34,11 @@ public:
 
   const char *getManufacturerName() const override { return "Seeed Wio WM1110"; }
 
-  void enableSensorPower(bool enable) {
+  void enableSensorPower(bool enable)
+  {
     digitalWrite(SENSOR_POWER_PIN, enable ? HIGH : LOW);
-    if (enable) {
+    if (enable)
+    {
       delay(100);
     }
   }

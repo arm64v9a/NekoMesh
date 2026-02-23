@@ -6,12 +6,14 @@
 #include <Utils.h>
 #include <string.h>
 
-namespace mesh {
+namespace mesh
+{
 
 /**
  * \brief  Abstraction of local/volatile clock with Millisecond granularity.
  */
-class MillisecondClock {
+class MillisecondClock
+{
 public:
   virtual unsigned long getMillis() = 0;
 };
@@ -19,7 +21,8 @@ public:
 /**
  * \brief  Abstraction of this device's packet radio.
  */
-class Radio {
+class Radio
+{
 public:
   virtual void begin() {}
 
@@ -82,7 +85,8 @@ public:
  * \brief  An abstraction for managing instances of Packets (eg. in a static pool),
  *        and for managing the outbound packet queue.
  */
-class PacketManager {
+class PacketManager
+{
 public:
   virtual Packet *allocNew() = 0;
   virtual void free(Packet *packet) = 0;
@@ -112,7 +116,8 @@ typedef uint32_t DispatcherAction;
  * \brief  The low-level task that manages detecting incoming Packets, and the queueing
  *      and scheduling of outbound Packets.
  */
-class Dispatcher {
+class Dispatcher
+{
   Packet *outbound; // current outbound packet
   unsigned long outbound_expiry, outbound_start, total_air_time, rx_air_time;
   unsigned long next_tx_time;
@@ -131,7 +136,8 @@ protected:
   MillisecondClock *_ms;
   uint16_t _err_flags;
 
-  Dispatcher(Radio &radio, MillisecondClock &ms, PacketManager &mgr) : _radio(&radio), _ms(&ms), _mgr(&mgr) {
+  Dispatcher(Radio &radio, MillisecondClock &ms, PacketManager &mgr) : _radio(&radio), _ms(&ms), _mgr(&mgr)
+  {
     outbound = NULL;
     total_air_time = rx_air_time = 0;
     next_tx_time = 0;
@@ -172,7 +178,8 @@ public:
   uint32_t getNumSentDirect() const { return n_sent_direct; }
   uint32_t getNumRecvFlood() const { return n_recv_flood; }
   uint32_t getNumRecvDirect() const { return n_recv_direct; }
-  void resetStats() {
+  void resetStats()
+  {
     n_sent_flood = n_sent_direct = n_recv_flood = n_recv_direct = 0;
     _err_flags = 0;
   }

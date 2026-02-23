@@ -84,22 +84,26 @@ static const uint64_t K[80] = {
 #endif
 
 /* compress 1024-bits */
-static int sha512_compress(sha512_context *md, unsigned char *buf) {
+static int sha512_compress(sha512_context *md, unsigned char *buf)
+{
   uint64_t S[8], W[80], t0, t1;
   int i;
 
   /* copy state into S */
-  for (i = 0; i < 8; i++) {
+  for (i = 0; i < 8; i++)
+  {
     S[i] = md->state[i];
   }
 
   /* copy the state into 1024-bits into W[0..15] */
-  for (i = 0; i < 16; i++) {
+  for (i = 0; i < 16; i++)
+  {
     LOAD64H(W[i], buf + (8 * i));
   }
 
   /* fill W[16..79] */
-  for (i = 16; i < 80; i++) {
+  for (i = 16; i < 80; i++)
+  {
     W[i] = Gamma1(W[i - 2]) + W[i - 7] + Gamma0(W[i - 15]) + W[i - 16];
   }
 
@@ -110,7 +114,8 @@ static int sha512_compress(sha512_context *md, unsigned char *buf) {
   d += t0;                                        \
   h = t0 + t1;
 
-  for (i = 0; i < 80; i += 8) {
+  for (i = 0; i < 80; i += 8)
+  {
     RND(S[0], S[1], S[2], S[3], S[4], S[5], S[6], S[7], i + 0);
     RND(S[7], S[0], S[1], S[2], S[3], S[4], S[5], S[6], i + 1);
     RND(S[6], S[7], S[0], S[1], S[2], S[3], S[4], S[5], i + 2);
@@ -124,7 +129,8 @@ static int sha512_compress(sha512_context *md, unsigned char *buf) {
 #undef RND
 
   /* feedback */
-  for (i = 0; i < 8; i++) {
+  for (i = 0; i < 8; i++)
+  {
     md->state[i] = md->state[i] + S[i];
   }
 
@@ -136,7 +142,8 @@ static int sha512_compress(sha512_context *md, unsigned char *buf) {
    @param md   The hash state you wish to initialize
    @return 0 if successful
 */
-int sha512_init(sha512_context *md) {
+int sha512_init(sha512_context *md)
+{
   if (md == NULL) return 1;
 
   md->curlen = 0;
@@ -160,35 +167,45 @@ int sha512_init(sha512_context *md) {
    @param inlen  The length of the data (octets)
    @return 0 if successful
 */
-int sha512_update(sha512_context *md, const unsigned char *in, size_t inlen) {
+int sha512_update(sha512_context *md, const unsigned char *in, size_t inlen)
+{
   size_t n;
   size_t i;
   int err;
   if (md == NULL) return 1;
   if (in == NULL) return 1;
-  if (md->curlen > sizeof(md->buf)) {
+  if (md->curlen > sizeof(md->buf))
+  {
     return 1;
   }
-  while (inlen > 0) {
-    if (md->curlen == 0 && inlen >= 128) {
-      if ((err = sha512_compress(md, (unsigned char *)in)) != 0) {
+  while (inlen > 0)
+  {
+    if (md->curlen == 0 && inlen >= 128)
+    {
+      if ((err = sha512_compress(md, (unsigned char *)in)) != 0)
+      {
         return err;
       }
       md->length += 128 * 8;
       in += 128;
       inlen -= 128;
-    } else {
+    }
+    else
+    {
       n = MIN(inlen, (128 - md->curlen));
 
-      for (i = 0; i < n; i++) {
+      for (i = 0; i < n; i++)
+      {
         md->buf[i + md->curlen] = in[i];
       }
 
       md->curlen += n;
       in += n;
       inlen -= n;
-      if (md->curlen == 128) {
-        if ((err = sha512_compress(md, md->buf)) != 0) {
+      if (md->curlen == 128)
+      {
+        if ((err = sha512_compress(md, md->buf)) != 0)
+        {
           return err;
         }
         md->length += 8 * 128;
@@ -205,13 +222,15 @@ int sha512_update(sha512_context *md, const unsigned char *in, size_t inlen) {
    @param out [out] The destination of the hash (64 bytes)
    @return 0 if successful
 */
-int sha512_final(sha512_context *md, unsigned char *out) {
+int sha512_final(sha512_context *md, unsigned char *out)
+{
   int i;
 
   if (md == NULL) return 1;
   if (out == NULL) return 1;
 
-  if (md->curlen >= sizeof(md->buf)) {
+  if (md->curlen >= sizeof(md->buf))
+  {
     return 1;
   }
 
@@ -225,8 +244,10 @@ int sha512_final(sha512_context *md, unsigned char *out) {
    * then compress.  Then we can fall back to padding zeros and length
    * encoding like normal.
    */
-  if (md->curlen > 112) {
-    while (md->curlen < 128) {
+  if (md->curlen > 112)
+  {
+    while (md->curlen < 128)
+    {
       md->buf[md->curlen++] = (unsigned char)0;
     }
     sha512_compress(md, md->buf);
@@ -237,7 +258,8 @@ int sha512_final(sha512_context *md, unsigned char *out) {
    * note: that from 112 to 120 is the 64 MSB of the length.  We assume that you won't hash
    * > 2^64 bits of data... :-)
    */
-  while (md->curlen < 120) {
+  while (md->curlen < 120)
+  {
     md->buf[md->curlen++] = (unsigned char)0;
   }
 
@@ -246,14 +268,16 @@ int sha512_final(sha512_context *md, unsigned char *out) {
   sha512_compress(md, md->buf);
 
   /* copy output */
-  for (i = 0; i < 8; i++) {
+  for (i = 0; i < 8; i++)
+  {
     STORE64H(md->state[i], out + (8 * i));
   }
 
   return 0;
 }
 
-int sha512(const unsigned char *message, size_t message_len, unsigned char *out) {
+int sha512(const unsigned char *message, size_t message_len, unsigned char *out)
+{
   sha512_context ctx;
   int ret;
   if ((ret = sha512_init(&ctx))) return ret;

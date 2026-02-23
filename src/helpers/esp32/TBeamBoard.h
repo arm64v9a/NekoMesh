@@ -89,13 +89,15 @@
 #include <Wire.h>
 #include <driver/rtc_io.h>
 
-class TBeamBoard : public ESP32Board {
+class TBeamBoard : public ESP32Board
+{
   XPowersLibInterface *PMU = NULL;
   // PhysicalLayer * pl;
   // RadioType * radio = NULL;
   //  int radioVersions = 2;
 
-  enum {
+  enum
+  {
     POWERMANAGE_ONLINE = _BV(0),
     DISPLAY_ONLINE = _BV(1),
     RADIO_ONLINE = _BV(2),
@@ -123,15 +125,18 @@ public:
   void begin();
 
 #ifndef TBEAM_SUPREME_SX1262
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED on - invert pin for SX1276
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED off - invert pin for SX1276
   }
 #endif
 
-  void enterDeepSleep(uint32_t secs, int pin_wake_btn) {
+  void enterDeepSleep(uint32_t secs, int pin_wake_btn)
+  {
     esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
 
     // Make sure the DIO1 and NSS GPIOs are hold on required levels during deep sleep
@@ -140,15 +145,19 @@ public:
 
     rtc_gpio_hold_en((gpio_num_t)P_LORA_NSS);
 
-    if (pin_wake_btn < 0) {
+    if (pin_wake_btn < 0)
+    {
       esp_sleep_enable_ext1_wakeup((1L << P_LORA_DIO_1),
                                    ESP_EXT1_WAKEUP_ANY_HIGH); // wake up on: recv LoRa packet
-    } else {
+    }
+    else
+    {
       esp_sleep_enable_ext1_wakeup((1L << P_LORA_DIO_1) | (1L << pin_wake_btn),
                                    ESP_EXT1_WAKEUP_ANY_HIGH); // wake up on: recv LoRa packet OR wake btn
     }
 
-    if (secs > 0) {
+    if (secs > 0)
+    {
       esp_sleep_enable_timer_wakeup(secs * 1000000);
     }
 

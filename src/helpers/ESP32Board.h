@@ -11,13 +11,15 @@
 #include <rom/rtc.h>
 #include <sys/time.h>
 
-class ESP32Board : public mesh::MainBoard {
+class ESP32Board : public mesh::MainBoard
+{
 protected:
   uint8_t startup_reason;
   bool inhibit_sleep = false;
 
 public:
-  void begin() {
+  void begin()
+  {
     // for future use, sub-classes SHOULD call this from their begin()
     startup_reason = BD_STARTUP_NORMAL;
 
@@ -46,26 +48,30 @@ public:
   }
 
   // Temperature from ESP32 MCU
-  float getMCUTemperature() override {
+  float getMCUTemperature() override
+  {
     uint32_t raw = 0;
 
     // To get and average the temperature so it is more accurate, especially in low temperature
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
+    {
       raw += temperatureRead();
     }
 
     return raw / 4;
   }
 
-  void enterLightSleep(uint32_t secs) {
+  void enterLightSleep(uint32_t secs)
+  {
 #if defined(CONFIG_IDF_TARGET_ESP32S3) && defined(P_LORA_DIO_1) // Supported ESP32 variants
-    if (rtc_gpio_is_valid_gpio(
-            (gpio_num_t)P_LORA_DIO_1)) { // Only enter sleep mode if P_LORA_DIO_1 is RTC pin
+    if (rtc_gpio_is_valid_gpio((gpio_num_t)P_LORA_DIO_1))
+    { // Only enter sleep mode if P_LORA_DIO_1 is RTC pin
       esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
       esp_sleep_enable_ext1_wakeup((1L << P_LORA_DIO_1),
                                    ESP_EXT1_WAKEUP_ANY_HIGH); // To wake up when receiving a LoRa packet
 
-      if (secs > 0) {
+      if (secs > 0)
+      {
         esp_sleep_enable_timer_wakeup(secs * 1000000); // To wake up every hour to do periodically jobs
       }
 
@@ -74,8 +80,10 @@ public:
 #endif
   }
 
-  void sleep(uint32_t secs) override {
-    if (!inhibit_sleep) {
+  void sleep(uint32_t secs) override
+  {
+    if (!inhibit_sleep)
+    {
       enterLightSleep(secs); // To wake up after "secs" seconds or when receiving a LoRa packet
     }
   }
@@ -83,30 +91,36 @@ public:
   uint8_t getStartupReason() const override { return startup_reason; }
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED off
   }
 #elif defined(P_LORA_TX_NEOPIXEL_LED)
 #define NEOPIXEL_BRIGHTNESS 64 // white brightness (max 255)
 
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     neopixelWrite(P_LORA_TX_NEOPIXEL_LED, NEOPIXEL_BRIGHTNESS, NEOPIXEL_BRIGHTNESS,
                   NEOPIXEL_BRIGHTNESS); // turn TX neopixel on (White)
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     neopixelWrite(P_LORA_TX_NEOPIXEL_LED, 0, 0, 0); // turn TX neopixel off
   }
 #endif
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
 #ifdef PIN_VBAT_READ
     analogReadResolution(12);
 
     uint32_t raw = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 4; i++)
+    {
       raw += analogReadMilliVolts(PIN_VBAT_READ);
     }
     raw = raw / 4;
@@ -126,12 +140,15 @@ public:
   void setInhibitSleep(bool inhibit) { inhibit_sleep = inhibit; }
 };
 
-class ESP32RTCClock : public mesh::RTCClock {
+class ESP32RTCClock : public mesh::RTCClock
+{
 public:
   ESP32RTCClock() {}
-  void begin() {
+  void begin()
+  {
     esp_reset_reason_t reason = esp_reset_reason();
-    if (reason == ESP_RST_POWERON) {
+    if (reason == ESP_RST_POWERON)
+    {
       // start with some date/time in the recent past
       struct timeval tv;
       tv.tv_sec = 1715770351; // 15 May 2024, 8:50pm
@@ -139,12 +156,14 @@ public:
       settimeofday(&tv, NULL);
     }
   }
-  uint32_t getCurrentTime() override {
+  uint32_t getCurrentTime() override
+  {
     time_t _now;
     time(&_now);
     return _now;
   }
-  void setCurrentTime(uint32_t time) override {
+  void setCurrentTime(uint32_t time) override
+  {
     struct timeval tv;
     tv.tv_sec = time;
     tv.tv_usec = 0;

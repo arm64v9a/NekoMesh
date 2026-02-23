@@ -4,7 +4,8 @@
 #include <Packet.h>
 #include <helpers/IdentityStore.h>
 
-struct TransportKey {
+struct TransportKey
+{
   uint8_t key[16];
 
   uint16_t calcTransportCode(const mesh::Packet *packet) const;
@@ -13,7 +14,8 @@ struct TransportKey {
 
 #define MAX_TKS_ENTRIES 16
 
-class TransportKeyStore {
+class TransportKeyStore
+{
   uint16_t cache_ids[MAX_TKS_ENTRIES];
   TransportKey cache_keys[MAX_TKS_ENTRIES];
   int num_cache;

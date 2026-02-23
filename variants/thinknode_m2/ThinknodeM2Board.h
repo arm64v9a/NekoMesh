@@ -5,7 +5,8 @@
 #include <helpers/ESP32Board.h>
 #include <helpers/RefCountedDigitalPin.h>
 
-class ThinknodeM2Board : public ESP32Board {
+class ThinknodeM2Board : public ESP32Board
+{
 
 public:
   void begin();

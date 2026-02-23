@@ -77,7 +77,8 @@
 #define REQ_TYPE_KEEP_ALIVE         0x02
 #define REQ_TYPE_GET_TELEMETRY_DATA 0x03
 
-struct AdvertPath {
+struct AdvertPath
+{
   uint8_t pubkey_prefix[7];
   uint8_t path_len;
   char name[32];
@@ -85,7 +86,8 @@ struct AdvertPath {
   uint8_t path[MAX_PATH_SIZE];
 };
 
-class MyMesh : public BaseChatMesh, public DataStoreHost {
+class MyMesh : public BaseChatMesh, public DataStoreHost
+{
 public:
   MyMesh(mesh::Radio &radio, mesh::RNG &rng, mesh::RTCClock &rtc, SimpleMeshTables &tables, DataStore &store,
          AbstractUITask *ui = NULL);
@@ -154,17 +156,21 @@ protected:
 
   // DataStoreHost methods
   bool onContactLoaded(const ContactInfo &contact) override { return addContact(contact); }
-  bool getContactForSave(uint32_t idx, ContactInfo &contact) override {
+  bool getContactForSave(uint32_t idx, ContactInfo &contact) override
+  {
     return getContactByIdx(idx, contact);
   }
-  bool onChannelLoaded(uint8_t channel_idx, const ChannelDetails &ch) override {
+  bool onChannelLoaded(uint8_t channel_idx, const ChannelDetails &ch) override
+  {
     return setChannel(channel_idx, ch);
   }
-  bool getChannelForSave(uint8_t channel_idx, ChannelDetails &ch) override {
+  bool getChannelForSave(uint8_t channel_idx, ChannelDetails &ch) override
+  {
     return getChannel(channel_idx, ch);
   }
 
-  void clearPendingReqs() {
+  void clearPendingReqs()
+  {
     pending_login = pending_status = pending_telemetry = pending_discovery = pending_req = 0;
   }
 
@@ -179,10 +185,12 @@ private:
   void updateContactFromFrame(ContactInfo &contact, uint32_t &last_mod, const uint8_t *frame, int len);
   void addToOfflineQueue(const uint8_t frame[], int len);
   int getFromOfflineQueue(uint8_t frame[]);
-  int getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_buf[]) override {
+  int getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_buf[]) override
+  {
     return _store->getBlobByKey(key, key_len, dest_buf);
   }
-  bool putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], int len) override {
+  bool putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], int len) override
+  {
     return _store->putBlobByKey(key, key_len, src_buf, len);
   }
 
@@ -221,7 +229,8 @@ private:
   uint8_t out_frame[MAX_FRAME_SIZE + 1];
   CayenneLPP telemetry;
 
-  struct Frame {
+  struct Frame
+  {
     uint8_t len;
     uint8_t buf[MAX_FRAME_SIZE];
 
@@ -230,7 +239,8 @@ private:
   int offline_queue_len;
   Frame offline_queue[OFFLINE_QUEUE_SIZE];
 
-  struct AckTableEntry {
+  struct AckTableEntry
+  {
     unsigned long msg_sent;
     uint32_t ack;
     ContactInfo *contact;

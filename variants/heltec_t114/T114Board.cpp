@@ -10,7 +10,8 @@ const PowerMgtConfig power_config = { .lpcomp_ain_channel = PWRMGT_LPCOMP_AIN,
                                       .lpcomp_refsel = PWRMGT_LPCOMP_REFSEL,
                                       .voltage_bootlock = PWRMGT_VOLTAGE_BOOTLOCK };
 
-void T114Board::initiateShutdown(uint8_t reason) {
+void T114Board::initiateShutdown(uint8_t reason)
+{
 #if ENV_INCLUDE_GPS == 1
   pinMode(GPS_EN, OUTPUT);
   digitalWrite(GPS_EN, LOW);
@@ -21,7 +22,8 @@ void T114Board::initiateShutdown(uint8_t reason) {
   pinMode(PIN_BAT_CTL, OUTPUT);
   digitalWrite(PIN_BAT_CTL, enable_lpcomp ? HIGH : LOW);
 
-  if (enable_lpcomp) {
+  if (enable_lpcomp)
+  {
     configureVoltageWake(power_config.lpcomp_ain_channel, power_config.lpcomp_refsel);
   }
 
@@ -29,7 +31,8 @@ void T114Board::initiateShutdown(uint8_t reason) {
 }
 #endif // NRF52_POWER_MANAGEMENT
 
-void T114Board::begin() {
+void T114Board::begin()
+{
   NRF52Board::begin();
 
   pinMode(PIN_VBAT_READ, INPUT);

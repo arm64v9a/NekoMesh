@@ -3,9 +3,11 @@
 #include <Arduino.h>
 #include <helpers/ESP32Board.h>
 
-class XiaoC6Board : public ESP32Board {
+class XiaoC6Board : public ESP32Board
+{
 public:
-  void begin() {
+  void begin()
+  {
     ESP32Board::begin();
 
 #ifdef USE_XIAO_ESP32C6_EXTERNAL_ANTENNA

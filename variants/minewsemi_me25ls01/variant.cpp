@@ -55,7 +55,8 @@ const uint32_t g_ADigitalPinMap[PINS_COUNT + 1] = {
   255, // NRFX_SPIM_PIN_NOT_USED
 };
 
-void initVariant() {
+void initVariant()
+{
   pinMode(BATTERY_PIN, INPUT);
   pinMode(PIN_BUTTON1, INPUT);
 

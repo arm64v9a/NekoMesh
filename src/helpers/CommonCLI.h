@@ -14,7 +14,8 @@
 #define ADVERT_LOC_SHARE 1
 #define ADVERT_LOC_PREFS 2
 
-struct NodePrefs { // persisted to file
+struct NodePrefs
+{ // persisted to file
   float airtime_factor;
   char node_name[32];
   double node_lat, node_lon;
@@ -55,7 +56,8 @@ struct NodePrefs { // persisted to file
   char owner_info[120];
 };
 
-class CommonCLICallbacks {
+class CommonCLICallbacks
+{
 public:
   virtual void savePrefs() = 0;
   virtual const char *getFirmwareVer() = 0;
@@ -90,7 +92,8 @@ public:
   };
 };
 
-class CommonCLI {
+class CommonCLI
+{
   mesh::RTCClock *_rtc;
   NodePrefs *_prefs;
   CommonCLICallbacks *_callbacks;
@@ -106,7 +109,9 @@ class CommonCLI {
 public:
   CommonCLI(mesh::MainBoard &board, mesh::RTCClock &rtc, SensorManager &sensors, ClientACL &acl,
             NodePrefs *prefs, CommonCLICallbacks *callbacks)
-      : _board(&board), _rtc(&rtc), _sensors(&sensors), _acl(&acl), _prefs(prefs), _callbacks(callbacks) {}
+      : _board(&board), _rtc(&rtc), _sensors(&sensors), _acl(&acl), _prefs(prefs), _callbacks(callbacks)
+  {
+  }
 
   void loadPrefs(FILESYSTEM *_fs);
   void savePrefs(FILESYSTEM *_fs);

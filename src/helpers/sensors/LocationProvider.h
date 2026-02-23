@@ -2,7 +2,8 @@
 
 #include "Mesh.h"
 
-class LocationProvider {
+class LocationProvider
+{
 protected:
   bool _time_sync_needed = true;
 

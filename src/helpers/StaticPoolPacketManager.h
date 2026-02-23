@@ -2,7 +2,8 @@
 
 #include <Dispatcher.h>
 
-class PacketQueue {
+class PacketQueue
+{
   mesh::Packet **_table;
   uint8_t *_pri_table;
   uint32_t *_schedule_table;
@@ -18,7 +19,8 @@ public:
   mesh::Packet *removeByIdx(int i);
 };
 
-class StaticPoolPacketManager : public mesh::PacketManager {
+class StaticPoolPacketManager : public mesh::PacketManager
+{
   PacketQueue unused, send_queue, rx_queue;
 
 public:

@@ -5,17 +5,21 @@
 #include <Ed25519.h>
 #include <ed_25519.h>
 
-namespace mesh {
+namespace mesh
+{
 
-Identity::Identity() {
+Identity::Identity()
+{
   memset(pub_key, 0, sizeof(pub_key));
 }
 
-Identity::Identity(const char *pub_hex) {
+Identity::Identity(const char *pub_hex)
+{
   Utils::fromHex(pub_key, PUB_KEY_SIZE, pub_hex);
 }
 
-bool Identity::verify(const uint8_t *sig, const uint8_t *message, int msg_len) const {
+bool Identity::verify(const uint8_t *sig, const uint8_t *message, int msg_len) const
+{
 #if 0
   // NOTE:  memory corruption bug was found in this function!!
   return ed25519_verify(sig, message, msg_len, pub_key);
@@ -24,32 +28,39 @@ bool Identity::verify(const uint8_t *sig, const uint8_t *message, int msg_len) c
 #endif
 }
 
-bool Identity::readFrom(Stream &s) {
+bool Identity::readFrom(Stream &s)
+{
   return (s.readBytes(pub_key, PUB_KEY_SIZE) == PUB_KEY_SIZE);
 }
 
-bool Identity::writeTo(Stream &s) const {
+bool Identity::writeTo(Stream &s) const
+{
   return (s.write(pub_key, PUB_KEY_SIZE) == PUB_KEY_SIZE);
 }
 
-void Identity::printTo(Stream &s) const {
+void Identity::printTo(Stream &s) const
+{
   Utils::printHex(s, pub_key, PUB_KEY_SIZE);
 }
 
-LocalIdentity::LocalIdentity() {
+LocalIdentity::LocalIdentity()
+{
   memset(prv_key, 0, sizeof(prv_key));
 }
-LocalIdentity::LocalIdentity(const char *prv_hex, const char *pub_hex) : Identity(pub_hex) {
+LocalIdentity::LocalIdentity(const char *prv_hex, const char *pub_hex) : Identity(pub_hex)
+{
   Utils::fromHex(prv_key, PRV_KEY_SIZE, prv_hex);
 }
 
-LocalIdentity::LocalIdentity(RNG *rng) {
+LocalIdentity::LocalIdentity(RNG *rng)
+{
   uint8_t seed[SEED_SIZE];
   rng->random(seed, SEED_SIZE);
   ed25519_create_keypair(pub_key, prv_key, seed);
 }
 
-bool LocalIdentity::validatePrivateKey(const uint8_t prv[64]) {
+bool LocalIdentity::validatePrivateKey(const uint8_t prv[64])
+{
   uint8_t pub[32];
   ed25519_derive_pub(pub, prv); // derive public key from given private key
 
@@ -79,26 +90,30 @@ bool LocalIdentity::validatePrivateKey(const uint8_t prv[64]) {
   if (memcmp(ss1, ss2, 32) != 0) return false;
 
   // reject all-zero shared secret
-  for (int i = 0; i < 32; i++) {
+  for (int i = 0; i < 32; i++)
+  {
     if (ss1[i] != 0) return true;
   }
 
   return false;
 }
 
-bool LocalIdentity::readFrom(Stream &s) {
+bool LocalIdentity::readFrom(Stream &s)
+{
   bool success = (s.readBytes(pub_key, PUB_KEY_SIZE) == PUB_KEY_SIZE);
   success = success && (s.readBytes(prv_key, PRV_KEY_SIZE) == PRV_KEY_SIZE);
   return success;
 }
 
-bool LocalIdentity::writeTo(Stream &s) const {
+bool LocalIdentity::writeTo(Stream &s) const
+{
   bool success = (s.write(pub_key, PUB_KEY_SIZE) == PUB_KEY_SIZE);
   success = success && (s.write(prv_key, PRV_KEY_SIZE) == PRV_KEY_SIZE);
   return success;
 }
 
-void LocalIdentity::printTo(Stream &s) const {
+void LocalIdentity::printTo(Stream &s) const
+{
   s.print("pub_key: ");
   Utils::printHex(s, pub_key, PUB_KEY_SIZE);
   s.println();
@@ -107,10 +122,12 @@ void LocalIdentity::printTo(Stream &s) const {
   s.println();
 }
 
-size_t LocalIdentity::writeTo(uint8_t *dest, size_t max_len) {
+size_t LocalIdentity::writeTo(uint8_t *dest, size_t max_len)
+{
   if (max_len < PRV_KEY_SIZE) return 0; // not big enough
 
-  if (max_len < PRV_KEY_SIZE + PUB_KEY_SIZE) { // only room for prv_key
+  if (max_len < PRV_KEY_SIZE + PUB_KEY_SIZE)
+  { // only room for prv_key
     memcpy(dest, prv_key, PRV_KEY_SIZE);
     return PRV_KEY_SIZE;
   }
@@ -119,22 +136,28 @@ size_t LocalIdentity::writeTo(uint8_t *dest, size_t max_len) {
   return PRV_KEY_SIZE + PUB_KEY_SIZE;
 }
 
-void LocalIdentity::readFrom(const uint8_t *src, size_t len) {
-  if (len == PRV_KEY_SIZE + PUB_KEY_SIZE) { // has prv + pub keys
+void LocalIdentity::readFrom(const uint8_t *src, size_t len)
+{
+  if (len == PRV_KEY_SIZE + PUB_KEY_SIZE)
+  { // has prv + pub keys
     memcpy(prv_key, src, PRV_KEY_SIZE);
     memcpy(pub_key, &src[PRV_KEY_SIZE], PUB_KEY_SIZE);
-  } else if (len == PRV_KEY_SIZE) {
+  }
+  else if (len == PRV_KEY_SIZE)
+  {
     memcpy(prv_key, src, PRV_KEY_SIZE);
     // now need to re-calculate the pub_key
     ed25519_derive_pub(pub_key, prv_key);
   }
 }
 
-void LocalIdentity::sign(uint8_t *sig, const uint8_t *message, int msg_len) const {
+void LocalIdentity::sign(uint8_t *sig, const uint8_t *message, int msg_len) const
+{
   ed25519_sign(sig, message, msg_len, pub_key, prv_key);
 }
 
-void LocalIdentity::calcSharedSecret(uint8_t *secret, const uint8_t *other_pub_key) const {
+void LocalIdentity::calcSharedSecret(uint8_t *secret, const uint8_t *other_pub_key) const
+{
   ed25519_key_exchange(secret, other_pub_key, prv_key);
 }
 

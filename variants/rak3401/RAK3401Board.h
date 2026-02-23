@@ -11,7 +11,8 @@
 #define PIN_3V3_EN     (34)
 #define WB_IO2         PIN_3V3_EN
 
-class RAK3401Board : public NRF52BoardDCDC {
+class RAK3401Board : public NRF52BoardDCDC
+{
 protected:
 #ifdef NRF52_POWER_MANAGEMENT
   void initiateShutdown(uint8_t reason) override;
@@ -22,11 +23,13 @@ public:
 
 #define BATTERY_SAMPLES 8
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     analogReadResolution(12);
 
     uint32_t raw = 0;
-    for (int i = 0; i < BATTERY_SAMPLES; i++) {
+    for (int i = 0; i < BATTERY_SAMPLES; i++)
+    {
       raw += analogRead(PIN_VBAT_READ);
     }
     raw = raw / BATTERY_SAMPLES;
@@ -37,11 +40,13 @@ public:
   const char *getManufacturerName() const override { return "RAK 3401"; }
 
 #ifdef P_LORA_PA_EN
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_PA_EN, HIGH); // Enable PA before transmission
   }
 
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_PA_EN, LOW); // Disable PA after transmission to save power
   }
 #endif

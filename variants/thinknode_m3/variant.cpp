@@ -60,7 +60,8 @@ const uint32_t g_ADigitalPinMap[] = {
   47, // P1.15
 };
 
-void initVariant() {
+void initVariant()
+{
   /* TODO */
   pinMode(PIN_PWR_EN, OUTPUT);
   digitalWrite(PIN_PWR_EN, HIGH);

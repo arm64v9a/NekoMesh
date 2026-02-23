@@ -16,7 +16,8 @@
 
 */
 
-class genericBuzzer {
+class genericBuzzer
+{
 public:
   void begin();                  // set up buzzer port
   void play(const char *melody); // Generic play function

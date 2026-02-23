@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <helpers/ESP32Board.h>
 
-class XiaoS3WIOBoard : public ESP32Board {
+class XiaoS3WIOBoard : public ESP32Board
+{
 public:
   XiaoS3WIOBoard() {}
 

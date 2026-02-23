@@ -60,7 +60,8 @@
 #define BLE_RANGES_H__
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #define BLE_SVC_BASE       0x60 /**< Common BLE SVC base. */

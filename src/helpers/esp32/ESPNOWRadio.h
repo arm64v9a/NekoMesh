@@ -2,7 +2,8 @@
 
 #include <Mesh.h>
 
-class ESPNOWRadio : public mesh::Radio {
+class ESPNOWRadio : public mesh::Radio
+{
 protected:
   uint32_t n_recv, n_sent;
 

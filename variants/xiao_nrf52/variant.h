@@ -14,7 +14,8 @@
 #include "WVariant.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif // __cplusplus
 
 #define PINS_COUNT         (33)
@@ -40,18 +41,18 @@ extern "C" {
 // Buttons
 #define PIN_BUTTON1        (0)
 
-// Digital PINs
-static const uint8_t D0 = 0;
-static const uint8_t D1 = 1;
-static const uint8_t D2 = 2;
-static const uint8_t D3 = 3;
-static const uint8_t D4 = 4;
-static const uint8_t D5 = 5;
-static const uint8_t D6 = 6;
-static const uint8_t D7 = 7;
-static const uint8_t D8 = 8;
-static const uint8_t D9 = 9;
-static const uint8_t D10 = 10;
+  // Digital PINs
+  static const uint8_t D0 = 0;
+  static const uint8_t D1 = 1;
+  static const uint8_t D2 = 2;
+  static const uint8_t D3 = 3;
+  static const uint8_t D4 = 4;
+  static const uint8_t D5 = 5;
+  static const uint8_t D6 = 6;
+  static const uint8_t D7 = 7;
+  static const uint8_t D8 = 8;
+  static const uint8_t D9 = 9;
+  static const uint8_t D10 = 10;
 
 #define VBAT_ENABLE                                        \
   (14) // Output LOW to enable reading of the BAT voltage.
@@ -92,12 +93,12 @@ static const uint8_t D10 = 10;
 // - If VDD ≈ 3.3V:  VBAT ≈ (3.3 * 3/8) * 3 ≈ 3712mV
 #define PWRMGT_LPCOMP_REFSEL    2 // 3/8 VDD (~3.38-3.71V)
 
-static const uint8_t A0 = PIN_A0;
-static const uint8_t A1 = PIN_A1;
-static const uint8_t A2 = PIN_A2;
-static const uint8_t A3 = PIN_A3;
-static const uint8_t A4 = PIN_A4;
-static const uint8_t A5 = PIN_A5;
+  static const uint8_t A0 = PIN_A0;
+  static const uint8_t A1 = PIN_A1;
+  static const uint8_t A2 = PIN_A2;
+  static const uint8_t A3 = PIN_A3;
+  static const uint8_t A4 = PIN_A4;
+  static const uint8_t A5 = PIN_A5;
 
 #define ADC_RESOLUTION         (12)
 

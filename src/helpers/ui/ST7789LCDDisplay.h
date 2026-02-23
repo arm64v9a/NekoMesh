@@ -8,7 +8,8 @@
 #include <Wire.h>
 #include <helpers/RefCountedDigitalPin.h>
 
-class ST7789LCDDisplay : public DisplayDriver {
+class ST7789LCDDisplay : public DisplayDriver
+{
 #if defined(LILYGO_TDECK) || defined(HELTEC_LORA_V4_TFT)
   SPIClass displaySPI;
 #endif
@@ -23,19 +24,22 @@ public:
 #ifdef USE_PIN_TFT
   ST7789LCDDisplay(RefCountedDigitalPin *peripher_power = NULL)
       : DisplayDriver(128, 64), display(PIN_TFT_CS, PIN_TFT_DC, PIN_TFT_SDA, PIN_TFT_SCL, PIN_TFT_RST),
-        _peripher_power(peripher_power) {
+        _peripher_power(peripher_power)
+  {
     _isOn = false;
   }
 #elif defined(LILYGO_TDECK) || defined(HELTEC_LORA_V4_TFT)
   ST7789LCDDisplay(RefCountedDigitalPin *peripher_power = NULL)
       : DisplayDriver(128, 64), displaySPI(HSPI), display(&displaySPI, PIN_TFT_CS, PIN_TFT_DC, PIN_TFT_RST),
-        _peripher_power(peripher_power) {
+        _peripher_power(peripher_power)
+  {
     _isOn = false;
   }
 #else
   ST7789LCDDisplay(RefCountedDigitalPin *peripher_power = NULL)
       : DisplayDriver(128, 64), display(&SPI, PIN_TFT_CS, PIN_TFT_DC, PIN_TFT_RST),
-        _peripher_power(peripher_power) {
+        _peripher_power(peripher_power)
+  {
     _isOn = false;
   }
 #endif

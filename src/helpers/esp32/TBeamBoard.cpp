@@ -8,11 +8,13 @@
 uint32_t deviceOnline = 0x00;
 
 bool pmuInterrupt;
-static void setPmuFlag() {
+static void setPmuFlag()
+{
   pmuInterrupt = true;
 }
 
-void TBeamBoard::begin() {
+void TBeamBoard::begin()
+{
 
   ESP32Board::begin();
 
@@ -28,9 +30,11 @@ void TBeamBoard::begin() {
   // radiotype_detect();
 
   esp_reset_reason_t reason = esp_reset_reason();
-  if (reason == ESP_RST_DEEPSLEEP) {
+  if (reason == ESP_RST_DEEPSLEEP)
+  {
     long wakeup_source = esp_sleep_get_ext1_wakeup_status();
-    if (wakeup_source & (1 << P_LORA_DIO_1)) { // received a LoRa packet (while in deep sleep)
+    if (wakeup_source & (1 << P_LORA_DIO_1))
+    { // received a LoRa packet (while in deep sleep)
       startup_reason = BD_STARTUP_RX_PACKET;
     }
 
@@ -40,20 +44,24 @@ void TBeamBoard::begin() {
 }
 
 #ifdef MESH_DEBUG
-void TBeamBoard::scanDevices(TwoWire *w) {
+void TBeamBoard::scanDevices(TwoWire *w)
+{
   uint8_t err, addr;
   int nDevices = 0;
   uint32_t start = 0;
 
   Serial.println("Scanning I2C for Devices");
-  for (addr = 1; addr < 127; addr++) {
+  for (addr = 1; addr < 127; addr++)
+  {
     start = millis();
     w->beginTransmission(addr);
     delay(2);
     err = w->endTransmission();
-    if (err == 0) {
+    if (err == 0)
+    {
       nDevices++;
-      switch (addr) {
+      switch (addr)
+      {
       case 0x77:
       case 0x76:
         Serial.println("\tFound BME280 Sensor");
@@ -77,17 +85,20 @@ void TBeamBoard::scanDevices(TwoWire *w) {
         break;
       default:
         Serial.print("\tI2C device found at address 0x");
-        if (addr < 16) {
+        if (addr < 16)
+        {
           Serial.print("0");
         }
         Serial.print(addr, HEX);
         Serial.println(" !");
         break;
       }
-
-    } else if (err == 4) {
+    }
+    else if (err == 4)
+    {
       Serial.print("Unknow error at address 0x");
-      if (addr < 16) {
+      if (addr < 16)
+      {
         Serial.print("0");
       }
       Serial.println(addr, HEX);
@@ -102,7 +113,8 @@ void TBeamBoard::scanDevices(TwoWire *w) {
   Serial.printf(" GPS TX pin: %d", PIN_GPS_TX);
   Serial.println();
 }
-void TBeamBoard::printPMU() {
+void TBeamBoard::printPMU()
+{
   Serial.print("isCharging:");
   Serial.println(PMU->isCharging() ? "YES" : "NO");
   Serial.print("isDischarge:");
@@ -122,7 +134,8 @@ void TBeamBoard::printPMU() {
   // The battery percentage may be inaccurate at first use, the PMU will automatically
   // learn the battery curve and will automatically calibrate the battery percentage
   // after a charge and discharge cycle
-  if (PMU->isBatteryConnect()) {
+  if (PMU->isBatteryConnect())
+  {
     Serial.print("getBatteryPercent:");
     Serial.print(PMU->getBatteryPercent());
     Serial.println("%");
@@ -132,33 +145,43 @@ void TBeamBoard::printPMU() {
 }
 #endif
 
-bool TBeamBoard::power_init() {
-  if (!PMU) {
+bool TBeamBoard::power_init()
+{
+  if (!PMU)
+  {
 #ifdef TBEAM_SUPREME_SX1262
     PMU = new XPowersAXP2101(PMU_WIRE_PORT, PIN_BOARD_SDA1, PIN_BOARD_SCL1, I2C_PMU_ADD);
 #else
     PMU = new XPowersAXP2101(PMU_WIRE_PORT, PIN_BOARD_SDA, PIN_BOARD_SCL, I2C_PMU_ADD);
 #endif
-    if (!PMU->init()) {
+    if (!PMU->init())
+    {
       MESH_DEBUG_PRINTLN("Warning: Failed to find AXP2101 power management");
       delete PMU;
       PMU = NULL;
-    } else {
+    }
+    else
+    {
       MESH_DEBUG_PRINTLN("AXP2101 PMU init succeeded, using AXP2101 PMU");
     }
   }
-  if (!PMU) {
+  if (!PMU)
+  {
     PMU = new XPowersAXP192(PMU_WIRE_PORT, PIN_BOARD_SDA, PIN_BOARD_SCL, I2C_PMU_ADD);
-    if (!PMU->init()) {
+    if (!PMU->init())
+    {
       MESH_DEBUG_PRINTLN("Warning: Failed to find AXP192 power management");
       delete PMU;
       PMU = NULL;
-    } else {
+    }
+    else
+    {
       MESH_DEBUG_PRINTLN("AXP192 PMU init succeeded, using AXP192 PMU");
     }
   }
 
-  if (!PMU) {
+  if (!PMU)
+  {
     return false;
   }
 
@@ -170,7 +193,8 @@ bool TBeamBoard::power_init() {
   pinMode(PIN_PMU_IRQ, INPUT_PULLUP);
   attachInterrupt(PIN_PMU_IRQ, setPmuFlag, FALLING);
 
-  if (PMU->getChipModel() == XPOWERS_AXP192) {
+  if (PMU->getChipModel() == XPOWERS_AXP192)
+  {
 
     PMU->setPowerChannelVoltage(XPOWERS_LDO2, 3300); // Set up LoRa power rail
     PMU->enablePowerOutput(XPOWERS_LDO2);            // Enable the LoRa power rail
@@ -190,7 +214,9 @@ bool TBeamBoard::power_init() {
 
     PMU->setChargerConstantCurr(XPOWERS_AXP192_CHG_CUR_450MA); // Set battery charging current
     PMU->setChargeTargetVoltage(XPOWERS_AXP192_CHG_VOL_4V2);   // Set battery charge-stop voltage
-  } else if (PMU->getChipModel() == XPOWERS_AXP2101) {
+  }
+  else if (PMU->getChipModel() == XPOWERS_AXP2101)
+  {
 #ifdef TBEAM_SUPREME_SX1262
     // Set up the GPS power rail
     PMU->setPowerChannelVoltage(XPOWERS_ALDO4, 3300);
@@ -204,7 +230,8 @@ bool TBeamBoard::power_init() {
     PMU->setPowerChannelVoltage(XPOWERS_DCDC3, 3300);
     PMU->enablePowerOutput(XPOWERS_DCDC3);
 
-    if (ESP_SLEEP_WAKEUP_UNDEFINED == esp_sleep_get_wakeup_cause()) {
+    if (ESP_SLEEP_WAKEUP_UNDEFINED == esp_sleep_get_wakeup_cause())
+    {
       MESH_DEBUG_PRINTLN("Power off and restart ALDO BLDO..");
       PMU->disablePowerOutput(XPOWERS_ALDO1);
       PMU->disablePowerOutput(XPOWERS_ALDO2);

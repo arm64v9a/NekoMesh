@@ -34,13 +34,15 @@ static const uint8_t meshcore_logo[] PROGMEM = {
   0x3c, 0x0e, 0x1f, 0xf8, 0xff, 0xf8, 0x70, 0x3c, 0x7f, 0xf8,
 };
 
-void UITask::begin(DisplayDriver *display, SensorManager *sensors, NodePrefs *node_prefs) {
+void UITask::begin(DisplayDriver *display, SensorManager *sensors, NodePrefs *node_prefs)
+{
   _display = display;
   _sensors = sensors;
   _auto_off = millis() + AUTO_OFF_MILLIS;
   clearMsgPreview();
   _node_prefs = node_prefs;
-  if (_display != NULL) {
+  if (_display != NULL)
+  {
     _display->turnOn();
   }
 
@@ -48,7 +50,8 @@ void UITask::begin(DisplayDriver *display, SensorManager *sensors, NodePrefs *no
   // e.g: v1.2.3-abcdef -> v1.2.3
   char *version = strdup(FIRMWARE_VERSION);
   char *dash = strchr(version, '-');
-  if (dash) {
+  if (dash)
+  {
     *dash = 0;
   }
 
@@ -90,9 +93,11 @@ void UITask::begin(DisplayDriver *display, SensorManager *sensors, NodePrefs *no
   ui_started_at = millis();
 }
 
-void UITask::notify(UIEventType t) {
+void UITask::notify(UIEventType t)
+{
 #if defined(PIN_BUZZER)
-  switch (t) {
+  switch (t)
+  {
   case UIEventType::contactMessage:
     // gemini's pick
     buzzer.play("MsgRcv3:d=4,o=6,b=200:32e,32g,32b,16c7");
@@ -114,41 +119,52 @@ void UITask::notify(UIEventType t) {
   //  Serial.println((int) t);
 }
 
-void UITask::msgRead(int msgcount) {
+void UITask::msgRead(int msgcount)
+{
   _msgcount = msgcount;
-  if (msgcount == 0) {
+  if (msgcount == 0)
+  {
     clearMsgPreview();
   }
 }
 
-void UITask::clearMsgPreview() {
+void UITask::clearMsgPreview()
+{
   _origin[0] = 0;
   _msg[0] = 0;
   _need_refresh = true;
 }
 
-void UITask::newMsg(uint8_t path_len, const char *from_name, const char *text, int msgcount) {
+void UITask::newMsg(uint8_t path_len, const char *from_name, const char *text, int msgcount)
+{
   _msgcount = msgcount;
 
-  if (path_len == 0xFF) {
+  if (path_len == 0xFF)
+  {
     sprintf(_origin, "(F) %s", from_name);
-  } else {
+  }
+  else
+  {
     sprintf(_origin, "(%d) %s", (uint32_t)path_len, from_name);
   }
   StrHelper::strncpy(_msg, text, sizeof(_msg));
 
-  if (_display != NULL) {
-    if (!_display->isOn() && !hasConnection()) {
+  if (_display != NULL)
+  {
+    if (!_display->isOn() && !hasConnection())
+    {
       _display->turnOn();
     }
-    if (_display->isOn()) {
+    if (_display->isOn())
+    {
       _auto_off = millis() + AUTO_OFF_MILLIS; // extend the auto-off timer
       _need_refresh = true;
     }
   }
 }
 
-void UITask::renderBatteryIndicator(uint16_t batteryMilliVolts) {
+void UITask::renderBatteryIndicator(uint16_t batteryMilliVolts)
+{
   // Convert millivolts to percentage
 #ifndef BATT_MIN_MILLIVOLTS
 #define BATT_MIN_MILLIVOLTS 3000
@@ -180,11 +196,13 @@ void UITask::renderBatteryIndicator(uint16_t batteryMilliVolts) {
   _display->fillRect(iconX + 2, iconY + 2, fillWidth, iconHeight - 4);
 }
 
-void UITask::renderCurrScreen() {
+void UITask::renderCurrScreen()
+{
   if (_display == NULL) return; // assert() ??
 
   char tmp[80];
-  if (_alert[0]) {
+  if (_alert[0])
+  {
     _display->setTextSize(1.4);
     uint16_t textWidth = _display->getTextWidth(_alert);
     _display->setCursor((_display->width() - textWidth) / 2, 22);
@@ -193,7 +211,9 @@ void UITask::renderCurrScreen() {
     _alert[0] = 0;
     _need_refresh = true;
     return;
-  } else if (_origin[0] && _msg[0]) { // message preview
+  }
+  else if (_origin[0] && _msg[0])
+  { // message preview
     // render message preview
     _display->setCursor(0, 0);
     _display->setTextSize(1);
@@ -212,8 +232,10 @@ void UITask::renderCurrScreen() {
     _display->setColor(DisplayDriver::ORANGE);
     sprintf(tmp, "%d", _msgcount);
     _display->print(tmp);
-    _display->setColor(DisplayDriver::YELLOW);                  // last color will be kept on T114
-  } else if ((millis() - ui_started_at) < BOOT_SCREEN_MILLIS) { // boot screen
+    _display->setColor(DisplayDriver::YELLOW); // last color will be kept on T114
+  }
+  else if ((millis() - ui_started_at) < BOOT_SCREEN_MILLIS)
+  { // boot screen
     // meshcore logo
     _display->setColor(DisplayDriver::BLUE);
     int logoWidth = 128;
@@ -225,7 +247,9 @@ void UITask::renderCurrScreen() {
     uint16_t textWidth = _display->getTextWidth(_version_info);
     _display->setCursor((_display->width() - textWidth) / 2, 22);
     _display->print(_version_info);
-  } else { // home screen
+  }
+  else
+  { // home screen
     // node name
     _display->setCursor(0, 0);
     _display->setTextSize(1);
@@ -247,37 +271,48 @@ void UITask::renderCurrScreen() {
     _display->print(tmp);
 
     // BT pin
-    if (!_connected && the_mesh.getBLEPin() != 0) {
+    if (!_connected && the_mesh.getBLEPin() != 0)
+    {
       _display->setColor(DisplayDriver::RED);
       _display->setTextSize(2);
       _display->setCursor(0, 43);
       sprintf(tmp, "Pin:%d", the_mesh.getBLEPin());
       _display->print(tmp);
       _display->setColor(DisplayDriver::GREEN);
-    } else {
+    }
+    else
+    {
       _display->setColor(DisplayDriver::LIGHT);
     }
   }
   _need_refresh = false;
 }
 
-void UITask::userLedHandler() {
+void UITask::userLedHandler()
+{
 #ifdef PIN_STATUS_LED
   static int state = 0;
   static int next_change = 0;
   static int last_increment = 0;
 
   int cur_time = millis();
-  if (cur_time > next_change) {
-    if (state == 0) {
+  if (cur_time > next_change)
+  {
+    if (state == 0)
+    {
       state = 1;
-      if (_msgcount > 0) {
+      if (_msgcount > 0)
+      {
         last_increment = LED_ON_MSG_MILLIS;
-      } else {
+      }
+      else
+      {
         last_increment = LED_ON_MILLIS;
       }
       next_change = cur_time + last_increment;
-    } else {
+    }
+    else
+    {
       state = 0;
       next_change = cur_time + LED_CYCLE_MILLIS - last_increment;
     }
@@ -289,7 +324,8 @@ void UITask::userLedHandler() {
 /*
   hardware-agnostic pre-shutdown activity should be done here
 */
-void UITask::shutdown(bool restart) {
+void UITask::shutdown(bool restart)
+{
 
 #ifdef PIN_BUZZER
   /* note: we have a choice here -
@@ -304,22 +340,28 @@ void UITask::shutdown(bool restart) {
 
 #endif // PIN_BUZZER
 
-  if (restart) {
+  if (restart)
+  {
     _board->reboot();
-  } else {
+  }
+  else
+  {
     radio_driver.powerOff();
     _board->powerOff();
   }
 }
 
-void UITask::loop() {
+void UITask::loop()
+{
 #ifdef PIN_USER_BTN
-  if (_userButton) {
+  if (_userButton)
+  {
     _userButton->update();
   }
 #endif
 #ifdef PIN_USER_BTN_ANA
-  if (_userButtonAnalog) {
+  if (_userButtonAnalog)
+  {
     _userButtonAnalog->update();
   }
 #endif
@@ -329,82 +371,105 @@ void UITask::loop() {
   if (buzzer.isPlaying()) buzzer.loop();
 #endif
 
-  if (_display != NULL && _display->isOn()) {
+  if (_display != NULL && _display->isOn())
+  {
     static bool _firstBoot = true;
-    if (_firstBoot && (millis() - ui_started_at) >= BOOT_SCREEN_MILLIS) {
+    if (_firstBoot && (millis() - ui_started_at) >= BOOT_SCREEN_MILLIS)
+    {
       _need_refresh = true;
       _firstBoot = false;
     }
-    if (millis() >= _next_refresh && _need_refresh) {
+    if (millis() >= _next_refresh && _need_refresh)
+    {
       _display->startFrame();
       renderCurrScreen();
       _display->endFrame();
 
       _next_refresh = millis() + 1000; // refresh every second
     }
-    if (millis() > _auto_off) {
+    if (millis() > _auto_off)
+    {
       _display->turnOff();
     }
   }
 }
 
-void UITask::handleButtonAnyPress() {
+void UITask::handleButtonAnyPress()
+{
   MESH_DEBUG_PRINTLN("UITask: any press triggered");
   // called on any button press before other events, to wake up the display quickly
   // do not refresh the display here, as it may block the button handler
-  if (_display != NULL) {
+  if (_display != NULL)
+  {
     _displayWasOn = _display->isOn(); // Track display state before any action
-    if (!_displayWasOn) {
+    if (!_displayWasOn)
+    {
       _display->turnOn();
     }
     _auto_off = millis() + AUTO_OFF_MILLIS; // extend auto-off timer
   }
 }
 
-void UITask::handleButtonShortPress() {
+void UITask::handleButtonShortPress()
+{
   MESH_DEBUG_PRINTLN("UITask: short press triggered");
-  if (_display != NULL) {
+  if (_display != NULL)
+  {
     // Only clear message preview if display was already on before button press
-    if (_displayWasOn) {
+    if (_displayWasOn)
+    {
       // If display was on and showing message preview, clear it
-      if (_origin[0] && _msg[0]) {
+      if (_origin[0] && _msg[0])
+      {
         clearMsgPreview();
-      } else {
+      }
+      else
+      {
         // Otherwise, refresh the display
         _need_refresh = true;
       }
-    } else {
+    }
+    else
+    {
       _need_refresh = true; // display just turned on, so we need to refresh
     }
     // Note: Display turn-on and auto-off timer extension are handled by handleButtonAnyPress
   }
 }
 
-void UITask::handleButtonDoublePress() {
+void UITask::handleButtonDoublePress()
+{
   MESH_DEBUG_PRINTLN("UITask: double press triggered, sending advert");
 // ADVERT
 #ifdef PIN_BUZZER
   notify(UIEventType::ack);
 #endif
-  if (the_mesh.advert()) {
+  if (the_mesh.advert())
+  {
     MESH_DEBUG_PRINTLN("Advert sent!");
     sprintf(_alert, "Advert sent!");
-  } else {
+  }
+  else
+  {
     MESH_DEBUG_PRINTLN("Advert failed!");
     sprintf(_alert, "Advert failed..");
   }
   _need_refresh = true;
 }
 
-void UITask::handleButtonTriplePress() {
+void UITask::handleButtonTriplePress()
+{
   MESH_DEBUG_PRINTLN("UITask: triple press triggered");
 // Toggle buzzer quiet mode
 #ifdef PIN_BUZZER
-  if (buzzer.isQuiet()) {
+  if (buzzer.isQuiet())
+  {
     buzzer.quiet(false);
     notify(UIEventType::ack);
     sprintf(_alert, "Buzzer: ON");
-  } else {
+  }
+  else
+  {
     buzzer.quiet(true);
     sprintf(_alert, "Buzzer: OFF");
   }
@@ -414,18 +479,25 @@ void UITask::handleButtonTriplePress() {
 #endif
 }
 
-void UITask::handleButtonQuadruplePress() {
+void UITask::handleButtonQuadruplePress()
+{
   MESH_DEBUG_PRINTLN("UITask: quad press triggered");
-  if (_sensors != NULL) {
+  if (_sensors != NULL)
+  {
     // toggle GPS onn/off
     int num = _sensors->getNumSettings();
-    for (int i = 0; i < num; i++) {
-      if (strcmp(_sensors->getSettingName(i), "gps") == 0) {
-        if (strcmp(_sensors->getSettingValue(i), "1") == 0) {
+    for (int i = 0; i < num; i++)
+    {
+      if (strcmp(_sensors->getSettingName(i), "gps") == 0)
+      {
+        if (strcmp(_sensors->getSettingValue(i), "1") == 0)
+        {
           _sensors->setSettingValue("gps", "0");
           notify(UIEventType::ack);
           sprintf(_alert, "GPS: Disabled");
-        } else {
+        }
+        else
+        {
           _sensors->setSettingValue("gps", "1");
           notify(UIEventType::ack);
           sprintf(_alert, "GPS: Enabled");
@@ -437,11 +509,15 @@ void UITask::handleButtonQuadruplePress() {
   _need_refresh = true;
 }
 
-void UITask::handleButtonLongPress() {
+void UITask::handleButtonLongPress()
+{
   MESH_DEBUG_PRINTLN("UITask: long press triggered");
-  if (millis() - ui_started_at < 8000) { // long press in first 8 seconds since startup -> CLI/rescue
+  if (millis() - ui_started_at < 8000)
+  { // long press in first 8 seconds since startup -> CLI/rescue
     the_mesh.enterCLIRescue();
-  } else {
+  }
+  else
+  {
     shutdown();
   }
 }

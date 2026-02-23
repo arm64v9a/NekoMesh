@@ -13,7 +13,8 @@
 #define BATTERY_SAMPLES   8
 #define ADC_MULTIPLIER    (VBAT_DIVIDER_COMP * VBAT_MV_PER_LSB)
 
-class RAK11310Board : public mesh::MainBoard {
+class RAK11310Board : public mesh::MainBoard
+{
 protected:
   uint8_t startup_reason;
 
@@ -26,12 +27,14 @@ public:
   void onAfterTransmit() override { digitalWrite(P_LORA_TX_LED, LOW); }
 #endif
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
 #if defined(PIN_VBAT_READ) && defined(ADC_MULTIPLIER)
     analogReadResolution(12);
 
     uint32_t raw = 0;
-    for (int i = 0; i < BATTERY_SAMPLES; i++) {
+    for (int i = 0; i < BATTERY_SAMPLES; i++)
+    {
       raw += analogRead(PIN_VBAT_READ);
     }
     raw = raw / BATTERY_SAMPLES;

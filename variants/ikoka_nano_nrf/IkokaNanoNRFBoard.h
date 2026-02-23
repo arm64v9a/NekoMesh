@@ -6,20 +6,23 @@
 
 #ifdef XIAO_NRF52
 
-class IkokaNanoNRFBoard : public NRF52BoardDCDC {
+class IkokaNanoNRFBoard : public NRF52BoardDCDC
+{
 public:
   IkokaNanoNRFBoard() : NRF52Board("XIAO_NRF52_OTA") {}
   void begin();
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED on
 #if defined(LED_BLUE)
                                       // turn off that annoying blue LED before transmitting
     digitalWrite(LED_BLUE, HIGH);
 #endif
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED off
 #if defined(LED_BLUE)
                                        // do it after transmitting too, just in case
@@ -28,7 +31,8 @@ public:
   }
 #endif
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     // Please read befor going further ;)
     // https://wiki.seeedstudio.com/XIAO_BLE#q3-what-are-the-considerations-when-using-xiao-nrf52840-sense-for-battery-charging
 

@@ -8,7 +8,8 @@
 #define ADVERT_LOC_NONE        0
 #define ADVERT_LOC_SHARE       1
 
-struct NodePrefs { // persisted to file
+struct NodePrefs
+{ // persisted to file
   float airtime_factor;
   char node_name[32];
   float freq;

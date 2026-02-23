@@ -5,7 +5,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void IkokaNrf52Board::begin() {
+void IkokaNrf52Board::begin()
+{
   NRF52Board::begin();
 
 // ensure we have pull ups on the screen i2c, this isn't always available

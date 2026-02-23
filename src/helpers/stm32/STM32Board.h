@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <MeshCore.h>
 
-class STM32Board : public mesh::MainBoard {
+class STM32Board : public mesh::MainBoard
+{
 protected:
   uint8_t startup_reason;
 
@@ -12,7 +13,8 @@ public:
 
   uint8_t getStartupReason() const override { return startup_reason; }
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     return 0; // not supported
   }
 
@@ -20,17 +22,20 @@ public:
 
   void reboot() override { NVIC_SystemReset(); }
 
-  void powerOff() override {
+  void powerOff() override
+  {
     HAL_PWREx_DisableInternalWakeUpLine();
     __disable_irq();
     HAL_PWREx_EnterSHUTDOWNMode();
   }
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED off
   }
 #endif

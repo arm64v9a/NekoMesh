@@ -6,7 +6,8 @@
 
 #include <Wire.h>
 
-void NanoG2Ultra::begin() {
+void NanoG2Ultra::begin()
+{
   NRF52Board::begin();
 
   // set user button
@@ -25,7 +26,8 @@ void NanoG2Ultra::begin() {
   delay(10);
 }
 
-uint16_t NanoG2Ultra::getBattMilliVolts() {
+uint16_t NanoG2Ultra::getBattMilliVolts()
+{
   int adcvalue = 0;
 
   analogReference(AR_INTERNAL_3_0);

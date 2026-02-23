@@ -42,19 +42,20 @@
 #include "stdint.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/** @brief Supervisor call declaration.
- *
- * A call to a function marked with @ref SVCALL, will trigger a Supervisor Call (SVC) Exception.
- * The SVCs with SVC numbers 0x00-0x0F are forwared to the application. All other SVCs are handled by the
- * SoftDevice.
- *
- * @param[in] number      The SVC number to be used.
- * @param[in] return_type The return type of the SVC function.
- * @param[in] signature   Function signature. The function can have at most four arguments.
- */
+  /** @brief Supervisor call declaration.
+   *
+   * A call to a function marked with @ref SVCALL, will trigger a Supervisor Call (SVC) Exception.
+   * The SVCs with SVC numbers 0x00-0x0F are forwared to the application. All other SVCs are handled by the
+   * SoftDevice.
+   *
+   * @param[in] number      The SVC number to be used.
+   * @param[in] return_type The return type of the SVC function.
+   * @param[in] signature   Function signature. The function can have at most four arguments.
+   */
 
 #ifdef SVCALL_AS_NORMAL_FUNCTION
 #define SVCALL(number, return_type, signature) return_type signature
@@ -71,7 +72,8 @@ extern "C" {
 #endif
 #define SVCALL(number, return_type, signature)                                                              \
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wreturn-type\"") __attribute__((naked)) \
-  __attribute__((unused)) static return_type signature {                                                    \
+  __attribute__((unused)) static return_type signature                                                      \
+  {                                                                                                         \
     __asm("svc %0\n"                                                                                        \
           "bx r14"                                                                                          \
           :                                                                                                 \

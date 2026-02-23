@@ -13,7 +13,8 @@
 #define SHUTDOWN_REASON_BOOT_PROTECT 0x42 // 'B' - Boot voltage protection
 
 // Boards provide this struct with their hardware-specific settings and callbacks.
-struct PowerMgtConfig {
+struct PowerMgtConfig
+{
   // LPCOMP wake configuration (for voltage recovery from SYSTEMOFF)
   uint8_t lpcomp_ain_channel; // AIN0-7 for voltage sensing pin
   uint8_t lpcomp_refsel;      // REFSEL value: 0-6=1/8..7/8, 7=ARef, 8-15=1/16..15/16
@@ -24,7 +25,8 @@ struct PowerMgtConfig {
 };
 #endif
 
-class NRF52Board : public mesh::MainBoard {
+class NRF52Board : public mesh::MainBoard
+{
 #ifdef NRF52_POWER_MANAGEMENT
   void initPowerMgr();
 #endif
@@ -70,7 +72,8 @@ public:
  * hardware requirements are met, this subclass can be used to enable the DC/DC
  * regulator.
  */
-class NRF52BoardDCDC : virtual public NRF52Board {
+class NRF52BoardDCDC : virtual public NRF52Board
+{
 public:
   NRF52BoardDCDC() {}
   virtual void begin() override;

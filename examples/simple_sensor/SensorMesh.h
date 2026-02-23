@@ -45,7 +45,8 @@
 #define MAX_SEARCH_RESULTS    8
 #define MAX_CONCURRENT_ALERTS 4
 
-class SensorMesh : public mesh::Mesh, public CommonCLICallbacks {
+class SensorMesh : public mesh::Mesh, public CommonCLICallbacks
+{
 public:
   SensorMesh(mesh::MainBoard &board, mesh::Radio &radio, mesh::MillisecondClock &ms, mesh::RNG &rng,
              mesh::RTCClock &rtc, mesh::MeshTables &tables);
@@ -91,9 +92,14 @@ protected:
   bool getGPS(uint8_t channel, float &lat, float &lon, float &alt);
 
   // alerts
-  enum AlertPriority { LOW_PRI_ALERT, HIGH_PRI_ALERT };
+  enum AlertPriority
+  {
+    LOW_PRI_ALERT,
+    HIGH_PRI_ALERT
+  };
 
-  struct Trigger {
+  struct Trigger
+  {
     uint32_t timestamp;
     AlertPriority pri;
     uint32_t expected_acks[4];

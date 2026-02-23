@@ -7,7 +7,8 @@
 #include <lgfx/v1/platforms/esp32s3/Bus_RGB.hpp>
 #include <lgfx/v1/platforms/esp32s3/Panel_RGB.hpp>
 
-class LGFX : public lgfx::LGFX_Device {
+class LGFX : public lgfx::LGFX_Device
+{
   lgfx::Panel_ST7701 _panel_instance;
   lgfx::Bus_RGB _bus_instance;
   lgfx::Light_PWM _light_instance;
@@ -19,7 +20,8 @@ public:
 
   bool hasButton(void) { return true; }
 
-  LGFX(void) {
+  LGFX(void)
+  {
     {
       auto cfg = _panel_instance.config();
       cfg.memory_width = 480;
@@ -118,7 +120,8 @@ public:
   }
 };
 
-class SCIndicatorDisplay : public LGFXDisplay {
+class SCIndicatorDisplay : public LGFXDisplay
+{
   LGFX disp;
 
 public:

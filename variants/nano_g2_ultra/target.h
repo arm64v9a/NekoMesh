@@ -14,7 +14,8 @@
 #endif
 #include <helpers/sensors/LocationProvider.h>
 
-class NanoG2UltraSensorManager : public SensorManager {
+class NanoG2UltraSensorManager : public SensorManager
+{
   bool gps_active = false;
   LocationProvider *_location;
 

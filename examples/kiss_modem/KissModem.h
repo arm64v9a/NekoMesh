@@ -79,7 +79,8 @@ typedef void (*SetTxPowerCallback)(uint8_t power);
 typedef float (*GetCurrentRssiCallback)();
 typedef void (*GetStatsCallback)(uint32_t *rx, uint32_t *tx, uint32_t *errors);
 
-struct RadioConfig {
+struct RadioConfig
+{
   uint32_t freq_hz;
   uint32_t bw_hz;
   uint8_t sf;
@@ -87,9 +88,17 @@ struct RadioConfig {
   uint8_t tx_power;
 };
 
-enum TxState { TX_IDLE, TX_WAIT_CLEAR, TX_SLOT_WAIT, TX_DELAY, TX_SENDING };
+enum TxState
+{
+  TX_IDLE,
+  TX_WAIT_CLEAR,
+  TX_SLOT_WAIT,
+  TX_DELAY,
+  TX_SENDING
+};
 
-class KissModem {
+class KissModem
+{
   Stream &_serial;
   mesh::LocalIdentity &_identity;
   mesh::RNG &_rng;

@@ -4,7 +4,8 @@
 
 #include <WiFi.h>
 
-class SerialWifiInterface : public BaseSerialInterface {
+class SerialWifiInterface : public BaseSerialInterface
+{
   bool deviceConnected;
   bool _isEnabled;
   unsigned long _last_write;
@@ -13,12 +14,14 @@ class SerialWifiInterface : public BaseSerialInterface {
   WiFiServer server;
   WiFiClient client;
 
-  struct FrameHeader {
+  struct FrameHeader
+  {
     uint8_t type;
     uint16_t length;
   };
 
-  struct Frame {
+  struct Frame
+  {
     uint8_t len;
     uint8_t buf[MAX_FRAME_SIZE];
   };
@@ -31,14 +34,16 @@ class SerialWifiInterface : public BaseSerialInterface {
   int send_queue_len;
   Frame send_queue[FRAME_QUEUE_SIZE];
 
-  void clearBuffers() {
+  void clearBuffers()
+  {
     recv_queue_len = 0;
     send_queue_len = 0;
   }
 
 protected:
 public:
-  SerialWifiInterface() : server(WiFiServer()), client(WiFiClient()) {
+  SerialWifiInterface() : server(WiFiServer()), client(WiFiClient())
+  {
     deviceConnected = false;
     _isEnabled = false;
     _last_write = 0;

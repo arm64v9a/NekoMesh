@@ -12,14 +12,16 @@
 #define REGION_DENY_FLOOD  0x01
 #define REGION_DENY_DIRECT 0x02 // reserved for future
 
-struct RegionEntry {
+struct RegionEntry
+{
   uint16_t id;
   uint16_t parent;
   uint8_t flags;
   char name[31];
 };
 
-class RegionMap {
+class RegionMap
+{
   TransportKeyStore *_store;
   uint16_t next_id, home_id;
   uint16_t num_regions;
@@ -46,7 +48,8 @@ public:
   void setHomeRegion(const RegionEntry *home);
   bool removeRegion(const RegionEntry &region);
   bool clear();
-  void resetFrom(const RegionMap &src) {
+  void resetFrom(const RegionMap &src)
+  {
     num_regions = 0;
     next_id = src.next_id;
   }

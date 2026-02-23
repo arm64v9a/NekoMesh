@@ -24,7 +24,8 @@
 #include "Hash.h"
 #include "elegantWebpage.h"
 
-class AsyncElegantOtaClass {
+class AsyncElegantOtaClass
+{
 
 public:
   void setID(const char *id),

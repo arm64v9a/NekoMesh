@@ -12,7 +12,8 @@
 #include <helpers/ui/ST7789Display.h>
 #endif
 
-class SolarSensorManager : public SensorManager {
+class SolarSensorManager : public SensorManager
+{
   bool gps_active = false;
   bool gps_detected = false;
   LocationProvider *_location;

@@ -18,7 +18,8 @@
  * - Common timestamp formatting for debug logging
  * - Shared packet management and queuing logic
  */
-class BridgeBase : public AbstractBridge {
+class BridgeBase : public AbstractBridge
+{
 public:
   virtual ~BridgeBase() = default;
 
@@ -73,7 +74,9 @@ protected:
    * @param rtc RTCClock for timestamping debug messages
    */
   BridgeBase(NodePrefs *prefs, mesh::PacketManager *mgr, mesh::RTCClock *rtc)
-      : _prefs(prefs), _mgr(mgr), _rtc(rtc) {}
+      : _prefs(prefs), _mgr(mgr), _rtc(rtc)
+  {
+  }
 
   /**
    * @brief Gets formatted date/time string for logging

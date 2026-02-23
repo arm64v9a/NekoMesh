@@ -1,6 +1,7 @@
 #include "HeltecE290Board.h"
 
-void HeltecE290Board::begin() {
+void HeltecE290Board::begin()
+{
   ESP32Board::begin();
 
   pinMode(PIN_ADC_CTRL, OUTPUT);
@@ -9,9 +10,11 @@ void HeltecE290Board::begin() {
   periph_power.begin();
 
   esp_reset_reason_t reason = esp_reset_reason();
-  if (reason == ESP_RST_DEEPSLEEP) {
+  if (reason == ESP_RST_DEEPSLEEP)
+  {
     long wakeup_source = esp_sleep_get_ext1_wakeup_status();
-    if (wakeup_source & (1 << P_LORA_DIO_1)) { // received a LoRa packet (while in deep sleep)
+    if (wakeup_source & (1 << P_LORA_DIO_1))
+    { // received a LoRa packet (while in deep sleep)
       startup_reason = BD_STARTUP_RX_PACKET;
     }
 
@@ -20,7 +23,8 @@ void HeltecE290Board::begin() {
   }
 }
 
-void HeltecE290Board::enterDeepSleep(uint32_t secs, int pin_wake_btn) {
+void HeltecE290Board::enterDeepSleep(uint32_t secs, int pin_wake_btn)
+{
   esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
 
   // Make sure the DIO1 and NSS GPIOs are hold on required levels during deep sleep
@@ -29,15 +33,19 @@ void HeltecE290Board::enterDeepSleep(uint32_t secs, int pin_wake_btn) {
 
   rtc_gpio_hold_en((gpio_num_t)P_LORA_NSS);
 
-  if (pin_wake_btn < 0) {
+  if (pin_wake_btn < 0)
+  {
     esp_sleep_enable_ext1_wakeup((1L << P_LORA_DIO_1),
                                  ESP_EXT1_WAKEUP_ANY_HIGH); // wake up on: recv LoRa packet
-  } else {
+  }
+  else
+  {
     esp_sleep_enable_ext1_wakeup((1L << P_LORA_DIO_1) | (1L << pin_wake_btn),
                                  ESP_EXT1_WAKEUP_ANY_HIGH); // wake up on: recv LoRa packet OR wake btn
   }
 
-  if (secs > 0) {
+  if (secs > 0)
+  {
     esp_sleep_enable_timer_wakeup(secs * 1000000);
   }
 
@@ -45,16 +53,19 @@ void HeltecE290Board::enterDeepSleep(uint32_t secs, int pin_wake_btn) {
   esp_deep_sleep_start(); // CPU halts here and never returns!
 }
 
-void HeltecE290Board::powerOff() {
+void HeltecE290Board::powerOff()
+{
   enterDeepSleep(0);
 }
 
-uint16_t HeltecE290Board::getBattMilliVolts() {
+uint16_t HeltecE290Board::getBattMilliVolts()
+{
   analogReadResolution(10);
   digitalWrite(PIN_ADC_CTRL, HIGH);
 
   uint32_t raw = 0;
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; i++)
+  {
     raw += analogRead(PIN_VBAT_READ);
   }
   raw = raw / 8;
@@ -64,6 +75,7 @@ uint16_t HeltecE290Board::getBattMilliVolts() {
   return (5.42 * (3.3 / 1024.0) * raw) * 1000;
 }
 
-const char *HeltecE290Board::getManufacturerName() const {
+const char *HeltecE290Board::getManufacturerName() const
+{
   return "Heltec E290";
 }

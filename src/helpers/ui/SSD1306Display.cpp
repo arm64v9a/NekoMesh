@@ -3,14 +3,17 @@
 #include "glcdfont6x8.h"
 #endif
 
-bool SSD1306Display::i2c_probe(TwoWire &wire, uint8_t addr) {
+bool SSD1306Display::i2c_probe(TwoWire &wire, uint8_t addr)
+{
   wire.beginTransmission(addr);
   uint8_t error = wire.endTransmission();
   return (error == 0);
 }
 
-bool SSD1306Display::begin() {
-  if (!_isOn) {
+bool SSD1306Display::begin()
+{
+  if (!_isOn)
+  {
     if (_peripher_power) _peripher_power->claim();
     _isOn = true;
   }
@@ -21,8 +24,10 @@ bool SSD1306Display::begin() {
          i2c_probe(Wire, DISPLAY_ADDRESS);
 }
 
-void SSD1306Display::turnOn() {
-  if (!_isOn) {
+void SSD1306Display::turnOn()
+{
+  if (!_isOn)
+  {
     if (_peripher_power) _peripher_power->claim();
     _isOn = true;                 // set before begin() to prevent double claim
     if (_peripher_power) begin(); // re-init display after power was cut
@@ -30,10 +35,13 @@ void SSD1306Display::turnOn() {
   display.ssd1306_command(SSD1306_DISPLAYON);
 }
 
-void SSD1306Display::turnOff() {
+void SSD1306Display::turnOff()
+{
   display.ssd1306_command(SSD1306_DISPLAYOFF);
-  if (_isOn) {
-    if (_peripher_power) {
+  if (_isOn)
+  {
+    if (_peripher_power)
+    {
 #if PIN_OLED_RESET >= 0
       digitalWrite(PIN_OLED_RESET, LOW);
 #endif
@@ -43,12 +51,14 @@ void SSD1306Display::turnOff() {
   }
 }
 
-void SSD1306Display::clear() {
+void SSD1306Display::clear()
+{
   display.clearDisplay();
   display.display();
 }
 
-void SSD1306Display::startFrame(Color bkg) {
+void SSD1306Display::startFrame(Color bkg)
+{
   display.clearDisplay(); // TODO: apply 'bkg'
   _color = SSD1306_WHITE;
 #ifdef OLED_RU
@@ -62,19 +72,22 @@ void SSD1306Display::startFrame(Color bkg) {
 #endif
 }
 
-void SSD1306Display::setTextSize(int sz) {
+void SSD1306Display::setTextSize(int sz)
+{
   display.setTextSize(sz);
 #ifdef OLED_RU
   _size = sz;
 #endif
 }
 
-void SSD1306Display::setColor(Color c) {
+void SSD1306Display::setColor(Color c)
+{
   _color = (c != 0) ? SSD1306_WHITE : SSD1306_BLACK;
   display.setTextColor(_color);
 }
 
-void SSD1306Display::setCursor(int x, int y) {
+void SSD1306Display::setCursor(int x, int y)
+{
 #ifdef OLED_RU
   display.setCursor(x, y + (_size * 7));
 #else
@@ -82,29 +95,35 @@ void SSD1306Display::setCursor(int x, int y) {
 #endif
 }
 
-void SSD1306Display::print(const char *str) {
+void SSD1306Display::print(const char *str)
+{
   display.print(str);
 }
 
-void SSD1306Display::fillRect(int x, int y, int w, int h) {
+void SSD1306Display::fillRect(int x, int y, int w, int h)
+{
   display.fillRect(x, y, w, h, _color);
 }
 
-void SSD1306Display::drawRect(int x, int y, int w, int h) {
+void SSD1306Display::drawRect(int x, int y, int w, int h)
+{
   display.drawRect(x, y, w, h, _color);
 }
 
-void SSD1306Display::drawXbm(int x, int y, const uint8_t *bits, int w, int h) {
+void SSD1306Display::drawXbm(int x, int y, const uint8_t *bits, int w, int h)
+{
   display.drawBitmap(x, y, bits, w, h, SSD1306_WHITE);
 }
 
-uint16_t SSD1306Display::getTextWidth(const char *str) {
+uint16_t SSD1306Display::getTextWidth(const char *str)
+{
   int16_t x1, y1;
   uint16_t w, h;
   display.getTextBounds(str, 0, 0, &x1, &y1, &w, &h);
   return w;
 }
 
-void SSD1306Display::endFrame() {
+void SSD1306Display::endFrame()
+{
   display.display();
 }

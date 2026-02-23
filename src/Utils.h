@@ -4,9 +4,11 @@
 #include <Stream.h>
 #include <string.h>
 
-namespace mesh {
+namespace mesh
+{
 
-class RNG {
+class RNG
+{
 public:
   virtual void random(uint8_t *dest, size_t sz) = 0;
 
@@ -16,7 +18,8 @@ public:
   uint32_t nextInt(uint32_t _min, uint32_t _max);
 };
 
-class Utils {
+class Utils
+{
 public:
   /**
    * \brief  calculates the SHA256 hash of 'msg', storing in 'hash' and truncating the hash to 'hash_len'

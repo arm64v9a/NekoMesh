@@ -5,7 +5,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void WioWM1110Board::begin() {
+void WioWM1110Board::begin()
+{
   NRF52BoardDCDC::begin();
 
   pinMode(BATTERY_PIN, INPUT);

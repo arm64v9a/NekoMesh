@@ -22,7 +22,8 @@
 #include "../AbstractUITask.h"
 #include "../NodePrefs.h"
 
-class UITask : public AbstractUITask {
+class UITask : public AbstractUITask
+{
   DisplayDriver *_display;
   SensorManager *_sensors;
 #ifdef PIN_BUZZER
@@ -66,7 +67,8 @@ class UITask : public AbstractUITask {
 
 public:
   UITask(mesh::MainBoard *board, BaseSerialInterface *serial)
-      : AbstractUITask(board, serial), _display(NULL), _sensors(NULL) {
+      : AbstractUITask(board, serial), _display(NULL), _sensors(NULL)
+  {
     next_batt_chck = _next_refresh = 0;
     ui_started_at = 0;
     curr = NULL;
@@ -81,7 +83,8 @@ public:
   bool hasDisplay() const { return _display != NULL; }
   bool isButtonPressed() const;
 
-  bool isBuzzerQuiet() {
+  bool isBuzzerQuiet()
+  {
 #ifdef PIN_BUZZER
     return buzzer.isQuiet();
 #else

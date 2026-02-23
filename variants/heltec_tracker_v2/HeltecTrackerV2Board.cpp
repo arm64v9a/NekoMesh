@@ -1,6 +1,7 @@
 #include "HeltecTrackerV2Board.h"
 
-void HeltecTrackerV2Board::begin() {
+void HeltecTrackerV2Board::begin()
+{
   ESP32Board::begin();
 
   pinMode(PIN_ADC_CTRL, OUTPUT);
@@ -18,9 +19,11 @@ void HeltecTrackerV2Board::begin() {
   periph_power.begin();
 
   esp_reset_reason_t reason = esp_reset_reason();
-  if (reason == ESP_RST_DEEPSLEEP) {
+  if (reason == ESP_RST_DEEPSLEEP)
+  {
     long wakeup_source = esp_sleep_get_ext1_wakeup_status();
-    if (wakeup_source & (1 << P_LORA_DIO_1)) { // received a LoRa packet (while in deep sleep)
+    if (wakeup_source & (1 << P_LORA_DIO_1))
+    { // received a LoRa packet (while in deep sleep)
       startup_reason = BD_STARTUP_RX_PACKET;
     }
 
@@ -29,17 +32,20 @@ void HeltecTrackerV2Board::begin() {
   }
 }
 
-void HeltecTrackerV2Board::onBeforeTransmit(void) {
+void HeltecTrackerV2Board::onBeforeTransmit(void)
+{
   digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED on
   digitalWrite(P_LORA_PA_TX_EN, HIGH);
 }
 
-void HeltecTrackerV2Board::onAfterTransmit(void) {
+void HeltecTrackerV2Board::onAfterTransmit(void)
+{
   digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED off
   digitalWrite(P_LORA_PA_TX_EN, LOW);
 }
 
-void HeltecTrackerV2Board::enterDeepSleep(uint32_t secs, int pin_wake_btn) {
+void HeltecTrackerV2Board::enterDeepSleep(uint32_t secs, int pin_wake_btn)
+{
   esp_sleep_pd_config(ESP_PD_DOMAIN_RTC_PERIPH, ESP_PD_OPTION_ON);
 
   // Make sure the DIO1 and NSS GPIOs are hold on required levels during deep sleep
@@ -50,15 +56,19 @@ void HeltecTrackerV2Board::enterDeepSleep(uint32_t secs, int pin_wake_btn) {
 
   rtc_gpio_hold_en((gpio_num_t)P_LORA_PA_EN); // It also needs to be enabled in receive mode
 
-  if (pin_wake_btn < 0) {
+  if (pin_wake_btn < 0)
+  {
     esp_sleep_enable_ext1_wakeup((1L << P_LORA_DIO_1),
                                  ESP_EXT1_WAKEUP_ANY_HIGH); // wake up on: recv LoRa packet
-  } else {
+  }
+  else
+  {
     esp_sleep_enable_ext1_wakeup((1L << P_LORA_DIO_1) | (1L << pin_wake_btn),
                                  ESP_EXT1_WAKEUP_ANY_HIGH); // wake up on: recv LoRa packet OR wake btn
   }
 
-  if (secs > 0) {
+  if (secs > 0)
+  {
     esp_sleep_enable_timer_wakeup(secs * 1000000);
   }
 
@@ -66,16 +76,19 @@ void HeltecTrackerV2Board::enterDeepSleep(uint32_t secs, int pin_wake_btn) {
   esp_deep_sleep_start(); // CPU halts here and never returns!
 }
 
-void HeltecTrackerV2Board::powerOff() {
+void HeltecTrackerV2Board::powerOff()
+{
   enterDeepSleep(0);
 }
 
-uint16_t HeltecTrackerV2Board::getBattMilliVolts() {
+uint16_t HeltecTrackerV2Board::getBattMilliVolts()
+{
   analogReadResolution(10);
   digitalWrite(PIN_ADC_CTRL, HIGH);
   delay(10);
   uint32_t raw = 0;
-  for (int i = 0; i < 8; i++) {
+  for (int i = 0; i < 8; i++)
+  {
     raw += analogRead(PIN_VBAT_READ);
   }
   raw = raw / 8;
@@ -85,6 +98,7 @@ uint16_t HeltecTrackerV2Board::getBattMilliVolts() {
   return (5.42 * (3.3 / 1024.0) * raw) * 1000;
 }
 
-const char *HeltecTrackerV2Board::getManufacturerName() const {
+const char *HeltecTrackerV2Board::getManufacturerName() const
+{
   return "Heltec Tracker V2";
 }

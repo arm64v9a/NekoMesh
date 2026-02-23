@@ -81,13 +81,15 @@
 
 #define MAX_POST_TEXT_LEN (160 - 9)
 
-struct PostInfo {
+struct PostInfo
+{
   mesh::Identity author;
   uint32_t post_timestamp; // by OUR clock
   char text[MAX_POST_TEXT_LEN + 1];
 };
 
-class MyMesh : public mesh::Mesh, public CommonCLICallbacks {
+class MyMesh : public mesh::Mesh, public CommonCLICallbacks
+{
   FILESYSTEM *_fs;
   uint32_t last_millis;
   uint64_t uptime_millis;
@@ -133,7 +135,8 @@ protected:
   uint32_t getDirectRetransmitDelay(const mesh::Packet *packet) override;
 
   int getInterferenceThreshold() const override { return _prefs.interference_threshold; }
-  int getAGCResetInterval() const override {
+  int getAGCResetInterval() const override
+  {
     return ((int)_prefs.agc_reset_interval) * 4000; // milliseconds
   }
   uint8_t getExtraAckTransmitCount() const override { return _prefs.multi_acks; }

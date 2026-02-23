@@ -34,7 +34,8 @@ DataStore::DataStore(FILESYSTEM &fs, FILESYSTEM &fsExtra, mesh::RTCClock &clock)
 }
 #endif
 
-static File openWrite(FILESYSTEM *fs, const char *filename) {
+static File openWrite(FILESYSTEM *fs, const char *filename)
+{
 #if defined(NRF52_PLATFORM) || defined(STM32_PLATFORM)
   fs->remove(filename);
   return fs->open(filename, FILE_O_WRITE);
@@ -49,7 +50,8 @@ static File openWrite(FILESYSTEM *fs, const char *filename) {
 static uint32_t _ContactsChannelsTotalBlocks = 0;
 #endif
 
-void DataStore::begin() {
+void DataStore::begin()
+{
 #if defined(RP2040_PLATFORM)
   identity_store.begin();
 #endif
@@ -82,8 +84,10 @@ void DataStore::begin() {
 #endif
 
 #if defined(NRF52_PLATFORM) || defined(STM32_PLATFORM)
-int _countLfsBlock(void *p, lfs_block_t block) {
-  if (block > _ContactsChannelsTotalBlocks) {
+int _countLfsBlock(void *p, lfs_block_t block)
+{
+  if (block > _ContactsChannelsTotalBlocks)
+  {
     MESH_DEBUG_PRINTLN("ERROR: Block %d exceeds filesystem bounds - CORRUPTION DETECTED!", block);
     return LFS_ERR_CORRUPT; // return error to abort lfs_traverse() gracefully
   }
@@ -92,10 +96,12 @@ int _countLfsBlock(void *p, lfs_block_t block) {
   return 0;
 }
 
-lfs_ssize_t _getLfsUsedBlockCount(FILESYSTEM *fs) {
+lfs_ssize_t _getLfsUsedBlockCount(FILESYSTEM *fs)
+{
   lfs_size_t size = 0;
   int err = lfs_traverse(fs->_getFS(), _countLfsBlock, &size);
-  if (err) {
+  if (err)
+  {
     MESH_DEBUG_PRINTLN("ERROR: lfs_traverse() error: %d", err);
     return 0;
   }
@@ -103,7 +109,8 @@ lfs_ssize_t _getLfsUsedBlockCount(FILESYSTEM *fs) {
 }
 #endif
 
-uint32_t DataStore::getStorageUsedKb() const {
+uint32_t DataStore::getStorageUsedKb() const
+{
 #if defined(ESP32)
   return SPIFFS.usedBytes() / 1024;
 #elif defined(RP2040_PLATFORM)
@@ -121,7 +128,8 @@ uint32_t DataStore::getStorageUsedKb() const {
 #endif
 }
 
-uint32_t DataStore::getStorageTotalKb() const {
+uint32_t DataStore::getStorageTotalKb() const
+{
 #if defined(ESP32)
   return SPIFFS.totalBytes() / 1024;
 #elif defined(RP2040_PLATFORM)
@@ -138,7 +146,8 @@ uint32_t DataStore::getStorageTotalKb() const {
 #endif
 }
 
-File DataStore::openRead(const char *filename) {
+File DataStore::openRead(const char *filename)
+{
 #if defined(NRF52_PLATFORM) || defined(STM32_PLATFORM)
   return _fs->open(filename, FILE_O_READ);
 #elif defined(RP2040_PLATFORM)
@@ -148,7 +157,8 @@ File DataStore::openRead(const char *filename) {
 #endif
 }
 
-File DataStore::openRead(FILESYSTEM *fs, const char *filename) {
+File DataStore::openRead(FILESYSTEM *fs, const char *filename)
+{
 #if defined(NRF52_PLATFORM) || defined(STM32_PLATFORM)
   return fs->open(filename, FILE_O_READ);
 #elif defined(RP2040_PLATFORM)
@@ -158,19 +168,25 @@ File DataStore::openRead(FILESYSTEM *fs, const char *filename) {
 #endif
 }
 
-bool DataStore::removeFile(const char *filename) {
+bool DataStore::removeFile(const char *filename)
+{
   return _fs->remove(filename);
 }
 
-bool DataStore::removeFile(FILESYSTEM *fs, const char *filename) {
+bool DataStore::removeFile(FILESYSTEM *fs, const char *filename)
+{
   return fs->remove(filename);
 }
 
-bool DataStore::formatFileSystem() {
+bool DataStore::formatFileSystem()
+{
 #if defined(NRF52_PLATFORM) || defined(STM32_PLATFORM)
-  if (_fsExtra == nullptr) {
+  if (_fsExtra == nullptr)
+  {
     return _fs->format();
-  } else {
+  }
+  else
+  {
     return _fs->format() && _fsExtra->format();
   }
 #elif defined(RP2040_PLATFORM)
@@ -184,27 +200,35 @@ bool DataStore::formatFileSystem() {
 #endif
 }
 
-bool DataStore::loadMainIdentity(mesh::LocalIdentity &identity) {
+bool DataStore::loadMainIdentity(mesh::LocalIdentity &identity)
+{
   return identity_store.load("_main", identity);
 }
 
-bool DataStore::saveMainIdentity(const mesh::LocalIdentity &identity) {
+bool DataStore::saveMainIdentity(const mesh::LocalIdentity &identity)
+{
   return identity_store.save("_main", identity);
 }
 
-void DataStore::loadPrefs(NodePrefs &prefs, double &node_lat, double &node_lon) {
-  if (_fs->exists("/new_prefs")) {
+void DataStore::loadPrefs(NodePrefs &prefs, double &node_lat, double &node_lon)
+{
+  if (_fs->exists("/new_prefs"))
+  {
     loadPrefsInt("/new_prefs", prefs, node_lat, node_lon); // new filename
-  } else if (_fs->exists("/node_prefs")) {
+  }
+  else if (_fs->exists("/node_prefs"))
+  {
     loadPrefsInt("/node_prefs", prefs, node_lat, node_lon);
     savePrefs(prefs, node_lat, node_lon); // save to new filename
     _fs->remove("/node_prefs");           // remove old
   }
 }
 
-void DataStore::loadPrefsInt(const char *filename, NodePrefs &_prefs, double &node_lat, double &node_lon) {
+void DataStore::loadPrefsInt(const char *filename, NodePrefs &_prefs, double &node_lat, double &node_lon)
+{
   File file = openRead(_fs, filename);
-  if (file) {
+  if (file)
+  {
     uint8_t pad[8];
 
     file.read((uint8_t *)&_prefs.airtime_factor, sizeof(float));                           // 0
@@ -236,9 +260,11 @@ void DataStore::loadPrefsInt(const char *filename, NodePrefs &_prefs, double &no
   }
 }
 
-void DataStore::savePrefs(const NodePrefs &_prefs, double node_lat, double node_lon) {
+void DataStore::savePrefs(const NodePrefs &_prefs, double node_lat, double node_lon)
+{
   File file = openWrite(_fs, "/new_prefs");
-  if (file) {
+  if (file)
+  {
     uint8_t pad[8];
     memset(pad, 0, sizeof(pad));
 
@@ -271,11 +297,14 @@ void DataStore::savePrefs(const NodePrefs &_prefs, double node_lat, double node_
   }
 }
 
-void DataStore::loadContacts(DataStoreHost *host) {
+void DataStore::loadContacts(DataStoreHost *host)
+{
   File file = openRead(_getContactsChannelsFS(), "/contacts3");
-  if (file) {
+  if (file)
+  {
     bool full = false;
-    while (!full) {
+    while (!full)
+    {
       ContactInfo c;
       uint8_t pub_key[32];
       uint8_t unused;
@@ -302,14 +331,17 @@ void DataStore::loadContacts(DataStoreHost *host) {
   }
 }
 
-void DataStore::saveContacts(DataStoreHost *host) {
+void DataStore::saveContacts(DataStoreHost *host)
+{
   File file = openWrite(_getContactsChannelsFS(), "/contacts3");
-  if (file) {
+  if (file)
+  {
     uint32_t idx = 0;
     ContactInfo c;
     uint8_t unused = 0;
 
-    while (host->getContactForSave(idx, c)) {
+    while (host->getContactForSave(idx, c))
+    {
       bool success = (file.write(c.id.pub_key, 32) == 32);
       success = success && (file.write((uint8_t *)&c.name, 32) == 32);
       success = success && (file.write(&c.type, 1) == 1);
@@ -331,12 +363,15 @@ void DataStore::saveContacts(DataStoreHost *host) {
   }
 }
 
-void DataStore::loadChannels(DataStoreHost *host) {
+void DataStore::loadChannels(DataStoreHost *host)
+{
   File file = openRead(_getContactsChannelsFS(), "/channels2");
-  if (file) {
+  if (file)
+  {
     bool full = false;
     uint8_t channel_idx = 0;
-    while (!full) {
+    while (!full)
+    {
       ChannelDetails ch;
       uint8_t unused[4];
 
@@ -346,9 +381,12 @@ void DataStore::loadChannels(DataStoreHost *host) {
 
       if (!success) break; // EOF
 
-      if (host->onChannelLoaded(channel_idx, ch)) {
+      if (host->onChannelLoaded(channel_idx, ch))
+      {
         channel_idx++;
-      } else {
+      }
+      else
+      {
         full = true;
       }
     }
@@ -356,15 +394,18 @@ void DataStore::loadChannels(DataStoreHost *host) {
   }
 }
 
-void DataStore::saveChannels(DataStoreHost *host) {
+void DataStore::saveChannels(DataStoreHost *host)
+{
   File file = openWrite(_getContactsChannelsFS(), "/channels2");
-  if (file) {
+  if (file)
+  {
     uint8_t channel_idx = 0;
     ChannelDetails ch;
     uint8_t unused[4];
     memset(unused, 0, 4);
 
-    while (host->getChannelForSave(channel_idx, ch)) {
+    while (host->getChannelForSave(channel_idx, ch))
+    {
       bool success = (file.write(unused, 4) == 4);
       success = success && (file.write((uint8_t *)ch.name, 32) == 32);
       success = success && (file.write((uint8_t *)ch.channel.secret, 32) == 32);
@@ -380,20 +421,25 @@ void DataStore::saveChannels(DataStoreHost *host) {
 
 #define MAX_ADVERT_PKT_LEN (2 + 32 + PUB_KEY_SIZE + 4 + SIGNATURE_SIZE + MAX_ADVERT_DATA_SIZE)
 
-struct BlobRec {
+struct BlobRec
+{
   uint32_t timestamp;
   uint8_t key[7];
   uint8_t len;
   uint8_t data[MAX_ADVERT_PKT_LEN];
 };
 
-void DataStore::checkAdvBlobFile() {
-  if (!_getContactsChannelsFS()->exists("/adv_blobs")) {
+void DataStore::checkAdvBlobFile()
+{
+  if (!_getContactsChannelsFS()->exists("/adv_blobs"))
+  {
     File file = openWrite(_getContactsChannelsFS(), "/adv_blobs");
-    if (file) {
+    if (file)
+    {
       BlobRec zeroes;
       memset(&zeroes, 0, sizeof(zeroes));
-      for (int i = 0; i < MAX_BLOBRECS; i++) { // pre-allocate to fixed size
+      for (int i = 0; i < MAX_BLOBRECS; i++)
+      { // pre-allocate to fixed size
         file.write((uint8_t *)&zeroes, sizeof(zeroes));
       }
       file.close();
@@ -401,19 +447,24 @@ void DataStore::checkAdvBlobFile() {
   }
 }
 
-void DataStore::migrateToSecondaryFS() {
+void DataStore::migrateToSecondaryFS()
+{
   // migrate old adv_blobs, contacts3 and channels2 files to secondary FS if they don't already exist
-  if (!_fsExtra->exists("/adv_blobs")) {
-    if (_fs->exists("/adv_blobs")) {
+  if (!_fsExtra->exists("/adv_blobs"))
+  {
+    if (_fs->exists("/adv_blobs"))
+    {
       File oldAdvBlobs = openRead(_fs, "/adv_blobs");
       File newAdvBlobs = openWrite(_fsExtra, "/adv_blobs");
 
-      if (oldAdvBlobs && newAdvBlobs) {
+      if (oldAdvBlobs && newAdvBlobs)
+      {
         BlobRec rec;
         size_t count = 0;
 
         // Copy 20 BlobRecs from old to new
-        while (count < 20 && oldAdvBlobs.read((uint8_t *)&rec, sizeof(rec)) == sizeof(rec)) {
+        while (count < 20 && oldAdvBlobs.read((uint8_t *)&rec, sizeof(rec)) == sizeof(rec))
+        {
           newAdvBlobs.seek(count * sizeof(BlobRec));
           newAdvBlobs.write((uint8_t *)&rec, sizeof(rec));
           count++;
@@ -424,15 +475,19 @@ void DataStore::migrateToSecondaryFS() {
       _fs->remove("/adv_blobs");
     }
   }
-  if (!_fsExtra->exists("/contacts3")) {
-    if (_fs->exists("/contacts3")) {
+  if (!_fsExtra->exists("/contacts3"))
+  {
+    if (_fs->exists("/contacts3"))
+    {
       File oldFile = openRead(_fs, "/contacts3");
       File newFile = openWrite(_fsExtra, "/contacts3");
 
-      if (oldFile && newFile) {
+      if (oldFile && newFile)
+      {
         uint8_t buf[64];
         int n;
-        while ((n = oldFile.read(buf, sizeof(buf))) > 0) {
+        while ((n = oldFile.read(buf, sizeof(buf))) > 0)
+        {
           newFile.write(buf, n);
         }
       }
@@ -441,15 +496,19 @@ void DataStore::migrateToSecondaryFS() {
       _fs->remove("/contacts3");
     }
   }
-  if (!_fsExtra->exists("/channels2")) {
-    if (_fs->exists("/channels2")) {
+  if (!_fsExtra->exists("/channels2"))
+  {
+    if (_fs->exists("/channels2"))
+    {
       File oldFile = openRead(_fs, "/channels2");
       File newFile = openWrite(_fsExtra, "/channels2");
 
-      if (oldFile && newFile) {
+      if (oldFile && newFile)
+      {
         uint8_t buf[64];
         int n;
-        while ((n = oldFile.read(buf, sizeof(buf))) > 0) {
+        while ((n = oldFile.read(buf, sizeof(buf))) > 0)
+        {
           newFile.write(buf, n);
         }
       }
@@ -459,17 +518,21 @@ void DataStore::migrateToSecondaryFS() {
     }
   }
   // cleanup nodes which have been testing the extra fs, copy _main.id and new_prefs back to primary
-  if (_fsExtra->exists("/_main.id")) {
-    if (_fs->exists("/_main.id")) {
+  if (_fsExtra->exists("/_main.id"))
+  {
+    if (_fs->exists("/_main.id"))
+    {
       _fs->remove("/_main.id");
     }
     File oldFile = openRead(_fsExtra, "/_main.id");
     File newFile = openWrite(_fs, "/_main.id");
 
-    if (oldFile && newFile) {
+    if (oldFile && newFile)
+    {
       uint8_t buf[64];
       int n;
-      while ((n = oldFile.read(buf, sizeof(buf))) > 0) {
+      while ((n = oldFile.read(buf, sizeof(buf))) > 0)
+      {
         newFile.write(buf, n);
       }
     }
@@ -477,17 +540,21 @@ void DataStore::migrateToSecondaryFS() {
     if (newFile) newFile.close();
     _fsExtra->remove("/_main.id");
   }
-  if (_fsExtra->exists("/new_prefs")) {
-    if (_fs->exists("/new_prefs")) {
+  if (_fsExtra->exists("/new_prefs"))
+  {
+    if (_fs->exists("/new_prefs"))
+    {
       _fs->remove("/new_prefs");
     }
     File oldFile = openRead(_fsExtra, "/new_prefs");
     File newFile = openWrite(_fs, "/new_prefs");
 
-    if (oldFile && newFile) {
+    if (oldFile && newFile)
+    {
       uint8_t buf[64];
       int n;
-      while ((n = oldFile.read(buf, sizeof(buf))) > 0) {
+      while ((n = oldFile.read(buf, sizeof(buf))) > 0)
+      {
         newFile.write(buf, n);
       }
     }
@@ -496,30 +563,39 @@ void DataStore::migrateToSecondaryFS() {
     _fsExtra->remove("/new_prefs");
   }
   // remove files from where they should not be anymore
-  if (_fs->exists("/adv_blobs")) {
+  if (_fs->exists("/adv_blobs"))
+  {
     _fs->remove("/adv_blobs");
   }
-  if (_fs->exists("/contacts3")) {
+  if (_fs->exists("/contacts3"))
+  {
     _fs->remove("/contacts3");
   }
-  if (_fs->exists("/channels2")) {
+  if (_fs->exists("/channels2"))
+  {
     _fs->remove("/channels2");
   }
-  if (_fsExtra->exists("/_main.id")) {
+  if (_fsExtra->exists("/_main.id"))
+  {
     _fsExtra->remove("/_main.id");
   }
-  if (_fsExtra->exists("/new_prefs")) {
+  if (_fsExtra->exists("/new_prefs"))
+  {
     _fsExtra->remove("/new_prefs");
   }
 }
 
-uint8_t DataStore::getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_buf[]) {
+uint8_t DataStore::getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_buf[])
+{
   File file = openRead(_getContactsChannelsFS(), "/adv_blobs");
   uint8_t len = 0; // 0 = not found
-  if (file) {
+  if (file)
+  {
     BlobRec tmp;
-    while (file.read((uint8_t *)&tmp, sizeof(tmp)) == sizeof(tmp)) {
-      if (memcmp(key, tmp.key, sizeof(tmp.key)) == 0) { // only match by 7 byte prefix
+    while (file.read((uint8_t *)&tmp, sizeof(tmp)) == sizeof(tmp))
+    {
+      if (memcmp(key, tmp.key, sizeof(tmp.key)) == 0)
+      { // only match by 7 byte prefix
         len = tmp.len;
         memcpy(dest_buf, tmp.data, len);
         break;
@@ -530,23 +606,28 @@ uint8_t DataStore::getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_b
   return len;
 }
 
-bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], uint8_t len) {
+bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], uint8_t len)
+{
   if (len < PUB_KEY_SIZE + 4 + SIGNATURE_SIZE || len > MAX_ADVERT_PKT_LEN) return false;
   checkAdvBlobFile();
   File file = _getContactsChannelsFS()->open("/adv_blobs", FILE_O_WRITE);
-  if (file) {
+  if (file)
+  {
     uint32_t pos = 0, found_pos = 0;
     uint32_t min_timestamp = 0xFFFFFFFF;
 
     // search for matching key OR evict by oldest timestmap
     BlobRec tmp;
     file.seek(0);
-    while (file.read((uint8_t *)&tmp, sizeof(tmp)) == sizeof(tmp)) {
-      if (memcmp(key, tmp.key, sizeof(tmp.key)) == 0) { // only match by 7 byte prefix
+    while (file.read((uint8_t *)&tmp, sizeof(tmp)) == sizeof(tmp))
+    {
+      if (memcmp(key, tmp.key, sizeof(tmp.key)) == 0)
+      { // only match by 7 byte prefix
         found_pos = pos;
         break;
       }
-      if (tmp.timestamp < min_timestamp) {
+      if (tmp.timestamp < min_timestamp)
+      {
         min_timestamp = tmp.timestamp;
         found_pos = pos;
       }
@@ -567,24 +648,29 @@ bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src
   }
   return false; // error
 }
-bool DataStore::deleteBlobByKey(const uint8_t key[], int key_len) {
+bool DataStore::deleteBlobByKey(const uint8_t key[], int key_len)
+{
   return true; // this is just a stub on NRF52/STM32 platforms
 }
 #else
-inline void makeBlobPath(const uint8_t key[], int key_len, char *path, size_t path_size) {
+inline void makeBlobPath(const uint8_t key[], int key_len, char *path, size_t path_size)
+{
   char fname[18];
   if (key_len > 8) key_len = 8; // just use first 8 bytes (prefix)
   mesh::Utils::toHex(fname, key, key_len);
   sprintf(path, "/bl/%s", fname);
 }
 
-uint8_t DataStore::getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_buf[]) {
+uint8_t DataStore::getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_buf[])
+{
   char path[64];
   makeBlobPath(key, key_len, path, sizeof(path));
 
-  if (_fs->exists(path)) {
+  if (_fs->exists(path))
+  {
     File f = openRead(_fs, path);
-    if (f) {
+    if (f)
+    {
       int len = f.read(dest_buf, 255); // currently MAX 255 byte blob len supported!!
       f.close();
       return len;
@@ -593,12 +679,14 @@ uint8_t DataStore::getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_b
   return 0; // not found
 }
 
-bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], uint8_t len) {
+bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], uint8_t len)
+{
   char path[64];
   makeBlobPath(key, key_len, path, sizeof(path));
 
   File f = openWrite(_fs, path);
-  if (f) {
+  if (f)
+  {
     int n = f.write(src_buf, len);
     f.close();
     if (n == len) return true; // success!
@@ -608,7 +696,8 @@ bool DataStore::putBlobByKey(const uint8_t key[], int key_len, const uint8_t src
   return false; // error
 }
 
-bool DataStore::deleteBlobByKey(const uint8_t key[], int key_len) {
+bool DataStore::deleteBlobByKey(const uint8_t key[], int key_len)
+{
   char path[64];
   makeBlobPath(key, key_len, path, sizeof(path));
 

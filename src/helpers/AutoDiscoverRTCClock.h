@@ -4,7 +4,8 @@
 #include <Mesh.h>
 #include <Wire.h>
 
-class AutoDiscoverRTCClock : public mesh::RTCClock {
+class AutoDiscoverRTCClock : public mesh::RTCClock
+{
   mesh::RTCClock *_fallback;
 
   bool i2c_probe(TwoWire &wire, uint8_t addr);
@@ -16,7 +17,8 @@ public:
   uint32_t getCurrentTime() override;
   void setCurrentTime(uint32_t time) override;
 
-  void tick() override {
+  void tick() override
+  {
     _fallback->tick(); // is typically VolatileRTCClock, which now needs tick()
   }
 };

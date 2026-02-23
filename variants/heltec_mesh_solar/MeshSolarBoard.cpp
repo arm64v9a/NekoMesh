@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void MeshSolarBoard::begin() {
+void MeshSolarBoard::begin()
+{
   NRF52Board::begin();
 
   meshSolarStart();

@@ -12,13 +12,15 @@ const PowerMgtConfig power_config = { .lpcomp_ain_channel = PWRMGT_LPCOMP_AIN,
                                       .lpcomp_refsel = PWRMGT_LPCOMP_REFSEL,
                                       .voltage_bootlock = PWRMGT_VOLTAGE_BOOTLOCK };
 
-void XiaoNrf52Board::initiateShutdown(uint8_t reason) {
+void XiaoNrf52Board::initiateShutdown(uint8_t reason)
+{
   bool enable_lpcomp = (reason == SHUTDOWN_REASON_LOW_VOLTAGE || reason == SHUTDOWN_REASON_BOOT_PROTECT);
 
   pinMode(VBAT_ENABLE, OUTPUT);
   digitalWrite(VBAT_ENABLE, enable_lpcomp ? LOW : HIGH);
 
-  if (enable_lpcomp) {
+  if (enable_lpcomp)
+  {
     configureVoltageWake(power_config.lpcomp_ain_channel, power_config.lpcomp_refsel);
   }
 
@@ -26,7 +28,8 @@ void XiaoNrf52Board::initiateShutdown(uint8_t reason) {
 }
 #endif // NRF52_POWER_MANAGEMENT
 
-void XiaoNrf52Board::begin() {
+void XiaoNrf52Board::begin()
+{
   NRF52BoardDCDC::begin();
 
   // Configure battery voltage ADC
@@ -60,7 +63,8 @@ void XiaoNrf52Board::begin() {
   delay(10); // Give sx1262 some time to power up
 }
 
-uint16_t XiaoNrf52Board::getBattMilliVolts() {
+uint16_t XiaoNrf52Board::getBattMilliVolts()
+{
   // https://wiki.seeedstudio.com/XIAO_BLE#q3-what-are-the-considerations-when-using-xiao-nrf52840-sense-for-battery-charging
   // VBAT_ENABLE must be LOW to read battery voltage
   digitalWrite(VBAT_ENABLE, LOW);

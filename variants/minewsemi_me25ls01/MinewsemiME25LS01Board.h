@@ -21,7 +21,8 @@
 #define ADC_MULTIPLIER                                                                     \
   (1.815f) // dependent on voltage divider resistors. TODO: more accurate battery tracking
 
-class MinewsemiME25LS01Board : public NRF52BoardDCDC {
+class MinewsemiME25LS01Board : public NRF52BoardDCDC
+{
 protected:
   uint8_t btn_prev_state;
 
@@ -31,11 +32,13 @@ public:
 
 #define BATTERY_SAMPLES 8
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     analogReadResolution(12);
 
     uint32_t raw = 0;
-    for (int i = 0; i < BATTERY_SAMPLES; i++) {
+    for (int i = 0; i < BATTERY_SAMPLES; i++)
+    {
       raw += analogRead(PIN_VBAT_READ);
     }
     raw = raw / BATTERY_SAMPLES;
@@ -44,7 +47,8 @@ public:
 
   const char *getManufacturerName() const override { return "Minewsemi"; }
 
-  void powerOff() override {
+  void powerOff() override
+  {
 #ifdef HAS_GPS
     digitalWrite(GPS_VRTC_EN, LOW);
     digitalWrite(GPS_RESET, LOW);
@@ -68,10 +72,12 @@ public:
   }
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED off
   }
 #endif

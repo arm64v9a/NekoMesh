@@ -17,17 +17,21 @@ static bool rtc_8563_success = false;
 #define RV3028_ADDRESS  0x52
 #define PCF8563_ADDRESS 0x51
 
-bool AutoDiscoverRTCClock::i2c_probe(TwoWire &wire, uint8_t addr) {
+bool AutoDiscoverRTCClock::i2c_probe(TwoWire &wire, uint8_t addr)
+{
   wire.beginTransmission(addr);
   uint8_t error = wire.endTransmission();
   return (error == 0);
 }
 
-void AutoDiscoverRTCClock::begin(TwoWire &wire) {
-  if (i2c_probe(wire, DS3231_ADDRESS)) {
+void AutoDiscoverRTCClock::begin(TwoWire &wire)
+{
+  if (i2c_probe(wire, DS3231_ADDRESS))
+  {
     ds3231_success = rtc_3231.begin(&wire);
   }
-  if (i2c_probe(wire, RV3028_ADDRESS)) {
+  if (i2c_probe(wire, RV3028_ADDRESS))
+  {
     rtc_rv3028.initI2C(wire);
     rtc_rv3028.writeToRegister(0x35, 0x00);
     rtc_rv3028.writeToRegister(
@@ -36,38 +40,51 @@ void AutoDiscoverRTCClock::begin(TwoWire &wire) {
         .set24HourMode(); // Set the device to use the 24hour format (default) instead of the 12 hour format
     rv3028_success = true;
   }
-  if (i2c_probe(wire, PCF8563_ADDRESS)) {
+  if (i2c_probe(wire, PCF8563_ADDRESS))
+  {
     rtc_8563_success = rtc_8563.begin(&wire);
   }
 }
 
-uint32_t AutoDiscoverRTCClock::getCurrentTime() {
-  if (ds3231_success) {
+uint32_t AutoDiscoverRTCClock::getCurrentTime()
+{
+  if (ds3231_success)
+  {
     return rtc_3231.now().unixtime();
   }
-  if (rv3028_success) {
+  if (rv3028_success)
+  {
     return DateTime(rtc_rv3028.getYear(), rtc_rv3028.getMonth(), rtc_rv3028.getDate(), rtc_rv3028.getHour(),
                     rtc_rv3028.getMinute(), rtc_rv3028.getSecond())
         .unixtime();
   }
-  if (rtc_8563_success) {
+  if (rtc_8563_success)
+  {
     return rtc_8563.now().unixtime();
   }
   return _fallback->getCurrentTime();
 }
 
-void AutoDiscoverRTCClock::setCurrentTime(uint32_t time) {
-  if (ds3231_success) {
+void AutoDiscoverRTCClock::setCurrentTime(uint32_t time)
+{
+  if (ds3231_success)
+  {
     rtc_3231.adjust(DateTime(time));
-  } else if (rv3028_success) {
+  }
+  else if (rv3028_success)
+  {
     auto dt = DateTime(time);
     uint8_t weekday = (dt.day() + (uint16_t)((2.6 * dt.month()) - 0.2) - (2 * (dt.year() / 100)) + dt.year() +
                        (uint16_t)(dt.year() / 4) + (uint16_t)(dt.year() / 400)) %
                       7;
     rtc_rv3028.setTime(dt.year(), dt.month(), weekday, dt.day(), dt.hour(), dt.minute(), dt.second());
-  } else if (rtc_8563_success) {
+  }
+  else if (rtc_8563_success)
+  {
     rtc_8563.adjust(DateTime(time));
-  } else {
+  }
+  else
+  {
     _fallback->setCurrentTime(time);
   }
 }

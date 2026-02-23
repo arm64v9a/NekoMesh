@@ -7,15 +7,18 @@
 #include <heltec-eink-modules.h>
 
 // Display driver for E213 e-ink display
-class E213Display : public DisplayDriver {
+class E213Display : public DisplayDriver
+{
   BaseDisplay *display = NULL;
   bool _init = false;
   bool _isOn = false;
 
 public:
   E213Display() : DisplayDriver(250, 122) {}
-  ~E213Display() {
-    if (display != NULL) {
+  ~E213Display()
+  {
+    if (display != NULL)
+    {
       delete display;
     }
   }

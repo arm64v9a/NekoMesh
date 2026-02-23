@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void SenseCapSolarBoard::begin() {
+void SenseCapSolarBoard::begin()
+{
   NRF52Board::begin();
 
 #if defined(PIN_WIRE_SDA) && defined(PIN_WIRE_SCL)

@@ -3,7 +3,8 @@
 #include "CustomLLCC68.h"
 #include "RadioLibWrappers.h"
 
-class CustomLLCC68Wrapper : public RadioLibWrapper {
+class CustomLLCC68Wrapper : public RadioLibWrapper
+{
 public:
   CustomLLCC68Wrapper(CustomLLCC68 &radio, mesh::MainBoard &board) : RadioLibWrapper(radio, board) {}
   bool isReceivingPacket() override { return ((CustomLLCC68 *)_radio)->isReceiving(); }
@@ -11,7 +12,8 @@ public:
   float getLastRSSI() const override { return ((CustomLLCC68 *)_radio)->getRSSI(); }
   float getLastSNR() const override { return ((CustomLLCC68 *)_radio)->getSNR(); }
 
-  float packetScore(float snr, int packet_len) override {
+  float packetScore(float snr, int packet_len) override
+  {
     int sf = ((CustomLLCC68 *)_radio)->spreadingFactor;
     return packetScoreInt(snr, sf, packet_len);
   }

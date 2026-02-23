@@ -1,16 +1,19 @@
 #include "IdentityStore.h"
 
-bool IdentityStore::load(const char *name, mesh::LocalIdentity &id) {
+bool IdentityStore::load(const char *name, mesh::LocalIdentity &id)
+{
   bool loaded = false;
   char filename[40];
   sprintf(filename, "%s/%s.id", _dir, name);
-  if (_fs->exists(filename)) {
+  if (_fs->exists(filename))
+  {
 #if defined(RP2040_PLATFORM)
     File file = _fs->open(filename, "r");
 #else
     File file = _fs->open(filename);
 #endif
-    if (file) {
+    if (file)
+    {
       loaded = id.readFrom(file);
       file.close();
     }
@@ -18,17 +21,20 @@ bool IdentityStore::load(const char *name, mesh::LocalIdentity &id) {
   return loaded;
 }
 
-bool IdentityStore::load(const char *name, mesh::LocalIdentity &id, char display_name[], int max_name_sz) {
+bool IdentityStore::load(const char *name, mesh::LocalIdentity &id, char display_name[], int max_name_sz)
+{
   bool loaded = false;
   char filename[40];
   sprintf(filename, "%s/%s.id", _dir, name);
-  if (_fs->exists(filename)) {
+  if (_fs->exists(filename))
+  {
 #if defined(RP2040_PLATFORM)
     File file = _fs->open(filename, "r");
 #else
     File file = _fs->open(filename);
 #endif
-    if (file) {
+    if (file)
+    {
       loaded = id.readFrom(file);
 
       int n = max_name_sz; // up to 32 bytes
@@ -42,7 +48,8 @@ bool IdentityStore::load(const char *name, mesh::LocalIdentity &id, char display
   return loaded;
 }
 
-bool IdentityStore::save(const char *name, const mesh::LocalIdentity &id) {
+bool IdentityStore::save(const char *name, const mesh::LocalIdentity &id)
+{
   char filename[40];
   sprintf(filename, "%s/%s.id", _dir, name);
 
@@ -54,7 +61,8 @@ bool IdentityStore::save(const char *name, const mesh::LocalIdentity &id) {
 #else
   File file = _fs->open(filename, "w", true);
 #endif
-  if (file) {
+  if (file)
+  {
     bool success = id.writeTo(file);
     file.close();
     MESH_DEBUG_PRINTLN("IdentityStore::save() write - %s", success ? "OK" : "Err");
@@ -64,7 +72,8 @@ bool IdentityStore::save(const char *name, const mesh::LocalIdentity &id) {
   return false;
 }
 
-bool IdentityStore::save(const char *name, const mesh::LocalIdentity &id, const char display_name[]) {
+bool IdentityStore::save(const char *name, const mesh::LocalIdentity &id, const char display_name[])
+{
   char filename[40];
   sprintf(filename, "%s/%s.id", _dir, name);
 
@@ -76,7 +85,8 @@ bool IdentityStore::save(const char *name, const mesh::LocalIdentity &id, const 
 #else
   File file = _fs->open(filename, "w", true);
 #endif
-  if (file) {
+  if (file)
+  {
     id.writeTo(file);
 
     uint8_t tmp[32];

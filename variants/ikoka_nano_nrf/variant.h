@@ -14,7 +14,8 @@
 #include "WVariant.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif // __cplusplus
 
 #define PINS_COUNT         (33)
@@ -36,21 +37,21 @@ extern "C" {
 
 #define LED_STATE_ON       (0) // State when LED is litted
 
-// Buttons
-// #define PIN_BUTTON1             (PINS_COUNT)
+  // Buttons
+  // #define PIN_BUTTON1             (PINS_COUNT)
 
-// Digital PINs
-static const uint8_t D0 = 0;
-static const uint8_t D1 = 1;
-static const uint8_t D2 = 2;
-static const uint8_t D3 = 3;
-static const uint8_t D4 = 4;
-static const uint8_t D5 = 5;
-static const uint8_t D6 = 6;
-static const uint8_t D7 = 7;
-static const uint8_t D8 = 8;
-static const uint8_t D9 = 9;
-static const uint8_t D10 = 10;
+  // Digital PINs
+  static const uint8_t D0 = 0;
+  static const uint8_t D1 = 1;
+  static const uint8_t D2 = 2;
+  static const uint8_t D3 = 3;
+  static const uint8_t D4 = 4;
+  static const uint8_t D5 = 5;
+  static const uint8_t D6 = 6;
+  static const uint8_t D7 = 7;
+  static const uint8_t D8 = 8;
+  static const uint8_t D9 = 9;
+  static const uint8_t D10 = 10;
 
 #define VBAT_ENABLE                                        \
   (14) // Output LOW to enable reading of the BAT voltage.
@@ -76,12 +77,12 @@ static const uint8_t D10 = 10;
 #define AREF_VOLTAGE     (3.0)
 #define ADC_MULTIPLIER   (3.0F) // 1M, 512k divider bridge
 
-static const uint8_t A0 = PIN_A0;
-static const uint8_t A1 = PIN_A1;
-static const uint8_t A2 = PIN_A2;
-static const uint8_t A3 = PIN_A3;
-static const uint8_t A4 = PIN_A4;
-static const uint8_t A5 = PIN_A5;
+  static const uint8_t A0 = PIN_A0;
+  static const uint8_t A1 = PIN_A1;
+  static const uint8_t A2 = PIN_A2;
+  static const uint8_t A3 = PIN_A3;
+  static const uint8_t A4 = PIN_A4;
+  static const uint8_t A5 = PIN_A5;
 
 #define ADC_RESOLUTION        (12)
 
@@ -112,11 +113,11 @@ static const uint8_t A5 = PIN_A5;
 // Wire Interfaces
 #define WIRE_INTERFACES_COUNT (1)
 
-// #define PIN_WIRE_SDA            (17) // 4 and 5 are used for the sx1262 !
-// #define PIN_WIRE_SCL            (16) // use WIRE1_SDA
+  // #define PIN_WIRE_SDA            (17) // 4 and 5 are used for the sx1262 !
+  // #define PIN_WIRE_SCL            (16) // use WIRE1_SDA
 
-static const uint8_t SDA = PIN_WIRE_SDA;
-static const uint8_t SCL = PIN_WIRE_SCL;
+  static const uint8_t SDA = PIN_WIRE_SDA;
+  static const uint8_t SCL = PIN_WIRE_SCL;
 
 // #define PIN_WIRE1_SDA           (17)
 // #define PIN_WIRE1_SCL           (16)

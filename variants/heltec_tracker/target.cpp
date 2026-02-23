@@ -24,7 +24,8 @@ DISPLAY_CLASS display(&board.periph_power); // peripheral power pin is shared
 MomentaryButton user_btn(PIN_USER_BTN, 1000, true);
 #endif
 
-bool radio_init() {
+bool radio_init()
+{
   fallback_clock.begin();
   rtc_clock.begin(Wire);
 
@@ -35,28 +36,34 @@ bool radio_init() {
 #endif
 }
 
-uint32_t radio_get_rng_seed() {
+uint32_t radio_get_rng_seed()
+{
   return radio.random(0x7FFFFFFF);
 }
 
-void radio_set_params(float freq, float bw, uint8_t sf, uint8_t cr) {
+void radio_set_params(float freq, float bw, uint8_t sf, uint8_t cr)
+{
   radio.setFrequency(freq);
   radio.setSpreadingFactor(sf);
   radio.setBandwidth(bw);
   radio.setCodingRate(cr);
 }
 
-void radio_set_tx_power(int8_t dbm) {
+void radio_set_tx_power(int8_t dbm)
+{
   radio.setOutputPower(dbm);
 }
 
-mesh::LocalIdentity radio_new_identity() {
+mesh::LocalIdentity radio_new_identity()
+{
   RadioNoiseListener rng(radio);
   return mesh::LocalIdentity(&rng); // create new random identity
 }
 
-void HWTSensorManager::start_gps() {
-  if (!gps_active) {
+void HWTSensorManager::start_gps()
+{
+  if (!gps_active)
+  {
     board.periph_power.claim();
 
     gps_active = true;
@@ -64,34 +71,42 @@ void HWTSensorManager::start_gps() {
   }
 }
 
-void HWTSensorManager::stop_gps() {
-  if (gps_active) {
+void HWTSensorManager::stop_gps()
+{
+  if (gps_active)
+  {
     gps_active = false;
 
     board.periph_power.release();
   }
 }
 
-bool HWTSensorManager::begin() {
+bool HWTSensorManager::begin()
+{
   // init GPS port
   Serial1.begin(115200, SERIAL_8N1, PIN_GPS_RX, PIN_GPS_TX);
   return true;
 }
 
-bool HWTSensorManager::querySensors(uint8_t requester_permissions, CayenneLPP &telemetry) {
-  if (requester_permissions & TELEM_PERM_LOCATION) { // does requester have permission?
+bool HWTSensorManager::querySensors(uint8_t requester_permissions, CayenneLPP &telemetry)
+{
+  if (requester_permissions & TELEM_PERM_LOCATION)
+  { // does requester have permission?
     telemetry.addGPS(TELEM_CHANNEL_SELF, node_lat, node_lon, node_altitude);
   }
   return true;
 }
 
-void HWTSensorManager::loop() {
+void HWTSensorManager::loop()
+{
   static long next_gps_update = 0;
 
   _location->loop();
 
-  if (millis() > next_gps_update) {
-    if (gps_active && _location->isValid()) {
+  if (millis() > next_gps_update)
+  {
+    if (gps_active && _location->isValid())
+    {
       node_lat = ((double)_location->getLatitude()) / 1000000.;
       node_lon = ((double)_location->getLongitude()) / 1000000.;
       node_altitude = ((double)_location->getAltitude()) / 1000.0;
@@ -101,24 +116,33 @@ void HWTSensorManager::loop() {
   }
 }
 
-int HWTSensorManager::getNumSettings() const {
+int HWTSensorManager::getNumSettings() const
+{
   return 1;
 } // just one supported: "gps" (power switch)
 
-const char *HWTSensorManager::getSettingName(int i) const {
+const char *HWTSensorManager::getSettingName(int i) const
+{
   return i == 0 ? "gps" : NULL;
 }
-const char *HWTSensorManager::getSettingValue(int i) const {
-  if (i == 0) {
+const char *HWTSensorManager::getSettingValue(int i) const
+{
+  if (i == 0)
+  {
     return gps_active ? "1" : "0";
   }
   return NULL;
 }
-bool HWTSensorManager::setSettingValue(const char *name, const char *value) {
-  if (strcmp(name, "gps") == 0) {
-    if (strcmp(value, "0") == 0) {
+bool HWTSensorManager::setSettingValue(const char *name, const char *value)
+{
+  if (strcmp(name, "gps") == 0)
+  {
+    if (strcmp(value, "0") == 0)
+    {
       stop_gps();
-    } else {
+    }
+    else
+    {
       start_gps();
     }
     return true;

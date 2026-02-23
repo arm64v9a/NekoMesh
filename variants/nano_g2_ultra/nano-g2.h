@@ -35,7 +35,8 @@
 #define PIN_VBAT_READ            (0 + 2)
 #define REAL_VBAT_MV_PER_LSB     (VBAT_DIVIDER_COMP * VBAT_MV_PER_LSB)
 
-class NanoG2Ultra : public NRF52Board {
+class NanoG2Ultra : public NRF52Board
+{
 public:
   NanoG2Ultra() : NRF52Board("NANO_G2_OTA") {}
   void begin();
@@ -43,7 +44,8 @@ public:
 
   const char *getManufacturerName() const override { return "Nano G2 Ultra"; }
 
-  void powerOff() override {
+  void powerOff() override
+  {
     // put GPS chip to sleep
     digitalWrite(PIN_GPS_STANDBY, LOW);
     // TODO: unset buzzer to prevent notification circuit activating on hibernate

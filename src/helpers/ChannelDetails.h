@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Mesh.h>
 
-struct ChannelDetails {
+struct ChannelDetails
+{
   mesh::GroupChannel channel;
   char name[32];
 };

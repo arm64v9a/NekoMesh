@@ -93,7 +93,8 @@
 #define rtos_malloc malloc
 // SPIClass SPI1(HSPI);
 #endif
-class ST7789Spi : public OLEDDisplay {
+class ST7789Spi : public OLEDDisplay
+{
 private:
   uint8_t _rst;
   uint8_t _dc;
@@ -111,7 +112,8 @@ public:
   /* pass _cs as -1 to indicate "do not use CS pin", for cases where it is hard wired low */
   ST7789Spi(SPIClass *spiClass, uint8_t _rst, uint8_t _dc, uint8_t _cs,
             OLEDDISPLAY_GEOMETRY g = GEOMETRY_RAWMODE, uint16_t width = 240, uint16_t height = 135,
-            int mosi = -1, int miso = -1, int clk = -1) {
+            int mosi = -1, int miso = -1, int clk = -1)
+  {
     this->_spi = spiClass;
     this->_rst = _rst;
     this->_dc = _dc;
@@ -124,13 +126,15 @@ public:
     setGeometry(g, width, height);
   }
 
-  bool connect() {
+  bool connect()
+  {
     this->_buffheight = displayHeight / 8;
     this->_buffheight += displayHeight % 8 ? 1 : 0;
     pinMode(_cs, OUTPUT);
     pinMode(_dc, OUTPUT);
     // pinMode(_ledA, OUTPUT);
-    if (_cs != (uint8_t)-1) {
+    if (_cs != (uint8_t)-1)
+    {
       pinMode(_cs, OUTPUT);
     }
     pinMode(_rst, OUTPUT);
@@ -153,7 +157,8 @@ public:
     return true;
   }
 
-  void display(void) {
+  void display(void)
+  {
 #ifdef OLEDDISPLAY_DOUBLE_BUFFER
 
     uint16_t minBoundY = UINT16_MAX;
@@ -166,11 +171,14 @@ public:
 
     // Calculate the Y bounding box of changes
     // and copy buffer[pos] to buffer_back[pos];
-    for (y = 0; y < _buffheight; y++) {
-      for (x = 0; x < displayWidth; x++) {
+    for (y = 0; y < _buffheight; y++)
+    {
+      for (x = 0; x < displayWidth; x++)
+      {
         // Serial.printf("x  %d y %d\r\n",x,y);
         uint16_t pos = x + y * displayWidth;
-        if (buffer[pos] != buffer_back[pos]) {
+        if (buffer[pos] != buffer_back[pos])
+        {
           minBoundY = min(minBoundY, y);
           maxBoundY = max(maxBoundY, y);
           minBoundX = min(minBoundX, x);
@@ -189,14 +197,17 @@ public:
     set_CS(LOW);
     _spi->beginTransaction(_spiSettings);
 
-    for (y = minBoundY; y <= maxBoundY; y++) {
-      for (int temp = 0; temp < 8; temp++) {
+    for (y = minBoundY; y <= maxBoundY; y++)
+    {
+      for (int temp = 0; temp < 8; temp++)
+      {
         // setAddrWindow(minBoundX,y*8+temp,maxBoundX-minBoundX+1,1);
         setAddrWindow(minBoundX, y * 8 + temp, maxBoundX - minBoundX + 1, 1);
         // setAddrWindow(y*8+temp,minBoundX,1,maxBoundX-minBoundX+1);
         uint32_t const pixbufcount = maxBoundX - minBoundX + 1;
         uint16_t *pixbuf = (uint16_t *)rtos_malloc(2 * pixbufcount);
-        for (x = minBoundX; x <= maxBoundX; x++) {
+        for (x = minBoundX; x <= maxBoundX; x++)
+        {
           pixbuf[x - minBoundX] = ((buffer[x + y * displayWidth] >> temp) & 0x01) == 1 ? _RGB : 0;
         }
 #ifdef ESP_PLATFORM
@@ -214,14 +225,17 @@ public:
     set_CS(LOW);
     _spi->beginTransaction(_spiSettings);
     uint8_t x, y;
-    for (y = 0; y < _buffheight; y++) {
-      for (int temp = 0; temp < 8; temp++) {
+    for (y = 0; y < _buffheight; y++)
+    {
+      for (int temp = 0; temp < 8; temp++)
+      {
         // setAddrWindow(minBoundX,y*8+temp,maxBoundX-minBoundX+1,1);
         // setAddrWindow(minBoundX,y*8+temp,maxBoundX-minBoundX+1,1);
         setAddrWindow(y * 8 + temp, 0, 1, displayWidth);
         uint32_t const pixbufcount = displayWidth;
         uint16_t *pixbuf = (uint16_t *)rtos_malloc(2 * pixbufcount);
-        for (x = 0; x < displayWidth; x++) {
+        for (x = 0; x < displayWidth; x++)
+        {
           pixbuf[x] = ((buffer[x + y * displayWidth] >> temp) & 0x01) == 1 ? _RGB : 0;
         }
 #ifdef ESP_PLATFORM
@@ -238,28 +252,32 @@ public:
 #endif
   }
 
-  virtual void resetOrientation() {
+  virtual void resetOrientation()
+  {
     uint8_t madctl = ST77XX_MADCTL_RGB | ST77XX_MADCTL_MV;
     sendCommand(ST77XX_MADCTL);
     WriteData(madctl);
     delay(10);
   }
 
-  virtual void flipScreenVertically() {
+  virtual void flipScreenVertically()
+  {
     uint8_t madctl = ST77XX_MADCTL_RGB | ST77XX_MADCTL_MV | ST77XX_MADCTL_MY;
     sendCommand(ST77XX_MADCTL);
     WriteData(madctl);
     delay(10);
   }
 
-  virtual void mirrorScreen() {
+  virtual void mirrorScreen()
+  {
     uint8_t madctl = ST77XX_MADCTL_RGB | ST77XX_MADCTL_MV | ST77XX_MADCTL_MX | ST77XX_MADCTL_MY;
     sendCommand(ST77XX_MADCTL);
     WriteData(madctl);
     delay(10);
   }
 
-  virtual void landscapeScreen() {
+  virtual void landscapeScreen()
+  {
     // For landscape mode rotated 180 degrees with correct text direction
     // MV swaps rows/columns for landscape orientation
     // Adding MX (instead of MY) flips X axis and rotates 180 degrees
@@ -271,27 +289,36 @@ public:
 
   void setRGB(uint16_t c) { this->_RGB = 0x00 | c >> 8 | c << 8 & 0xFF00; }
 
-  void displayOn(void) {
+  void displayOn(void)
+  {
     // sendCommand(DISPLAYON);
   }
 
-  void displayOff(void) {
+  void displayOff(void)
+  {
     // sendCommand(DISPLAYOFF);
   }
 
-  void drawBitmap(int16_t xMove, int16_t yMove, int16_t width, int16_t height, const uint8_t *xbm) {
+  void drawBitmap(int16_t xMove, int16_t yMove, int16_t width, int16_t height, const uint8_t *xbm)
+  {
     int16_t widthInXbm = (width + 7) / 8;
     uint8_t data = 0;
 
-    for (int16_t y = 0; y < height; y++) {
-      for (int16_t x = 0; x < width; x++) {
-        if (x & 7) {
+    for (int16_t y = 0; y < height; y++)
+    {
+      for (int16_t x = 0; x < width; x++)
+      {
+        if (x & 7)
+        {
           data <<= 1; // Move a bit
-        } else {      // Read new data every 8 bit
+        }
+        else
+        { // Read new data every 8 bit
           data = pgm_read_byte(xbm + (x / 8) + y * widthInXbm);
         }
         // if there is a bit draw it
-        if (data & 0x80) {
+        if (data & 0x80)
+        {
           setPixel(xMove + x, yMove + y);
         }
       }
@@ -304,7 +331,8 @@ public:
   // #define ST77XX_MADCTL_ML 0x10
 protected:
   // Send all the init commands
-  virtual void sendInitCommands() {
+  virtual void sendInitCommands()
+  {
     sendCommand(ST77XX_SWRESET); //  1: Software reset, no args, w/delay
     delay(150);
 
@@ -353,7 +381,8 @@ protected:
   }
 
 private:
-  void setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h) {
+  void setAddrWindow(uint16_t x, uint16_t y, uint16_t w, uint16_t h)
+  {
     x += (320 - displayWidth) / 2;
     y += (240 - displayHeight) / 2;
 
@@ -369,12 +398,15 @@ private:
     writeCommand(ST77XX_RAMWR); // write to RAM
   }
   int getBufferOffset(void) { return 0; }
-  inline void set_CS(bool level) {
-    if (_cs != (uint8_t)-1) {
+  inline void set_CS(bool level)
+  {
+    if (_cs != (uint8_t)-1)
+    {
       digitalWrite(_cs, level);
     }
   };
-  inline void sendCommand(uint8_t com) __attribute__((always_inline)) {
+  inline void sendCommand(uint8_t com) __attribute__((always_inline))
+  {
     set_CS(HIGH);
     digitalWrite(_dc, LOW);
     set_CS(LOW);
@@ -385,30 +417,35 @@ private:
     digitalWrite(_dc, HIGH);
   }
 
-  inline void WriteData(uint8_t data) __attribute__((always_inline)) {
+  inline void WriteData(uint8_t data) __attribute__((always_inline))
+  {
     digitalWrite(_cs, LOW);
     _spi->beginTransaction(_spiSettings);
     _spi->transfer(data);
     _spi->endTransaction();
     digitalWrite(_cs, HIGH);
   }
-  void SPI_WRITE32(uint32_t l) {
+  void SPI_WRITE32(uint32_t l)
+  {
     _spi->transfer(l >> 24);
     _spi->transfer(l >> 16);
     _spi->transfer(l >> 8);
     _spi->transfer(l);
   }
-  void writeCommand(uint8_t cmd) {
+  void writeCommand(uint8_t cmd)
+  {
     digitalWrite(_dc, LOW);
     _spi->transfer(cmd);
     digitalWrite(_dc, HIGH);
   }
 
   // Private functions
-  void setGeometry(OLEDDISPLAY_GEOMETRY g, uint16_t width, uint16_t height) {
+  void setGeometry(OLEDDISPLAY_GEOMETRY g, uint16_t width, uint16_t height)
+  {
     this->geometry = g;
 
-    switch (g) {
+    switch (g)
+    {
     case GEOMETRY_128_128:
       this->displayWidth = 128;
       this->displayHeight = 128;

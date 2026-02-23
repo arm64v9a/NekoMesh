@@ -4,9 +4,11 @@
 #include <Mesh.h>
 
 // Believe it or not, this std C function is busted on some platforms!
-static uint32_t _atoi(const char *sp) {
+static uint32_t _atoi(const char *sp)
+{
   uint32_t n = 0;
-  while (*sp && *sp >= '0' && *sp <= '9') {
+  while (*sp && *sp >= '0' && *sp <= '9')
+  {
     n *= 10;
     n += (*sp++ - '0');
   }
@@ -103,19 +105,22 @@ MyMesh the_mesh(radio_driver, fast_rng, rtc_clock, tables, store
 
 /* END GLOBAL OBJECTS */
 
-void halt() {
+void halt()
+{
   while (1)
     ;
 }
 
-void setup() {
+void setup()
+{
   Serial.begin(115200);
 
   board.begin();
 
 #ifdef DISPLAY_CLASS
   DisplayDriver *disp = NULL;
-  if (display.begin()) {
+  if (display.begin())
+  {
     disp = &display;
     disp->startFrame();
 #ifdef ST7789
@@ -126,7 +131,8 @@ void setup() {
   }
 #endif
 
-  if (!radio_init()) {
+  if (!radio_init())
+  {
     halt();
   }
 
@@ -135,11 +141,14 @@ void setup() {
 #if defined(NRF52_PLATFORM) || defined(STM32_PLATFORM)
   InternalFS.begin();
 #if defined(QSPIFLASH)
-  if (!QSPIFlash.begin()) {
+  if (!QSPIFlash.begin())
+  {
     // debug output might not be available at this point, might be too early. maybe should fall back to
     // InternalFS here?
     MESH_DEBUG_PRINTLN("CustomLFS_QSPIFlash: failed to initialize");
-  } else {
+  }
+  else
+  {
     MESH_DEBUG_PRINTLN("CustomLFS_QSPIFlash: initialized successfully");
   }
 #else
@@ -225,7 +234,8 @@ void setup() {
 #endif
 }
 
-void loop() {
+void loop()
+{
   the_mesh.loop();
   sensors.loop();
 #ifdef DISPLAY_CLASS

@@ -5,7 +5,8 @@
 #include <helpers/ESP32Board.h>
 #include <helpers/RefCountedDigitalPin.h>
 
-class HeltecE290Board : public ESP32Board {
+class HeltecE290Board : public ESP32Board
+{
 
 public:
   RefCountedDigitalPin periph_power;

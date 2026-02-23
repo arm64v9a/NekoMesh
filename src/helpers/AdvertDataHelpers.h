@@ -16,7 +16,8 @@
 #define ADV_FEAT2_MASK    0x40 // FUTURE
 #define ADV_NAME_MASK     0x80
 
-class AdvertDataBuilder {
+class AdvertDataBuilder
+{
   uint8_t _type;
   bool _has_loc;
   const char *_name;
@@ -28,7 +29,9 @@ public:
   AdvertDataBuilder(uint8_t adv_type) : _type(adv_type), _name(NULL), _has_loc(false) {}
   AdvertDataBuilder(uint8_t adv_type, const char *name) : _type(adv_type), _name(name), _has_loc(false) {}
   AdvertDataBuilder(uint8_t adv_type, const char *name, double lat, double lon)
-      : _type(adv_type), _name(name), _has_loc(true), _lat(lat * 1E6), _lon(lon * 1E6) {}
+      : _type(adv_type), _name(name), _has_loc(true), _lat(lat * 1E6), _lon(lon * 1E6)
+  {
+  }
 
   void setFeat1(uint16_t extra) { _extra1 = extra; }
   void setFeat2(uint16_t extra) { _extra2 = extra; }
@@ -41,7 +44,8 @@ public:
   uint8_t encodeTo(uint8_t app_data[]);
 };
 
-class AdvertDataParser {
+class AdvertDataParser
+{
   uint8_t _flags;
   bool _valid;
   char _name[MAX_ADVERT_DATA_SIZE];
@@ -67,7 +71,8 @@ public:
   double getLon() const { return ((double)_lon) / 1000000.0; }
 };
 
-class AdvertTimeHelper {
+class AdvertTimeHelper
+{
 public:
   static void formatRelativeTimeDiff(char dest[], int32_t seconds_from_now, bool short_fmt);
 };

@@ -9,7 +9,8 @@
 #define PIN_BAT_CTL   6
 #define MV_LSB        (3000.0F / 4096.0F) // 12-bit ADC with 3.0V input range
 
-class T114Board : public NRF52BoardDCDC {
+class T114Board : public NRF52BoardDCDC
+{
 protected:
 #ifdef NRF52_POWER_MANAGEMENT
   void initiateShutdown(uint8_t reason) override;
@@ -20,15 +21,18 @@ public:
   void begin();
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED off
   }
 #endif
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     int adcvalue = 0;
     analogReadResolution(12);
     analogReference(AR_INTERNAL_3_0);
@@ -44,7 +48,8 @@ public:
 
   const char *getManufacturerName() const override { return "Heltec T114"; }
 
-  void powerOff() override {
+  void powerOff() override
+  {
 #ifdef LED_PIN
     digitalWrite(LED_PIN, HIGH);
 #endif

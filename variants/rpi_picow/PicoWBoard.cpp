@@ -7,19 +7,22 @@
 
 // static BLEDfu bledfu;
 
-static void connect_callback(uint16_t conn_handle) {
+static void connect_callback(uint16_t conn_handle)
+{
   (void)conn_handle;
   MESH_DEBUG_PRINTLN("BLE client connected");
 }
 
-static void disconnect_callback(uint16_t conn_handle, uint8_t reason) {
+static void disconnect_callback(uint16_t conn_handle, uint8_t reason)
+{
   (void)conn_handle;
   (void)reason;
 
   MESH_DEBUG_PRINTLN("BLE client disconnected");
 }
 
-void PicoWBoard::begin() {
+void PicoWBoard::begin()
+{
   // for future use, sub-classes SHOULD call this from their begin()
   startup_reason = BD_STARTUP_NORMAL;
   pinMode(PIN_VBAT_READ, INPUT);
@@ -38,6 +41,7 @@ void PicoWBoard::begin() {
   delay(10); // give sx1262 some time to power up
 }
 
-bool PicoWBoard::startOTAUpdate(const char *id, char reply[]) {
+bool PicoWBoard::startOTAUpdate(const char *id, char reply[])
+{
   return false;
 }

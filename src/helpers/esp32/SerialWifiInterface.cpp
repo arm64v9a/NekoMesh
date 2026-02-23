@@ -2,31 +2,38 @@
 
 #include <WiFi.h>
 
-void SerialWifiInterface::begin(int port) {
+void SerialWifiInterface::begin(int port)
+{
   // wifi setup is handled outside of this class, only starts the server
   server.begin(port);
 }
 
 // ---------- public methods
-void SerialWifiInterface::enable() {
+void SerialWifiInterface::enable()
+{
   if (_isEnabled) return;
 
   _isEnabled = true;
   clearBuffers();
 }
 
-void SerialWifiInterface::disable() {
+void SerialWifiInterface::disable()
+{
   _isEnabled = false;
 }
 
-size_t SerialWifiInterface::writeFrame(const uint8_t src[], size_t len) {
-  if (len > MAX_FRAME_SIZE) {
+size_t SerialWifiInterface::writeFrame(const uint8_t src[], size_t len)
+{
+  if (len > MAX_FRAME_SIZE)
+  {
     WIFI_DEBUG_PRINTLN("writeFrame(), frame too big, len=%d\n", len);
     return 0;
   }
 
-  if (deviceConnected && len > 0) {
-    if (send_queue_len >= FRAME_QUEUE_SIZE) {
+  if (deviceConnected && len > 0)
+  {
+    if (send_queue_len >= FRAME_QUEUE_SIZE)
+    {
       WIFI_DEBUG_PRINTLN("writeFrame(), send_queue is full!");
       return 0;
     }
@@ -40,23 +47,28 @@ size_t SerialWifiInterface::writeFrame(const uint8_t src[], size_t len) {
   return 0;
 }
 
-bool SerialWifiInterface::isWriteBusy() const {
+bool SerialWifiInterface::isWriteBusy() const
+{
   return false;
 }
 
-bool SerialWifiInterface::hasReceivedFrameHeader() {
+bool SerialWifiInterface::hasReceivedFrameHeader()
+{
   return received_frame_header.type != 0 && received_frame_header.length != 0;
 }
 
-void SerialWifiInterface::resetReceivedFrameHeader() {
+void SerialWifiInterface::resetReceivedFrameHeader()
+{
   received_frame_header.type = 0;
   received_frame_header.length = 0;
 }
 
-size_t SerialWifiInterface::checkRecvFrame(uint8_t dest[]) {
+size_t SerialWifiInterface::checkRecvFrame(uint8_t dest[])
+{
   // check if new client connected
   auto newClient = server.available();
-  if (newClient) {
+  if (newClient)
+  {
 
     // disconnect existing client
     deviceConnected = false;
@@ -69,20 +81,27 @@ size_t SerialWifiInterface::checkRecvFrame(uint8_t dest[]) {
     resetReceivedFrameHeader();
   }
 
-  if (client.connected()) {
-    if (!deviceConnected) {
+  if (client.connected())
+  {
+    if (!deviceConnected)
+    {
       WIFI_DEBUG_PRINTLN("Got connection");
       deviceConnected = true;
     }
-  } else {
-    if (deviceConnected) {
+  }
+  else
+  {
+    if (deviceConnected)
+    {
       deviceConnected = false;
       WIFI_DEBUG_PRINTLN("Disconnected");
     }
   }
 
-  if (deviceConnected) {
-    if (send_queue_len > 0) { // first, check send queue
+  if (deviceConnected)
+  {
+    if (send_queue_len > 0)
+    { // first, check send queue
 
       _last_write = millis();
       int len = send_queue[0].len;
@@ -94,19 +113,24 @@ size_t SerialWifiInterface::checkRecvFrame(uint8_t dest[]) {
       memcpy(&pkt[3], send_queue[0].buf, send_queue[0].len);
       client.write(pkt, 3 + len);
       send_queue_len--;
-      for (int i = 0; i < send_queue_len; i++) { // delete top item from queue
+      for (int i = 0; i < send_queue_len; i++)
+      { // delete top item from queue
         send_queue[i] = send_queue[i + 1];
       }
-    } else {
+    }
+    else
+    {
 
       // check if we are waiting for a frame header
-      if (!hasReceivedFrameHeader()) {
+      if (!hasReceivedFrameHeader())
+      {
 
         // make sure we have received enough bytes for a frame header
         // 3 bytes frame header = (1 byte frame type) + (2 bytes frame length as unsigned 16-bit little
         // endian)
         int frame_header_length = 3;
-        if (client.available() >= frame_header_length) {
+        if (client.available() >= frame_header_length)
+        {
 
           // read frame header
           client.readBytes(&received_frame_header.type, 1);
@@ -115,22 +139,26 @@ size_t SerialWifiInterface::checkRecvFrame(uint8_t dest[]) {
       }
 
       // check if we have received a frame header
-      if (hasReceivedFrameHeader()) {
+      if (hasReceivedFrameHeader())
+      {
 
         // make sure we have received enough bytes for the required frame length
         int available = client.available();
         int frame_type = received_frame_header.type;
         int frame_length = received_frame_header.length;
-        if (frame_length > available) {
+        if (frame_length > available)
+        {
           WIFI_DEBUG_PRINTLN("Waiting for %d more bytes", frame_length - available);
           return 0;
         }
 
         // skip frames that are larger than MAX_FRAME_SIZE
-        if (frame_length > MAX_FRAME_SIZE) {
+        if (frame_length > MAX_FRAME_SIZE)
+        {
           WIFI_DEBUG_PRINTLN("Skipping frame: length=%d is larger than MAX_FRAME_SIZE=%d", frame_length,
                              MAX_FRAME_SIZE);
-          while (frame_length > 0) {
+          while (frame_length > 0)
+          {
             uint8_t skip[1];
             int skipped = client.read(skip, 1);
             frame_length -= skipped;
@@ -141,9 +169,11 @@ size_t SerialWifiInterface::checkRecvFrame(uint8_t dest[]) {
 
         // skip frames that are not expected type
         // '<' is 0x3c which indicates a frame sent from app to radio
-        if (frame_type != '<') {
+        if (frame_type != '<')
+        {
           WIFI_DEBUG_PRINTLN("Skipping frame: type=0x%x is unexpected", frame_type);
-          while (frame_length > 0) {
+          while (frame_length > 0)
+          {
             uint8_t skip[1];
             int skipped = client.read(skip, 1);
             frame_length -= skipped;
@@ -165,6 +195,7 @@ size_t SerialWifiInterface::checkRecvFrame(uint8_t dest[]) {
   return 0;
 }
 
-bool SerialWifiInterface::isConnected() const {
+bool SerialWifiInterface::isConnected() const
+{
   return deviceConnected; // pServer != NULL && pServer->getConnectedCount() > 0;
 }

@@ -5,7 +5,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void IkokaStickNRFBoard::begin() {
+void IkokaStickNRFBoard::begin()
+{
   NRF52Board::begin();
 
   pinMode(PIN_VBAT, INPUT);

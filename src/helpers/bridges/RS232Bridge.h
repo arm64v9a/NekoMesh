@@ -44,7 +44,8 @@
  * - RP2040: Uses SerialUART::setRX(rx) and SerialUART::setTX(tx)
  * - STM32: Uses HardwareSerial::setRx(rx) and HardwareSerial::setTx(tx)
  */
-class RS232Bridge : public BridgeBase {
+class RS232Bridge : public BridgeBase
+{
 public:
   /**
    * @brief Constructs an RS232Bridge instance

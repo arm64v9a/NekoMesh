@@ -52,7 +52,8 @@
 #include "nrf_error.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #define NRF_ERROR_SDM_LFCLK_SOURCE_UNKNOWN (NRF_ERROR_SDM_BASE_NUM + 0) ///< Unknown LFCLK source.

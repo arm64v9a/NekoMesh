@@ -18,7 +18,8 @@
 #define VIBRATION_TIMEOUT 5000 // 5 seconds default
 #endif
 
-class GenericVibration {
+class GenericVibration
+{
 public:
   void begin();       // set up vibration pin
   void trigger();     // trigger vibration if cooldown has passed

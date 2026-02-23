@@ -60,7 +60,8 @@ const uint32_t g_ADigitalPinMap[PINS_COUNT + 1] = {
   255, // NRFX_SPIM_PIN_NOT_USED
 };
 
-void initVariant() {
+void initVariant()
+{
   // All pins output HIGH by default.
   // https://github.com/Seeed-Studio/Adafruit_nRF52_Arduino/blob/fab7d30a997a1dfeef9d1d59bfb549adda73815a/cores/nRF5/wiring.c#L65-L69
 

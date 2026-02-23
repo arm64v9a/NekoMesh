@@ -5,7 +5,8 @@
 
 #ifdef THINKNODE_M1
 
-void ThinkNodeM1Board::begin() {
+void ThinkNodeM1Board::begin()
+{
   NRF52Board::begin();
 
   Wire.begin();
@@ -20,7 +21,8 @@ void ThinkNodeM1Board::begin() {
   delay(10); // give sx1262 some time to power up
 }
 
-uint16_t ThinkNodeM1Board::getBattMilliVolts() {
+uint16_t ThinkNodeM1Board::getBattMilliVolts()
+{
   int adcvalue = 0;
 
   analogReference(AR_INTERNAL_3_0);

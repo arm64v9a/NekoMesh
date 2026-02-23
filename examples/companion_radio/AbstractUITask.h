@@ -13,15 +13,25 @@
 
 #include "NodePrefs.h"
 
-enum class UIEventType { none, contactMessage, channelMessage, roomMessage, newContactMessage, ack };
+enum class UIEventType
+{
+  none,
+  contactMessage,
+  channelMessage,
+  roomMessage,
+  newContactMessage,
+  ack
+};
 
-class AbstractUITask {
+class AbstractUITask
+{
 protected:
   mesh::MainBoard *_board;
   BaseSerialInterface *_serial;
   bool _connected;
 
-  AbstractUITask(mesh::MainBoard *board, BaseSerialInterface *serial) : _board(board), _serial(serial) {
+  AbstractUITask(mesh::MainBoard *board, BaseSerialInterface *serial) : _board(board), _serial(serial)
+  {
     _connected = false;
   }
 

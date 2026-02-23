@@ -10,7 +10,8 @@
 #define PERM_ACL_READ_WRITE 2
 #define PERM_ACL_ADMIN      3
 
-struct ClientInfo {
+struct ClientInfo
+{
   mesh::Identity id;
   uint8_t permissions;
   int8_t out_path_len;
@@ -18,8 +19,10 @@ struct ClientInfo {
   uint8_t shared_secret[PUB_KEY_SIZE];
   uint32_t last_timestamp; // by THEIR clock  (transient)
   uint32_t last_activity;  // by OUR clock    (transient)
-  union {
-    struct {
+  union
+  {
+    struct
+    {
       uint32_t sync_since; // sync messages SINCE this timestamp (by OUR clock)
       uint32_t pending_ack;
       uint32_t push_post_timestamp;
@@ -35,13 +38,15 @@ struct ClientInfo {
 #define MAX_CLIENTS 20
 #endif
 
-class ClientACL {
+class ClientACL
+{
   FILESYSTEM *_fs;
   ClientInfo clients[MAX_CLIENTS];
   int num_clients;
 
 public:
-  ClientACL() {
+  ClientACL()
+  {
     memset(clients, 0, sizeof(clients));
     num_clients = 0;
   }

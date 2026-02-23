@@ -4,7 +4,8 @@
 #include <Wire.h>
 #include <bluefruit.h>
 
-void ThinkNodeM3Board::begin() {
+void ThinkNodeM3Board::begin()
+{
   NRF52Board::begin();
   btn_prev_state = HIGH;
 
@@ -13,7 +14,8 @@ void ThinkNodeM3Board::begin() {
   delay(10); // give sx1262 some time to power up
 }
 
-uint16_t ThinkNodeM3Board::getBattMilliVolts() {
+uint16_t ThinkNodeM3Board::getBattMilliVolts()
+{
   int adcvalue = 0;
 
   analogReference(AR_INTERNAL_2_4);

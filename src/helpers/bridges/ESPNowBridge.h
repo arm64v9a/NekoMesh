@@ -39,7 +39,8 @@
  * _prefs->bridge_secret values. Packets encrypted with a different key will
  * fail the checksum validation and be discarded.
  */
-class ESPNowBridge : public BridgeBase {
+class ESPNowBridge : public BridgeBase
+{
 private:
   static ESPNowBridge *_instance;
   static void recv_cb(const uint8_t *mac, const uint8_t *data, int32_t len);

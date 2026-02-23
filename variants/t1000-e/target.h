@@ -13,7 +13,8 @@
 #include "NullDisplayDriver.h"
 #endif
 
-class T1000SensorManager : public SensorManager {
+class T1000SensorManager : public SensorManager
+{
   bool gps_active = false;
   LocationProvider *_nmea;
 

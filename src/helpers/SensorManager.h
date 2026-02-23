@@ -10,12 +10,14 @@
 
 #define TELEM_CHANNEL_SELF     1 // LPP data channel for 'self' device
 
-class SensorManager {
+class SensorManager
+{
 public:
   double node_lat, node_lon; // modify these, if you want to affect Advert location
   double node_altitude;      // altitude in meters
 
-  SensorManager() {
+  SensorManager()
+  {
     node_lat = 0;
     node_lon = 0;
     node_altitude = 0;
@@ -30,10 +32,13 @@ public:
   virtual LocationProvider *getLocationProvider() { return NULL; }
 
   // Helper functions to manage setting by keys (useful in many places ...)
-  const char *getSettingByKey(const char *key) {
+  const char *getSettingByKey(const char *key)
+  {
     int num = getNumSettings();
-    for (int i = 0; i < num; i++) {
-      if (strcmp(getSettingName(i), key) == 0) {
+    for (int i = 0; i < num; i++)
+    {
+      if (strcmp(getSettingName(i), key) == 0)
+      {
         return getSettingValue(i);
       }
     }

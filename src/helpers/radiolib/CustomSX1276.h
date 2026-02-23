@@ -8,7 +8,8 @@
 #define RH_RF95_MODEM_STATUS_SIGNAL_SYNCHRONIZED 0x02
 #define RH_RF95_MODEM_STATUS_SIGNAL_DETECTED     0x01
 
-class CustomSX1276 : public SX1276 {
+class CustomSX1276 : public SX1276
+{
 public:
   CustomSX1276(Module *mod) : SX1276(mod) {}
 
@@ -26,12 +27,14 @@ public:
 
 #if defined(P_LORA_SCLK)
 #ifdef NRF52_PLATFORM
-    if (spi) {
+    if (spi)
+    {
       spi->setPins(P_LORA_MISO, P_LORA_SCLK, P_LORA_MOSI);
       spi->begin();
     }
 #elif defined(RP2040_PLATFORM)
-    if (spi) {
+    if (spi)
+    {
       spi->setMISO(P_LORA_MISO);
       // spi->setCS(P_LORA_NSS); // Setting CS results in freeze
       spi->setSCK(P_LORA_SCLK);
@@ -44,7 +47,8 @@ public:
 #endif
     int status = begin(LORA_FREQ, LORA_BW, LORA_SF, cr, RADIOLIB_SX126X_SYNC_WORD_PRIVATE, LORA_TX_POWER, 16);
     // if radio init fails with -707/-706, try again with tcxo voltage set to 0.0f
-    if (status != RADIOLIB_ERR_NONE) {
+    if (status != RADIOLIB_ERR_NONE)
+    {
       Serial.print("ERROR: radio init failed: ");
       Serial.println(status);
       return false; // fail
@@ -68,22 +72,26 @@ public:
     return true; // success
   }
 
-  bool isReceiving() {
+  bool isReceiving()
+  {
     return (getModemStatus() &
             (RH_RF95_MODEM_STATUS_SIGNAL_DETECTED | RH_RF95_MODEM_STATUS_SIGNAL_SYNCHRONIZED |
              RH_RF95_MODEM_STATUS_HEADER_INFO_VALID)) != 0;
   }
 
-  int tryScanChannel() {
+  int tryScanChannel()
+  {
     // start CAD
     int16_t state = startChannelScan();
     RADIOLIB_ASSERT(state);
 
     // wait for channel activity detected or timeout
     unsigned long timeout = millis() + 16;
-    while (!this->mod->hal->digitalRead(this->mod->getIrq()) && millis() < timeout) {
+    while (!this->mod->hal->digitalRead(this->mod->getIrq()) && millis() < timeout)
+    {
       this->mod->hal->yield();
-      if (this->mod->hal->digitalRead(this->mod->getGpio())) {
+      if (this->mod->hal->digitalRead(this->mod->getGpio()))
+      {
         return (RADIOLIB_PREAMBLE_DETECTED);
       }
     }

@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void PromicroBoard::begin() {
+void PromicroBoard::begin()
+{
   NRF52Board::begin();
   btn_prev_state = HIGH;
 

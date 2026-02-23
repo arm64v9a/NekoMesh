@@ -26,7 +26,8 @@ EnvironmentSensorManager sensors = EnvironmentSensorManager(nmea);
 EnvironmentSensorManager sensors;
 #endif
 
-bool radio_init() {
+bool radio_init()
+{
   fallback_clock.begin();
   rtc_clock.begin(Wire);
 
@@ -36,7 +37,8 @@ bool radio_init() {
   // GPS serial initialized by EnvironmentSensorManager::begin()
 
   bool success = radio.std_init(&spi);
-  if (success) {
+  if (success)
+  {
     // T-Beam 1W has external PA requiring longer ramp time (>800us recommended)
     // RADIOLIB_SX126X_PA_RAMP_800U = 0x05
     radio.setTxParams(LORA_TX_POWER, RADIOLIB_SX126X_PA_RAMP_800U);
@@ -44,22 +46,26 @@ bool radio_init() {
   return success;
 }
 
-uint32_t radio_get_rng_seed() {
+uint32_t radio_get_rng_seed()
+{
   return radio.random(0x7FFFFFFF);
 }
 
-void radio_set_params(float freq, float bw, uint8_t sf, uint8_t cr) {
+void radio_set_params(float freq, float bw, uint8_t sf, uint8_t cr)
+{
   radio.setFrequency(freq);
   radio.setSpreadingFactor(sf);
   radio.setBandwidth(bw);
   radio.setCodingRate(cr);
 }
 
-void radio_set_tx_power(int8_t dbm) {
+void radio_set_tx_power(int8_t dbm)
+{
   radio.setOutputPower(dbm);
 }
 
-mesh::LocalIdentity radio_new_identity() {
+mesh::LocalIdentity radio_new_identity()
+{
   RadioNoiseListener rng(radio);
   return mesh::LocalIdentity(&rng);
 }

@@ -8,7 +8,8 @@
 #define BUTTON_EVENT_DOUBLE_CLICK 3
 #define BUTTON_EVENT_TRIPLE_CLICK 4
 
-class MomentaryButton {
+class MomentaryButton
+{
   int8_t _pin;
   int8_t prev, cancel;
   bool _reverse, _pull;

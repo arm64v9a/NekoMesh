@@ -6,7 +6,8 @@
 
 #include <Wire.h>
 
-void ThinkNodeM6Board::begin() {
+void ThinkNodeM6Board::begin()
+{
   NRF52Board::begin();
 
   Wire.begin();
@@ -19,7 +20,8 @@ void ThinkNodeM6Board::begin() {
   delay(10); // give sx1262 some time to power up
 }
 
-uint16_t ThinkNodeM6Board::getBattMilliVolts() {
+uint16_t ThinkNodeM6Board::getBattMilliVolts()
+{
   int adcvalue = 0;
 
   digitalWrite(PIN_ADC_CTRL, HIGH);

@@ -64,21 +64,26 @@
 #define LPP_ERROR_OVERFLOW           1
 #define LPP_ERROR_UNKOWN_TYPE        2
 
-class LPPReader {
+class LPPReader
+{
   const uint8_t *_buf;
   uint8_t _len;
   uint8_t _pos;
 
-  float getFloat(const uint8_t *buffer, uint8_t size, uint32_t multiplier, bool is_signed) {
+  float getFloat(const uint8_t *buffer, uint8_t size, uint32_t multiplier, bool is_signed)
+  {
     uint32_t value = 0;
-    for (uint8_t i = 0; i < size; i++) {
+    for (uint8_t i = 0; i < size; i++)
+    {
       value = (value << 8) + buffer[i];
     }
 
     int sign = 1;
-    if (is_signed) {
+    if (is_signed)
+    {
       uint32_t bit = 1ul << ((size * 8) - 1);
-      if ((value & bit) == bit) {
+      if ((value & bit) == bit)
+      {
         value = (bit << 1) - value;
         sign = -1;
       }
@@ -91,8 +96,10 @@ public:
 
   void reset() { _pos = 0; }
 
-  bool readHeader(uint8_t &channel, uint8_t &type) {
-    if (_pos + 2 < _len) {
+  bool readHeader(uint8_t &channel, uint8_t &type)
+  {
+    if (_pos + 2 < _len)
+    {
       channel = _buf[_pos++];
       type = _buf[_pos++];
 
@@ -101,7 +108,8 @@ public:
     return false; // end-of-buffer
   }
 
-  bool readGPS(float &lat, float &lon, float &alt) {
+  bool readGPS(float &lat, float &lon, float &alt)
+  {
     lat = getFloat(&_buf[_pos], 3, 10000, true);
     _pos += 3;
     lon = getFloat(&_buf[_pos], 3, 10000, true);
@@ -110,44 +118,53 @@ public:
     _pos += 3;
     return _pos <= _len;
   }
-  bool readVoltage(float &voltage) {
+  bool readVoltage(float &voltage)
+  {
     voltage = getFloat(&_buf[_pos], 2, 100, false);
     _pos += 2;
     return _pos <= _len;
   }
-  bool readCurrent(float &amps) {
+  bool readCurrent(float &amps)
+  {
     amps = getFloat(&_buf[_pos], 2, 1000, true);
     _pos += 2;
     return _pos <= _len;
   }
-  bool readPower(float &watts) {
+  bool readPower(float &watts)
+  {
     watts = getFloat(&_buf[_pos], 2, 1, false);
     _pos += 2;
     return _pos <= _len;
   }
-  bool readTemperature(float &degrees_c) {
+  bool readTemperature(float &degrees_c)
+  {
     degrees_c = getFloat(&_buf[_pos], 2, 10, true);
     _pos += 2;
     return _pos <= _len;
   }
-  bool readPressure(float &pa) {
+  bool readPressure(float &pa)
+  {
     pa = getFloat(&_buf[_pos], 2, 10, false);
     _pos += 2;
     return _pos <= _len;
   }
-  bool readRelativeHumidity(float &pct) {
+  bool readRelativeHumidity(float &pct)
+  {
     pct = getFloat(&_buf[_pos], 1, 2, false);
     _pos += 1;
     return _pos <= _len;
   }
-  bool readAltitude(float &m) {
+  bool readAltitude(float &m)
+  {
     m = getFloat(&_buf[_pos], 2, 1, true);
     _pos += 2;
     return _pos <= _len;
   }
 
-  void skipData(uint8_t type) {
-    switch (type) {
+  void skipData(uint8_t type)
+  {
+    switch (type)
+    {
     case LPP_GPS:
       _pos += 9;
       break;
@@ -187,12 +204,14 @@ public:
   }
 };
 
-class LPPWriter {
+class LPPWriter
+{
   uint8_t *_buf;
   uint8_t _max_len;
   uint8_t _len;
 
-  void write(uint16_t value) {
+  void write(uint16_t value)
+  {
     _buf[_len++] = (value >> 8) & 0xFF; // MSB
     _buf[_len++] = value & 0xFF;        // LSB
   }
@@ -200,8 +219,10 @@ class LPPWriter {
 public:
   LPPWriter(uint8_t buf[], uint8_t max_len) : _buf(buf), _max_len(max_len), _len(0) {}
 
-  bool writeVoltage(uint8_t channel, float voltage) {
-    if (_len + 4 <= _max_len) {
+  bool writeVoltage(uint8_t channel, float voltage)
+  {
+    if (_len + 4 <= _max_len)
+    {
       _buf[_len++] = channel;
       _buf[_len++] = LPP_VOLTAGE;
       uint16_t value = voltage * 100;
@@ -211,8 +232,10 @@ public:
     return false;
   }
 
-  bool writeGPS(uint8_t channel, float lat, float lon, float alt) {
-    if (_len + 11 <= _max_len) {
+  bool writeGPS(uint8_t channel, float lat, float lon, float alt)
+  {
+    if (_len + 11 <= _max_len)
+    {
       _buf[_len++] = channel;
       _buf[_len++] = LPP_GPS;
 

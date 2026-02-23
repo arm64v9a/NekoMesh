@@ -2,7 +2,8 @@
 
 #include "fixedint.h"
 
-static uint64_t load_3(const unsigned char *in) {
+static uint64_t load_3(const unsigned char *in)
+{
   uint64_t result;
 
   result = (uint64_t)in[0];
@@ -12,7 +13,8 @@ static uint64_t load_3(const unsigned char *in) {
   return result;
 }
 
-static uint64_t load_4(const unsigned char *in) {
+static uint64_t load_4(const unsigned char *in)
+{
   uint64_t result;
 
   result = (uint64_t)in[0];
@@ -33,7 +35,8 @@ Output:
   Overwrites s in place.
 */
 
-void sc_reduce(unsigned char *s) {
+void sc_reduce(unsigned char *s)
+{
   int64_t s0 = 2097151 & load_3(s);
   int64_t s1 = 2097151 & (load_4(s + 2) >> 5);
   int64_t s2 = 2097151 & (load_3(s + 5) >> 2);
@@ -358,7 +361,8 @@ Output:
   where l = 2^252 + 27742317777372353535851937790883648493.
 */
 
-void sc_muladd(unsigned char *s, const unsigned char *a, const unsigned char *b, const unsigned char *c) {
+void sc_muladd(unsigned char *s, const unsigned char *a, const unsigned char *b, const unsigned char *c)
+{
   int64_t a0 = 2097151 & load_3(a);
   int64_t a1 = 2097151 & (load_4(a + 2) >> 5);
   int64_t a2 = 2097151 & (load_3(a + 5) >> 2);

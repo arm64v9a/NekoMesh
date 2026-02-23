@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void RAK3401Board::begin() {
+void RAK3401Board::begin()
+{
   NRF52BoardDCDC::begin();
   pinMode(PIN_VBAT_READ, INPUT);
 #ifdef PIN_USER_BTN

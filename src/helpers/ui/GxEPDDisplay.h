@@ -16,7 +16,8 @@
 #include <GxEPD2_7C.h>
 #include <GxEPD2_BW.h>
 
-class GxEPDDisplay : public DisplayDriver {
+class GxEPDDisplay : public DisplayDriver
+{
 
 #if defined(EINK_DISPLAY_MODEL)
   GxEPD2_BW<EINK_DISPLAY_MODEL, EINK_DISPLAY_MODEL::HEIGHT> display;
@@ -41,7 +42,9 @@ public:
 #if defined(EINK_DISPLAY_MODEL)
   GxEPDDisplay()
       : DisplayDriver(128, 128),
-        display(EINK_DISPLAY_MODEL(PIN_DISPLAY_CS, PIN_DISPLAY_DC, PIN_DISPLAY_RST, PIN_DISPLAY_BUSY)) {}
+        display(EINK_DISPLAY_MODEL(PIN_DISPLAY_CS, PIN_DISPLAY_DC, PIN_DISPLAY_RST, PIN_DISPLAY_BUSY))
+  {
+  }
 #else
   GxEPDDisplay() : DisplayDriver(128, 128), display(GxEPD2_150_BN(DISP_CS, DISP_DC, DISP_RST, DISP_BUSY)) {}
 #endif

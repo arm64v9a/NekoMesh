@@ -3,7 +3,8 @@
 #include <helpers/CommonCLI.h>
 #include <helpers/ui/DisplayDriver.h>
 
-class UITask {
+class UITask
+{
   DisplayDriver *_display;
   unsigned long _next_read, _next_refresh, _auto_off;
   int _prevBtnState;

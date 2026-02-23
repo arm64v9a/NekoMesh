@@ -55,7 +55,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @addtogroup BLE_GATT_DEFINES Defines
@@ -117,8 +118,9 @@ extern "C" {
   0x0107 /**< ATT Error: Offset specified was past the end of the attribute. */
 #define BLE_GATT_STATUS_ATTERR_INSUF_AUTHORIZATION                     \
   0x0108 /**< ATT Error: Used in ATT as Insufficient Authorization. */
-#define BLE_GATT_STATUS_ATTERR_PREPARE_QUEUE_FULL 0x0109 /**< ATT Error: Used in ATT as Prepare Queue Full. \
-                                                          */
+#define BLE_GATT_STATUS_ATTERR_PREPARE_QUEUE_FULL           \
+  0x0109 /**< ATT Error: Used in ATT as Prepare Queue Full. \
+          */
 #define BLE_GATT_STATUS_ATTERR_ATTRIBUTE_NOT_FOUND              \
   0x010A /**< ATT Error: Used in ATT as Attribute not found. */
 #define BLE_GATT_STATUS_ATTERR_ATTRIBUTE_NOT_LONG                                               \
@@ -133,18 +135,21 @@ extern "C" {
 #define BLE_GATT_STATUS_ATTERR_INSUF_RESOURCES 0x0111 /**< ATT Error: Insufficient resources. */
 #define BLE_GATT_STATUS_ATTERR_RFU_RANGE1_BEGIN                     \
   0x0112 /**< ATT Error: Reserved for Future Use range #1 begin. */
-#define BLE_GATT_STATUS_ATTERR_RFU_RANGE1_END 0x017F /**< ATT Error: Reserved for Future Use range #1 end. \
-                                                      */
-#define BLE_GATT_STATUS_ATTERR_APP_BEGIN      0x0180 /**< ATT Error: Application range begin. */
-#define BLE_GATT_STATUS_ATTERR_APP_END        0x019F /**< ATT Error: Application range end. */
+#define BLE_GATT_STATUS_ATTERR_RFU_RANGE1_END                                                         \
+  0x017F                                        /**< ATT Error: Reserved for Future Use range #1 end. \
+                                                 */
+#define BLE_GATT_STATUS_ATTERR_APP_BEGIN 0x0180 /**< ATT Error: Application range begin. */
+#define BLE_GATT_STATUS_ATTERR_APP_END   0x019F /**< ATT Error: Application range end. */
 #define BLE_GATT_STATUS_ATTERR_RFU_RANGE2_BEGIN                     \
   0x01A0 /**< ATT Error: Reserved for Future Use range #2 begin. */
-#define BLE_GATT_STATUS_ATTERR_RFU_RANGE2_END 0x01DF /**< ATT Error: Reserved for Future Use range #2 end. \
-                                                      */
+#define BLE_GATT_STATUS_ATTERR_RFU_RANGE2_END                  \
+  0x01DF /**< ATT Error: Reserved for Future Use range #2 end. \
+          */
 #define BLE_GATT_STATUS_ATTERR_RFU_RANGE3_BEGIN                     \
   0x01E0 /**< ATT Error: Reserved for Future Use range #3 begin. */
-#define BLE_GATT_STATUS_ATTERR_RFU_RANGE3_END 0x01FC /**< ATT Error: Reserved for Future Use range #3 end. \
-                                                      */
+#define BLE_GATT_STATUS_ATTERR_RFU_RANGE3_END                  \
+  0x01FC /**< ATT Error: Reserved for Future Use range #3 end. \
+          */
 #define BLE_GATT_STATUS_ATTERR_CPS_WRITE_REQ_REJECTED                          \
   0x01FC /**< ATT Common Profile and Service Error: Write request rejected. */
 #define BLE_GATT_STATUS_ATTERR_CPS_CCCD_CONFIG_ERROR                                               \
@@ -195,48 +200,51 @@ extern "C" {
  */
 #define BLE_GATT_CPF_NAMESPACE_BTSIG               0x01   /**< Bluetooth SIG defined Namespace. */
 #define BLE_GATT_CPF_NAMESPACE_DESCRIPTION_UNKNOWN 0x0000 /**< Namespace Description Unknown. */
-/** @} */
+  /** @} */
 
-/** @} */
+  /** @} */
 
-/** @addtogroup BLE_GATT_STRUCTURES Structures
- * @{ */
+  /** @addtogroup BLE_GATT_STRUCTURES Structures
+   * @{ */
 
-/**
- * @brief BLE GATT connection configuration parameters, set with @ref sd_ble_cfg_set.
- *
- * @retval ::NRF_ERROR_INVALID_PARAM att_mtu is smaller than @ref BLE_GATT_ATT_MTU_DEFAULT.
- */
-typedef struct {
-  uint16_t att_mtu; /**< Maximum size of ATT packet the SoftDevice can send or receive.
-                         The default and minimum value is @ref BLE_GATT_ATT_MTU_DEFAULT.
-                         @mscs
-                         @mmsc{@ref BLE_GATTC_MTU_EXCHANGE}
-                         @mmsc{@ref BLE_GATTS_MTU_EXCHANGE}
-                         @endmscs
-                    */
-} ble_gatt_conn_cfg_t;
+  /**
+   * @brief BLE GATT connection configuration parameters, set with @ref sd_ble_cfg_set.
+   *
+   * @retval ::NRF_ERROR_INVALID_PARAM att_mtu is smaller than @ref BLE_GATT_ATT_MTU_DEFAULT.
+   */
+  typedef struct
+  {
+    uint16_t att_mtu; /**< Maximum size of ATT packet the SoftDevice can send or receive.
+                           The default and minimum value is @ref BLE_GATT_ATT_MTU_DEFAULT.
+                           @mscs
+                           @mmsc{@ref BLE_GATTC_MTU_EXCHANGE}
+                           @mmsc{@ref BLE_GATTS_MTU_EXCHANGE}
+                           @endmscs
+                      */
+  } ble_gatt_conn_cfg_t;
 
-/**@brief GATT Characteristic Properties. */
-typedef struct {
-  /* Standard properties */
-  uint8_t broadcast : 1;      /**< Broadcasting of the value permitted. */
-  uint8_t read : 1;           /**< Reading the value permitted. */
-  uint8_t write_wo_resp : 1;  /**< Writing the value with Write Command permitted. */
-  uint8_t write : 1;          /**< Writing the value with Write Request permitted. */
-  uint8_t notify : 1;         /**< Notification of the value permitted. */
-  uint8_t indicate : 1;       /**< Indications of the value permitted. */
-  uint8_t auth_signed_wr : 1; /**< Writing the value with Signed Write Command permitted. */
-} ble_gatt_char_props_t;
+  /**@brief GATT Characteristic Properties. */
+  typedef struct
+  {
+    /* Standard properties */
+    uint8_t broadcast : 1;      /**< Broadcasting of the value permitted. */
+    uint8_t read : 1;           /**< Reading the value permitted. */
+    uint8_t write_wo_resp : 1;  /**< Writing the value with Write Command permitted. */
+    uint8_t write : 1;          /**< Writing the value with Write Request permitted. */
+    uint8_t notify : 1;         /**< Notification of the value permitted. */
+    uint8_t indicate : 1;       /**< Indications of the value permitted. */
+    uint8_t auth_signed_wr : 1; /**< Writing the value with Signed Write Command permitted. */
+  } ble_gatt_char_props_t;
 
-/**@brief GATT Characteristic Extended Properties. */
-typedef struct {
-  /* Extended properties */
-  uint8_t reliable_wr : 1; /**< Writing the value with Queued Write operations permitted. */
-  uint8_t wr_aux : 1;      /**< Writing the Characteristic User Description descriptor permitted. */
-} ble_gatt_char_ext_props_t;
+  /**@brief GATT Characteristic Extended Properties. */
+  typedef struct
+  {
+    /* Extended properties */
+    uint8_t reliable_wr : 1; /**< Writing the value with Queued Write operations permitted. */
+    uint8_t wr_aux : 1;      /**< Writing the Characteristic User Description descriptor permitted. */
+  } ble_gatt_char_ext_props_t;
 
-/** @} */
+  /** @} */
 
 #ifdef __cplusplus
 }

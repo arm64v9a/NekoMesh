@@ -12,7 +12,8 @@
 #define PIN_VBAT_READ        BATTERY_PIN
 #define REAL_VBAT_MV_PER_LSB (VBAT_DIVIDER_COMP * VBAT_MV_PER_LSB)
 
-class ThinkNodeM6Board : public NRF52BoardDCDC {
+class ThinkNodeM6Board : public NRF52BoardDCDC
+{
 protected:
 #if NRF52_POWER_MANAGEMENT
   void initiateShutdown(uint8_t reason) override;
@@ -24,17 +25,20 @@ public:
   uint16_t getBattMilliVolts() override;
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED off
   }
 #endif
 
   const char *getManufacturerName() const override { return "Elecrow ThinkNode M6"; }
 
-  void powerOff() override {
+  void powerOff() override
+  {
 
 // turn off all leds, sd_power_system_off will not do this for us
 #ifdef P_LORA_TX_LED

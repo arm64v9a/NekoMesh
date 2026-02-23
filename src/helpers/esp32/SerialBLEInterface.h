@@ -10,7 +10,8 @@
 class SerialBLEInterface : public BaseSerialInterface,
                            BLESecurityCallbacks,
                            BLEServerCallbacks,
-                           BLECharacteristicCallbacks {
+                           BLECharacteristicCallbacks
+{
   BLEServer *pServer;
   BLEService *pService;
   BLECharacteristic *pTxCharacteristic;
@@ -22,7 +23,8 @@ class SerialBLEInterface : public BaseSerialInterface,
   unsigned long _last_write;
   unsigned long adv_restart_time;
 
-  struct Frame {
+  struct Frame
+  {
     uint8_t len;
     uint8_t buf[MAX_FRAME_SIZE];
   };
@@ -33,7 +35,8 @@ class SerialBLEInterface : public BaseSerialInterface,
   int send_queue_len;
   Frame send_queue[FRAME_QUEUE_SIZE];
 
-  void clearBuffers() {
+  void clearBuffers()
+  {
     recv_queue_len = 0;
     send_queue_len = 0;
   }
@@ -56,7 +59,8 @@ protected:
   void onWrite(BLECharacteristic *pCharacteristic, esp_ble_gatts_cb_param_t *param) override;
 
 public:
-  SerialBLEInterface() {
+  SerialBLEInterface()
+  {
     pServer = NULL;
     pService = NULL;
     deviceConnected = false;

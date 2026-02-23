@@ -3,7 +3,8 @@
 #include <Mesh.h>
 #include <RadioLib.h>
 
-class RadioLibWrapper : public mesh::Radio {
+class RadioLibWrapper : public mesh::Radio
+{
 protected:
   PhysicalLayer *_radio;
   mesh::MainBoard *_board;
@@ -18,7 +19,8 @@ protected:
   virtual bool isReceivingPacket() = 0;
 
 public:
-  RadioLibWrapper(PhysicalLayer &radio, mesh::MainBoard &board) : _radio(&radio), _board(&board) {
+  RadioLibWrapper(PhysicalLayer &radio, mesh::MainBoard &board) : _radio(&radio), _board(&board)
+  {
     n_recv = n_sent = 0;
   }
 
@@ -32,7 +34,8 @@ public:
   bool isInRecvMode() const override;
   bool isChannelActive();
 
-  bool isReceiving() override {
+  bool isReceiving() override
+  {
     if (isReceivingPacket()) return true;
 
     return isChannelActive();
@@ -54,7 +57,8 @@ public:
   virtual float getLastRSSI() const override;
   virtual float getLastSNR() const override;
 
-  float packetScore(float snr, int packet_len) override {
+  float packetScore(float snr, int packet_len) override
+  {
     return packetScoreInt(snr, 10, packet_len);
   } // assume sf=10
 };
@@ -63,14 +67,17 @@ public:
  * \brief  an RNG impl using the noise from the LoRa radio as entropy.
  *         NOTE: this is VERY SLOW!  Use only for things like creating new LocalIdentity
  */
-class RadioNoiseListener : public mesh::RNG {
+class RadioNoiseListener : public mesh::RNG
+{
   PhysicalLayer *_radio;
 
 public:
   RadioNoiseListener(PhysicalLayer &radio) : _radio(&radio) {}
 
-  void random(uint8_t *dest, size_t sz) override {
-    for (int i = 0; i < sz; i++) {
+  void random(uint8_t *dest, size_t sz) override
+  {
+    for (int i = 0; i < sz; i++)
+    {
       dest[i] = _radio->randomByte() ^ (::random(0, 256) & 0xFF);
     }
   }

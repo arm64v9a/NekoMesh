@@ -6,7 +6,8 @@
 
 #ifdef XIAO_NRF52
 
-class XiaoNrf52Board : public NRF52BoardDCDC {
+class XiaoNrf52Board : public NRF52BoardDCDC
+{
 protected:
 #if NRF52_POWER_MANAGEMENT
   void initiateShutdown(uint8_t reason) override;
@@ -17,10 +18,12 @@ public:
   void begin();
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED off
   }
 #endif
@@ -29,7 +32,8 @@ public:
 
   const char *getManufacturerName() const override { return "Seeed Xiao-nrf52"; }
 
-  void powerOff() override {
+  void powerOff() override
+  {
     // set led on and wait for button release before poweroff
     digitalWrite(PIN_LED, LOW);
 #ifdef PIN_USER_BTN

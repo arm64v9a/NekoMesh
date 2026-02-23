@@ -47,12 +47,14 @@
  * This is a little Arduino String emulation to keep the OLEDDisplay
  * library code in common between Arduino and mbed-os
  */
-class String {
+class String
+{
 public:
   String(const char *s) { _str = s; };
   int length() { return strlen(_str); };
   const char *c_str() { return _str; };
-  void toCharArray(char *buf, unsigned int bufsize, unsigned int index = 0) const {
+  void toCharArray(char *buf, unsigned int bufsize, unsigned int index = 0) const
+  {
     memcpy(buf, _str + index, std::min(bufsize, strlen(_str)));
   };
 
@@ -128,16 +130,23 @@ private:
   }
 #endif
 
-enum OLEDDISPLAY_COLOR { BLACK = 0, WHITE = 1, INVERSE = 2 };
+enum OLEDDISPLAY_COLOR
+{
+  BLACK = 0,
+  WHITE = 1,
+  INVERSE = 2
+};
 
-enum OLEDDISPLAY_TEXT_ALIGNMENT {
+enum OLEDDISPLAY_TEXT_ALIGNMENT
+{
   TEXT_ALIGN_LEFT = 0,
   TEXT_ALIGN_RIGHT = 1,
   TEXT_ALIGN_CENTER = 2,
   TEXT_ALIGN_CENTER_BOTH = 3
 };
 
-enum OLEDDISPLAY_GEOMETRY {
+enum OLEDDISPLAY_GEOMETRY
+{
   GEOMETRY_128_64 = 0,
   GEOMETRY_128_32 = 1,
   GEOMETRY_64_48 = 2,
@@ -146,15 +155,21 @@ enum OLEDDISPLAY_GEOMETRY {
   GEOMETRY_128_128 = 5
 };
 
-enum HW_I2C { I2C_ONE, I2C_TWO };
+enum HW_I2C
+{
+  I2C_ONE,
+  I2C_TWO
+};
 
 typedef char (*FontTableLookupFunction)(const uint8_t ch);
 char DefaultFontTableLookup(const uint8_t ch);
 
 #ifdef ARDUINO
-class OLEDDisplay : public Print {
+class OLEDDisplay : public Print
+{
 #elif __MBED__
-class OLEDDisplay : public Stream {
+class OLEDDisplay : public Stream
+{
 #else
 #error "Unkown operating system"
 #endif

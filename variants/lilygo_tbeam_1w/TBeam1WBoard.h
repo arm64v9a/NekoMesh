@@ -28,7 +28,8 @@
 //   - USB-C (3.9-6V) marginal; 7.4V battery recommended
 //   - Battery must support 2A+ discharge for high-power TX
 
-class TBeam1WBoard : public ESP32Board {
+class TBeam1WBoard : public ESP32Board
+{
 private:
   bool radio_powered = false;
 

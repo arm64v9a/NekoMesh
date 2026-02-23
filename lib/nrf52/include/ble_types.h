@@ -51,7 +51,8 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 /** @addtogroup BLE_TYPES_DEFINES Defines
@@ -59,24 +60,26 @@ extern "C" {
 
 /** @defgroup BLE_CONN_HANDLES BLE Connection Handles
  * @{ */
-#define BLE_CONN_HANDLE_INVALID                0xFFFF /**< Invalid Connection Handle. */
-#define BLE_CONN_HANDLE_ALL                    0xFFFE /**< Applies to all Connection Handles. */
+#define BLE_CONN_HANDLE_INVALID            0xFFFF /**< Invalid Connection Handle. */
+#define BLE_CONN_HANDLE_ALL                0xFFFE /**< Applies to all Connection Handles. */
 /** @} */
 
 /** @defgroup BLE_UUID_VALUES Assigned Values for BLE UUIDs
  * @{ */
 /* Generic UUIDs, applicable to all services */
-#define BLE_UUID_UNKNOWN                       0x0000 /**< Reserved UUID. */
-#define BLE_UUID_SERVICE_PRIMARY               0x2800 /**< Primary Service. */
-#define BLE_UUID_SERVICE_SECONDARY             0x2801 /**< Secondary Service. */
-#define BLE_UUID_SERVICE_INCLUDE               0x2802 /**< Include. */
-#define BLE_UUID_CHARACTERISTIC                0x2803 /**< Characteristic. */
-#define BLE_UUID_DESCRIPTOR_CHAR_EXT_PROP      0x2900 /**< Characteristic Extended Properties Descriptor. */
-#define BLE_UUID_DESCRIPTOR_CHAR_USER_DESC     0x2901 /**< Characteristic User Description Descriptor. */
-#define BLE_UUID_DESCRIPTOR_CLIENT_CHAR_CONFIG 0x2902 /**< Client Characteristic Configuration Descriptor. \
-                                                       */
-#define BLE_UUID_DESCRIPTOR_SERVER_CHAR_CONFIG 0x2903 /**< Server Characteristic Configuration Descriptor. \
-                                                       */
+#define BLE_UUID_UNKNOWN                   0x0000 /**< Reserved UUID. */
+#define BLE_UUID_SERVICE_PRIMARY           0x2800 /**< Primary Service. */
+#define BLE_UUID_SERVICE_SECONDARY         0x2801 /**< Secondary Service. */
+#define BLE_UUID_SERVICE_INCLUDE           0x2802 /**< Include. */
+#define BLE_UUID_CHARACTERISTIC            0x2803 /**< Characteristic. */
+#define BLE_UUID_DESCRIPTOR_CHAR_EXT_PROP  0x2900 /**< Characteristic Extended Properties Descriptor. */
+#define BLE_UUID_DESCRIPTOR_CHAR_USER_DESC 0x2901 /**< Characteristic User Description Descriptor. */
+#define BLE_UUID_DESCRIPTOR_CLIENT_CHAR_CONFIG                \
+  0x2902 /**< Client Characteristic Configuration Descriptor. \
+          */
+#define BLE_UUID_DESCRIPTOR_SERVER_CHAR_CONFIG                \
+  0x2903 /**< Server Characteristic Configuration Descriptor. \
+          */
 #define BLE_UUID_DESCRIPTOR_CHAR_PRESENTATION_FORMAT            \
   0x2904 /**< Characteristic Presentation Format Descriptor. */
 #define BLE_UUID_DESCRIPTOR_CHAR_AGGREGATE_FORMAT    0x2905 /**< Characteristic Aggregate Format Descriptor. */
@@ -154,15 +157,17 @@ extern "C" {
   5185 /**< Location Display Device (Outdoor Sports Activity subtype). */
 #define BLE_APPEARANCE_OUTDOOR_SPORTS_ACT_LOC_AND_NAV_DISP                               \
   5186 /**< Location and Navigation Display Device (Outdoor Sports Activity subtype). */
-#define BLE_APPEARANCE_OUTDOOR_SPORTS_ACT_LOC_POD 5187 /**< Location Pod (Outdoor Sports Activity subtype). \
-                                                        */
+#define BLE_APPEARANCE_OUTDOOR_SPORTS_ACT_LOC_POD           \
+  5187 /**< Location Pod (Outdoor Sports Activity subtype). \
+        */
 #define BLE_APPEARANCE_OUTDOOR_SPORTS_ACT_LOC_AND_NAV_POD                     \
   5188 /**< Location and Navigation Pod (Outdoor Sports Activity subtype). */
 /** @} */
 
 /** @brief Set .type and .uuid fields of ble_uuid_struct to specified UUID value. */
 #define BLE_UUID_BLE_ASSIGN(instance, value) \
-  do {                                       \
+  do                                         \
+  {                                          \
     instance.type = BLE_UUID_TYPE_BLE;       \
     instance.uuid = value;                   \
   } while (0)
@@ -170,14 +175,16 @@ extern "C" {
 /** @brief Copy type and uuid members from src to dst ble_uuid_t pointer. Both pointers must be
  * valid/non-null. */
 #define BLE_UUID_COPY_PTR(dst, src) \
-  do {                              \
+  do                                \
+  {                                 \
     (dst)->type = (src)->type;      \
     (dst)->uuid = (src)->uuid;      \
   } while (0)
 
 /** @brief Copy type and uuid members from src to dst ble_uuid_t struct. */
 #define BLE_UUID_COPY_INST(dst, src) \
-  do {                               \
+  do                                 \
+  {                                  \
     (dst).type = (src).type;         \
     (dst).uuid = (src).uuid;         \
   } while (0)
@@ -190,28 +197,31 @@ extern "C" {
 #define BLE_UUID_NEQ(p_uuid1, p_uuid2)                                           \
   (((p_uuid1)->type != (p_uuid2)->type) || ((p_uuid1)->uuid != (p_uuid2)->uuid))
 
-/** @} */
+  /** @} */
 
-/** @addtogroup BLE_TYPES_STRUCTURES Structures
- * @{ */
+  /** @addtogroup BLE_TYPES_STRUCTURES Structures
+   * @{ */
 
-/** @brief 128 bit UUID values. */
-typedef struct {
-  uint8_t uuid128[16]; /**< Little-Endian UUID bytes. */
-} ble_uuid128_t;
+  /** @brief 128 bit UUID values. */
+  typedef struct
+  {
+    uint8_t uuid128[16]; /**< Little-Endian UUID bytes. */
+  } ble_uuid128_t;
 
-/** @brief  Bluetooth Low Energy UUID type, encapsulates both 16-bit and 128-bit UUIDs. */
-typedef struct {
-  uint16_t uuid; /**< 16-bit UUID value or octets 12-13 of 128-bit UUID. */
-  uint8_t type;  /**< UUID type, see @ref BLE_UUID_TYPES. If type is @ref BLE_UUID_TYPE_UNKNOWN, the value of
-                    uuid is undefined. */
-} ble_uuid_t;
+  /** @brief  Bluetooth Low Energy UUID type, encapsulates both 16-bit and 128-bit UUIDs. */
+  typedef struct
+  {
+    uint16_t uuid; /**< 16-bit UUID value or octets 12-13 of 128-bit UUID. */
+    uint8_t type; /**< UUID type, see @ref BLE_UUID_TYPES. If type is @ref BLE_UUID_TYPE_UNKNOWN, the value of
+                     uuid is undefined. */
+  } ble_uuid_t;
 
-/**@brief Data structure. */
-typedef struct {
-  uint8_t *p_data; /**< Pointer to the data buffer provided to/from the application. */
-  uint16_t len;    /**< Length of the data buffer, in bytes. */
-} ble_data_t;
+  /**@brief Data structure. */
+  typedef struct
+  {
+    uint8_t *p_data; /**< Pointer to the data buffer provided to/from the application. */
+    uint16_t len;    /**< Length of the data buffer, in bytes. */
+  } ble_data_t;
 
 /** @} */
 #ifdef __cplusplus

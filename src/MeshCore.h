@@ -41,12 +41,14 @@
   }
 #endif
 
-namespace mesh {
+namespace mesh
+{
 
 #define BD_STARTUP_NORMAL    0 // getStartupReason() codes
 #define BD_STARTUP_RX_PACKET 1
 
-class MainBoard {
+class MainBoard
+{
 public:
   virtual uint16_t getBattMilliVolts() = 0;
   virtual float getMCUTemperature() { return NAN; }
@@ -75,7 +77,8 @@ public:
 /**
  * An abstraction of the device's Realtime Clock.
  */
-class RTCClock {
+class RTCClock
+{
   uint32_t last_unique;
 
 protected:
@@ -97,9 +100,11 @@ public:
    */
   virtual void tick() { /* no op */ }
 
-  uint32_t getCurrentTimeUnique() {
+  uint32_t getCurrentTimeUnique()
+  {
     uint32_t t = getCurrentTime();
-    if (t <= last_unique) {
+    if (t <= last_unique)
+    {
       return ++last_unique;
     }
     return last_unique = t;

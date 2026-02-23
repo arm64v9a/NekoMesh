@@ -48,7 +48,8 @@ const uint32_t g_ADigitalPinMap[] = {
   23, // D26 P0.23 (QSPI_SIO_3 HOLD)
 };
 
-void initVariant() {
+void initVariant()
+{
   pinMode(GPS_EN, OUTPUT);
   digitalWrite(GPS_EN, LOW);
 

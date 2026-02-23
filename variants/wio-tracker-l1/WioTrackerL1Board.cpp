@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void WioTrackerL1Board::begin() {
+void WioTrackerL1Board::begin()
+{
   NRF52BoardDCDC::begin();
   btn_prev_state = HIGH;
 

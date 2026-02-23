@@ -42,7 +42,8 @@
 #include "stdint.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
 #ifdef SVCALL_AS_NORMAL_FUNCTION
@@ -60,7 +61,8 @@ extern "C" {
 #endif
 #define SVCALL(number, return_type, signature)                                                              \
   _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wreturn-type\"") __attribute__((naked)) \
-  __attribute__((unused)) static return_type signature {                                                    \
+  __attribute__((unused)) static return_type signature                                                      \
+  {                                                                                                         \
     __asm("svc %0\n"                                                                                        \
           "bx r14"                                                                                          \
           :                                                                                                 \

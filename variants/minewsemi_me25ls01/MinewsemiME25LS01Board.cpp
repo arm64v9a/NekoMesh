@@ -3,7 +3,8 @@
 #include <Arduino.h>
 #include <Wire.h>
 
-void MinewsemiME25LS01Board::begin() {
+void MinewsemiME25LS01Board::begin()
+{
   NRF52Board::begin();
   btn_prev_state = HIGH;
 

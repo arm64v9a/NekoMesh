@@ -14,7 +14,8 @@
 #include <helpers/ui/SSD1306Display.h>
 #endif
 
-class MASensorManager : public SensorManager {
+class MASensorManager : public SensorManager
+{
   bool gps_active = false;
   LocationProvider *_location;
 

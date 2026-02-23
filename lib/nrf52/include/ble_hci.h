@@ -44,11 +44,12 @@
 #ifndef BLE_HCI_H__
 #define BLE_HCI_H__
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif
 
-/** @defgroup BLE_HCI_STATUS_CODES Bluetooth status codes
- * @{ */
+  /** @defgroup BLE_HCI_STATUS_CODES Bluetooth status codes
+   * @{ */
 
 #define BLE_HCI_STATUS_CODE_SUCCESS                         0x00 /**< Success. */
 #define BLE_HCI_STATUS_CODE_UNKNOWN_BTLE_COMMAND            0x01 /**< Unknown BLE Command. */
@@ -126,7 +127,7 @@ extern "C" {
 #define BLE_HCI_CONN_TERMINATED_DUE_TO_MIC_FAILURE 0x3D /**< Connection Terminated due to MIC Failure. */
 #define BLE_HCI_CONN_FAILED_TO_BE_ESTABLISHED      0x3E /**< Connection Failed to be Established. */
 
-/** @} */
+  /** @} */
 
 #ifdef __cplusplus
 }

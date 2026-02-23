@@ -21,14 +21,16 @@
 
 #define RESP_SERVER_LOGIN_OK 0 // response to ANON_REQ
 
-class ContactVisitor {
+class ContactVisitor
+{
 public:
   virtual void onContactVisit(const ContactInfo &contact) = 0;
 };
 
 class BaseChatMesh;
 
-class ContactsIterator {
+class ContactsIterator
+{
   int next_idx = 0;
 
 public:
@@ -43,7 +45,8 @@ public:
 #define MAX_CONNECTIONS 16
 #endif
 
-struct ConnectionInfo {
+struct ConnectionInfo
+{
   mesh::Identity server_id;
   unsigned long next_ping;
   uint32_t last_activity;
@@ -56,7 +59,8 @@ struct ConnectionInfo {
 /**
  *  \brief  abstract Mesh class for common 'chat' client
  */
-class BaseChatMesh : public mesh::Mesh {
+class BaseChatMesh : public mesh::Mesh
+{
 
   friend class ContactsIterator;
 
@@ -80,7 +84,8 @@ class BaseChatMesh : public mesh::Mesh {
 protected:
   BaseChatMesh(mesh::Radio &radio, mesh::MillisecondClock &ms, mesh::RNG &rng, mesh::RTCClock &rtc,
                mesh::PacketManager &mgr, mesh::MeshTables &tables)
-      : mesh::Mesh(radio, ms, rng, rtc, mgr, tables) {
+      : mesh::Mesh(radio, ms, rng, rtc, mgr, tables)
+  {
     num_contacts = 0;
 #ifdef MAX_GROUP_CHANNELS
     memset(channels, 0, sizeof(channels));
@@ -130,10 +135,12 @@ protected:
                                uint32_t delay_millis = 0);
 
   // storage concepts, for sub-classes to override/implement
-  virtual int getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_buf[]) {
+  virtual int getBlobByKey(const uint8_t key[], int key_len, uint8_t dest_buf[])
+  {
     return 0;
   } // not implemented
-  virtual bool putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], int len) {
+  virtual bool putBlobByKey(const uint8_t key[], int key_len, const uint8_t src_buf[], int len)
+  {
     return false;
   }
 

@@ -3,13 +3,15 @@
 #include <Stream.h>
 #include <Utils.h>
 
-namespace mesh {
+namespace mesh
+{
 
 /**
  * \brief  An identity in the mesh, with given Ed25519 public key, ie. a party whose signatures can be
  * VERIFIED.
  */
-class Identity {
+class Identity
+{
 public:
   uint8_t pub_key[PUB_KEY_SIZE];
 
@@ -17,7 +19,8 @@ public:
   Identity(const char *pub_hex);
   Identity(const uint8_t *_pub) { memcpy(pub_key, _pub, PUB_KEY_SIZE); }
 
-  int copyHashTo(uint8_t *dest) const {
+  int copyHashTo(uint8_t *dest) const
+  {
     memcpy(dest, pub_key, PATH_HASH_SIZE); // hash is just prefix of pub_key
     return PATH_HASH_SIZE;
   }
@@ -45,7 +48,8 @@ public:
  * \brief  An Identity generated on THIS device, ie. with public/private Ed25519 key pair being on this
  * device.
  */
-class LocalIdentity : public Identity {
+class LocalIdentity : public Identity
+{
   uint8_t prv_key[PRV_KEY_SIZE];
 
 public:
@@ -66,7 +70,8 @@ public:
    * \param  secret OUT - the 'shared secret' (must be PUB_KEY_SIZE bytes)
    * \param  other IN - the second party in the exchange.
    */
-  void calcSharedSecret(uint8_t *secret, const Identity &other) const {
+  void calcSharedSecret(uint8_t *secret, const Identity &other) const
+  {
     calcSharedSecret(secret, other.pub_key);
   }
 

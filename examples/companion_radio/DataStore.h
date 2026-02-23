@@ -6,7 +6,8 @@
 #include <helpers/ContactInfo.h>
 #include <helpers/IdentityStore.h>
 
-class DataStoreHost {
+class DataStoreHost
+{
 public:
   virtual bool onContactLoaded(const ContactInfo &contact) = 0;
   virtual bool getContactForSave(uint32_t idx, ContactInfo &contact) = 0;
@@ -14,7 +15,8 @@ public:
   virtual bool getChannelForSave(uint8_t channel_idx, ChannelDetails &ch) = 0;
 };
 
-class DataStore {
+class DataStore
+{
   FILESYSTEM *_fs;
   FILESYSTEM *_fsExtra;
   mesh::RTCClock *_clock;
@@ -52,7 +54,8 @@ public:
   uint32_t getStorageTotalKb() const;
 
 private:
-  FILESYSTEM *_getContactsChannelsFS() const {
+  FILESYSTEM *_getContactsChannelsFS() const
+  {
     if (_fsExtra) return _fsExtra;
     return _fs;
   };

@@ -31,15 +31,18 @@ static char ntc_temp2[136] = {
   90,  91,  92,  93,  94,  95,  96,  97,  98,  99,  100, 101, 102, 103, 104, 105,
 };
 
-static float get_heater_temperature(unsigned int vcc_volt, unsigned int ntc_volt) {
+static float get_heater_temperature(unsigned int vcc_volt, unsigned int ntc_volt)
+{
   int i = 0;
   float Vout = 0, Rt = 0, temp = 0;
   Vout = ntc_volt;
 
   Rt = (HEATER_NTC_RP * vcc_volt) / Vout - HEATER_NTC_RP;
 
-  for (i = 0; i < 136; i++) {
-    if (Rt >= ntc_res2[i]) {
+  for (i = 0; i < 136; i++)
+  {
+    if (Rt >= ntc_res2[i])
+    {
       break;
     }
   }
@@ -50,15 +53,19 @@ static float get_heater_temperature(unsigned int vcc_volt, unsigned int ntc_volt
   return temp;
 }
 
-static int get_light_lv(unsigned int light_volt) {
+static int get_light_lv(unsigned int light_volt)
+{
   float Vout = 0, Vin = 0, Rt = 0, temp = 0;
   unsigned int light_level = 0;
 
   // Seeed's firmware maps the photocell reading to a 0-100 % range rather than lux.
-  if (light_volt <= 80) {
+  if (light_volt <= 80)
+  {
     light_level = 0;
     return light_level;
-  } else if (light_volt >= 2480) {
+  }
+  else if (light_volt >= 2480)
+  {
     light_level = 100;
     return light_level;
   }
@@ -68,7 +75,8 @@ static int get_light_lv(unsigned int light_volt) {
   return light_level;
 }
 
-float t1000e_get_temperature(void) {
+float t1000e_get_temperature(void)
+{
   unsigned int ntc_v, vcc_v;
 
   digitalWrite(PIN_3V3_EN, HIGH);
@@ -85,7 +93,8 @@ float t1000e_get_temperature(void) {
   return get_heater_temperature(vcc_v, ntc_v);
 }
 
-uint32_t t1000e_get_light(void) {
+uint32_t t1000e_get_light(void)
+{
   int lux = 0;
   unsigned int lux_v = 0;
 

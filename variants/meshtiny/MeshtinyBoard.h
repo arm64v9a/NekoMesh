@@ -4,7 +4,8 @@
 #include <MeshCore.h>
 #include <helpers/NRF52Board.h>
 
-class MeshtinyBoard : public NRF52BoardDCDC {
+class MeshtinyBoard : public NRF52BoardDCDC
+{
 protected:
   uint8_t btn_prev_state;
 
@@ -13,15 +14,18 @@ public:
   void begin();
 
 #if defined(P_LORA_TX_LED)
-  void onBeforeTransmit() override {
+  void onBeforeTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, HIGH); // turn TX LED on
   }
-  void onAfterTransmit() override {
+  void onAfterTransmit() override
+  {
     digitalWrite(P_LORA_TX_LED, LOW); // turn TX LED off
   }
 #endif
 
-  uint16_t getBattMilliVolts() override {
+  uint16_t getBattMilliVolts() override
+  {
     int adcvalue = 0;
     analogReadResolution(12);
     analogReference(AR_INTERNAL_3_0);
@@ -34,10 +38,12 @@ public:
 
   void reboot() override { NVIC_SystemReset(); }
 
-  void powerOff() override {
+  void powerOff() override
+  {
 
 #ifdef PIN_USER_BTN
-    while (digitalRead(PIN_USER_BTN) == LOW) {
+    while (digitalRead(PIN_USER_BTN) == LOW)
+    {
       delay(10);
     }
 #endif

@@ -13,7 +13,8 @@
 #include <helpers/ui/ST7735Display.h>
 #endif
 
-class HWTSensorManager : public SensorManager {
+class HWTSensorManager : public SensorManager
+{
   bool gps_active = false;
   LocationProvider *_location;
 

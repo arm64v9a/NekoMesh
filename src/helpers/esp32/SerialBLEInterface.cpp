@@ -9,10 +9,12 @@
 
 #define ADVERT_RESTART_DELAY   1000 // millis
 
-void SerialBLEInterface::begin(const char *prefix, char *name, uint32_t pin_code) {
+void SerialBLEInterface::begin(const char *prefix, char *name, uint32_t pin_code)
+{
   _pin_code = pin_code;
 
-  if (strcmp(name, "@@MAC") == 0) {
+  if (strcmp(name, "@@MAC") == 0)
+  {
     uint8_t addr[8];
     memset(addr, 0, sizeof(addr));
     esp_efuse_mac_get_default(addr);
@@ -56,30 +58,38 @@ void SerialBLEInterface::begin(const char *prefix, char *name, uint32_t pin_code
 
 // -------- BLESecurityCallbacks methods
 
-uint32_t SerialBLEInterface::onPassKeyRequest() {
+uint32_t SerialBLEInterface::onPassKeyRequest()
+{
   BLE_DEBUG_PRINTLN("onPassKeyRequest()");
   return _pin_code;
 }
 
-void SerialBLEInterface::onPassKeyNotify(uint32_t pass_key) {
+void SerialBLEInterface::onPassKeyNotify(uint32_t pass_key)
+{
   BLE_DEBUG_PRINTLN("onPassKeyNotify(%u)", pass_key);
 }
 
-bool SerialBLEInterface::onConfirmPIN(uint32_t pass_key) {
+bool SerialBLEInterface::onConfirmPIN(uint32_t pass_key)
+{
   BLE_DEBUG_PRINTLN("onConfirmPIN(%u)", pass_key);
   return true;
 }
 
-bool SerialBLEInterface::onSecurityRequest() {
+bool SerialBLEInterface::onSecurityRequest()
+{
   BLE_DEBUG_PRINTLN("onSecurityRequest()");
   return true; // allow
 }
 
-void SerialBLEInterface::onAuthenticationComplete(esp_ble_auth_cmpl_t cmpl) {
-  if (cmpl.success) {
+void SerialBLEInterface::onAuthenticationComplete(esp_ble_auth_cmpl_t cmpl)
+{
+  if (cmpl.success)
+  {
     BLE_DEBUG_PRINTLN(" - SecurityCallback - Authentication Success");
     deviceConnected = true;
-  } else {
+  }
+  else
+  {
     BLE_DEBUG_PRINTLN(" - SecurityCallback - Authentication Failure*");
 
     // pServer->removePeerDevice(pServer->getConnId(), true);
@@ -92,19 +102,23 @@ void SerialBLEInterface::onAuthenticationComplete(esp_ble_auth_cmpl_t cmpl) {
 
 void SerialBLEInterface::onConnect(BLEServer *pServer) {}
 
-void SerialBLEInterface::onConnect(BLEServer *pServer, esp_ble_gatts_cb_param_t *param) {
+void SerialBLEInterface::onConnect(BLEServer *pServer, esp_ble_gatts_cb_param_t *param)
+{
   BLE_DEBUG_PRINTLN("onConnect(), conn_id=%d, mtu=%d", param->connect.conn_id,
                     pServer->getPeerMTU(param->connect.conn_id));
   last_conn_id = param->connect.conn_id;
 }
 
-void SerialBLEInterface::onMtuChanged(BLEServer *pServer, esp_ble_gatts_cb_param_t *param) {
+void SerialBLEInterface::onMtuChanged(BLEServer *pServer, esp_ble_gatts_cb_param_t *param)
+{
   BLE_DEBUG_PRINTLN("onMtuChanged(), mtu=%d", pServer->getPeerMTU(param->mtu.conn_id));
 }
 
-void SerialBLEInterface::onDisconnect(BLEServer *pServer) {
+void SerialBLEInterface::onDisconnect(BLEServer *pServer)
+{
   BLE_DEBUG_PRINTLN("onDisconnect()");
-  if (_isEnabled) {
+  if (_isEnabled)
+  {
     adv_restart_time = millis() + ADVERT_RESTART_DELAY;
 
     // loop() will detect this on next loop, and set deviceConnected to false
@@ -113,15 +127,21 @@ void SerialBLEInterface::onDisconnect(BLEServer *pServer) {
 
 // -------- BLECharacteristicCallbacks methods
 
-void SerialBLEInterface::onWrite(BLECharacteristic *pCharacteristic, esp_ble_gatts_cb_param_t *param) {
+void SerialBLEInterface::onWrite(BLECharacteristic *pCharacteristic, esp_ble_gatts_cb_param_t *param)
+{
   uint8_t *rxValue = pCharacteristic->getData();
   int len = pCharacteristic->getLength();
 
-  if (len > MAX_FRAME_SIZE) {
+  if (len > MAX_FRAME_SIZE)
+  {
     BLE_DEBUG_PRINTLN("ERROR: onWrite(), frame too big, len=%d", len);
-  } else if (recv_queue_len >= FRAME_QUEUE_SIZE) {
+  }
+  else if (recv_queue_len >= FRAME_QUEUE_SIZE)
+  {
     BLE_DEBUG_PRINTLN("ERROR: onWrite(), recv_queue is full!");
-  } else {
+  }
+  else
+  {
     recv_queue[recv_queue_len].len = len;
     memcpy(recv_queue[recv_queue_len].buf, rxValue, len);
     recv_queue_len++;
@@ -130,7 +150,8 @@ void SerialBLEInterface::onWrite(BLECharacteristic *pCharacteristic, esp_ble_gat
 
 // ---------- public methods
 
-void SerialBLEInterface::enable() {
+void SerialBLEInterface::enable()
+{
   if (_isEnabled) return;
 
   _isEnabled = true;
@@ -148,7 +169,8 @@ void SerialBLEInterface::enable() {
   adv_restart_time = 0;
 }
 
-void SerialBLEInterface::disable() {
+void SerialBLEInterface::disable()
+{
   _isEnabled = false;
 
   BLE_DEBUG_PRINTLN("SerialBLEInterface::disable");
@@ -160,14 +182,18 @@ void SerialBLEInterface::disable() {
   adv_restart_time = 0;
 }
 
-size_t SerialBLEInterface::writeFrame(const uint8_t src[], size_t len) {
-  if (len > MAX_FRAME_SIZE) {
+size_t SerialBLEInterface::writeFrame(const uint8_t src[], size_t len)
+{
+  if (len > MAX_FRAME_SIZE)
+  {
     BLE_DEBUG_PRINTLN("writeFrame(), frame too big, len=%d", len);
     return 0;
   }
 
-  if (deviceConnected && len > 0) {
-    if (send_queue_len >= FRAME_QUEUE_SIZE) {
+  if (deviceConnected && len > 0)
+  {
+    if (send_queue_len >= FRAME_QUEUE_SIZE)
+    {
       BLE_DEBUG_PRINTLN("writeFrame(), send_queue is full!");
       return 0;
     }
@@ -183,14 +209,17 @@ size_t SerialBLEInterface::writeFrame(const uint8_t src[], size_t len) {
 
 #define BLE_WRITE_MIN_INTERVAL 60
 
-bool SerialBLEInterface::isWriteBusy() const {
+bool SerialBLEInterface::isWriteBusy() const
+{
   return millis() < _last_write + BLE_WRITE_MIN_INTERVAL; // still too soon to start another write?
 }
 
-size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
+size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[])
+{
   if (send_queue_len > 0                                  // first, check send queue
       && millis() >= _last_write + BLE_WRITE_MIN_INTERVAL // space the writes apart
-  ) {
+  )
+  {
     _last_write = millis();
     pTxCharacteristic->setValue(send_queue[0].buf, send_queue[0].len);
     pTxCharacteristic->notify();
@@ -199,19 +228,22 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
                       (uint32_t)send_queue[0].buf[0]);
 
     send_queue_len--;
-    for (int i = 0; i < send_queue_len; i++) { // delete top item from queue
+    for (int i = 0; i < send_queue_len; i++)
+    { // delete top item from queue
       send_queue[i] = send_queue[i + 1];
     }
   }
 
-  if (recv_queue_len > 0) {         // check recv queue
+  if (recv_queue_len > 0)
+  {                                 // check recv queue
     size_t len = recv_queue[0].len; // take from top of queue
     memcpy(dest, recv_queue[0].buf, len);
 
     BLE_DEBUG_PRINTLN("readBytes: sz=%d, hdr=%d", len, (uint32_t)dest[0]);
 
     recv_queue_len--;
-    for (int i = 0; i < recv_queue_len; i++) { // delete top item from queue
+    for (int i = 0; i < recv_queue_len; i++)
+    { // delete top item from queue
       recv_queue[i] = recv_queue[i + 1];
     }
     return len;
@@ -219,8 +251,10 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
 
   if (pServer->getConnectedCount() == 0) deviceConnected = false;
 
-  if (deviceConnected != oldDeviceConnected) {
-    if (!deviceConnected) { // disconnecting
+  if (deviceConnected != oldDeviceConnected)
+  {
+    if (!deviceConnected)
+    { // disconnecting
       clearBuffers();
 
       BLE_DEBUG_PRINTLN("SerialBLEInterface -> disconnecting...");
@@ -229,7 +263,9 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
       // pServer->getAdvertising()->setMaxInterval(1000);
 
       adv_restart_time = millis() + ADVERT_RESTART_DELAY;
-    } else {
+    }
+    else
+    {
       BLE_DEBUG_PRINTLN("SerialBLEInterface -> stopping advertising");
       BLE_DEBUG_PRINTLN("SerialBLEInterface -> connecting...");
       // connecting
@@ -240,8 +276,10 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
     oldDeviceConnected = deviceConnected;
   }
 
-  if (adv_restart_time && millis() >= adv_restart_time) {
-    if (pServer->getConnectedCount() == 0) {
+  if (adv_restart_time && millis() >= adv_restart_time)
+  {
+    if (pServer->getConnectedCount() == 0)
+    {
       BLE_DEBUG_PRINTLN("SerialBLEInterface -> re-starting advertising");
       pServer->getAdvertising()->start(); // re-Start advertising
     }
@@ -250,6 +288,7 @@ size_t SerialBLEInterface::checkRecvFrame(uint8_t dest[]) {
   return 0;
 }
 
-bool SerialBLEInterface::isConnected() const {
+bool SerialBLEInterface::isConnected() const
+{
   return deviceConnected; // pServer != NULL && pServer->getConnectedCount() > 0;
 }

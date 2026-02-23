@@ -4,7 +4,8 @@
 
 #define MAX_FRAME_SIZE 172
 
-class BaseSerialInterface {
+class BaseSerialInterface
+{
 protected:
   BaseSerialInterface() {}
 

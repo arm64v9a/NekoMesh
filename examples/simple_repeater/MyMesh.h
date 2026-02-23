@@ -40,7 +40,8 @@
 extern AbstractBridge *bridge;
 #endif
 
-struct RepeaterStats {
+struct RepeaterStats
+{
   uint16_t batt_milli_volts;
   uint16_t curr_tx_queue_len;
   int16_t noise_floor;
@@ -62,7 +63,8 @@ struct RepeaterStats {
 #define MAX_CLIENTS 32
 #endif
 
-struct NeighbourInfo {
+struct NeighbourInfo
+{
   mesh::Identity id;
   uint32_t advert_timestamp;
   uint32_t heard_timestamp;
@@ -81,7 +83,8 @@ struct NeighbourInfo {
 
 #define PACKET_LOG_FILE "/packet_log"
 
-class MyMesh : public mesh::Mesh, public CommonCLICallbacks {
+class MyMesh : public mesh::Mesh, public CommonCLICallbacks
+{
   FILESYSTEM *_fs;
   uint32_t last_millis;
   uint64_t uptime_millis;
@@ -143,7 +146,8 @@ protected:
   uint32_t getDirectRetransmitDelay(const mesh::Packet *packet) override;
 
   int getInterferenceThreshold() const override { return _prefs.interference_threshold; }
-  int getAGCResetInterval() const override {
+  int getAGCResetInterval() const override
+  {
     return ((int)_prefs.agc_reset_interval) * 4000; // milliseconds
   }
   uint8_t getExtraAckTransmitCount() const override { return _prefs.multi_acks; }
@@ -206,16 +210,21 @@ public:
   void loop();
 
 #if defined(WITH_BRIDGE)
-  void setBridgeState(bool enable) override {
+  void setBridgeState(bool enable) override
+  {
     if (enable == bridge.isRunning()) return;
-    if (enable) {
+    if (enable)
+    {
       bridge.begin();
-    } else {
+    }
+    else
+    {
       bridge.end();
     }
   }
 
-  void restartBridge() override {
+  void restartBridge() override
+  {
     if (!bridge.isRunning()) return;
     bridge.end();
     bridge.begin();

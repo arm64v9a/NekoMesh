@@ -5,7 +5,8 @@
 
 #ifdef LILYGO_TECHO
 
-void TechoBoard::begin() {
+void TechoBoard::begin()
+{
   NRF52Board::begin();
 
   Wire.begin();
@@ -15,7 +16,8 @@ void TechoBoard::begin() {
   delay(10); // give sx1262 some time to power up
 }
 
-uint16_t TechoBoard::getBattMilliVolts() {
+uint16_t TechoBoard::getBattMilliVolts()
+{
   int adcvalue = 0;
 
   analogReference(AR_INTERNAL_3_0);

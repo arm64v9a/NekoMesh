@@ -2,9 +2,11 @@
 
 #include <Dispatcher.h>
 
-namespace mesh {
+namespace mesh
+{
 
-class GroupChannel {
+class GroupChannel
+{
 public:
   uint8_t hash[PATH_HASH_SIZE];
   uint8_t secret[PUB_KEY_SIZE];
@@ -13,7 +15,8 @@ public:
 /**
  * An abstraction of the data tables needed to be maintained
  */
-class MeshTables {
+class MeshTables
+{
 public:
   virtual bool hasSeen(const Packet *packet) = 0;
   virtual void clear(const Packet *packet) = 0; // remove this packet hash from table
@@ -23,7 +26,8 @@ public:
  * \brief  The next layer in the basic Dispatcher task, Mesh recognises the particular Payload TYPES,
  *     and provides virtual methods for sub-classes on handling incoming, and also preparing outbound Packets.
  */
-class Mesh : public Dispatcher {
+class Mesh : public Dispatcher
+{
   RTCClock *_rtc;
   RNG *_rng;
   MeshTables *_tables;
@@ -92,7 +96,9 @@ protected:
    * \param  data   decrypted data from payload
    */
   virtual void onPeerDataRecv(Packet *packet, uint8_t type, int sender_idx, const uint8_t *secret,
-                              uint8_t *data, size_t len) {}
+                              uint8_t *data, size_t len)
+  {
+  }
 
   /**
    * \brief  A TRACE packet has been received. (and has reached the end of its given path)
@@ -105,7 +111,9 @@ protected:
    * \param  path_len    length of the path_snrs[] and path_hashes[] arrays
    */
   virtual void onTraceRecv(Packet *packet, uint32_t tag, uint32_t auth_code, uint8_t flags,
-                           const uint8_t *path_snrs, const uint8_t *path_hashes, uint8_t path_len) {}
+                           const uint8_t *path_snrs, const uint8_t *path_hashes, uint8_t path_len)
+  {
+  }
 
   /**
    * \brief  A path TO peer (sender_idx) has been received. (also with optional 'extra' data encoded)
@@ -115,7 +123,8 @@ protected:
    * \returns   true, if path was accepted and that reciprocal path should be sent
    */
   virtual bool onPeerPathRecv(Packet *packet, int sender_idx, const uint8_t *secret, uint8_t *path,
-                              uint8_t path_len, uint8_t extra_type, uint8_t *extra, uint8_t extra_len) {
+                              uint8_t path_len, uint8_t extra_type, uint8_t *extra, uint8_t extra_len)
+  {
     return false;
   }
 
@@ -124,7 +133,9 @@ protected:
    *         NOTE: these can be received multiple times (per id/timestamp), via different routes
    */
   virtual void onAdvertRecv(Packet *packet, const Identity &id, uint32_t timestamp, const uint8_t *app_data,
-                            size_t app_data_len) {}
+                            size_t app_data_len)
+  {
+  }
 
   /**
    * \brief  A (now decrypted) data packet has been received.
@@ -133,14 +144,18 @@ protected:
    * \param  sender  public key provided by sender
    */
   virtual void onAnonDataRecv(Packet *packet, const uint8_t *secret, const Identity &sender, uint8_t *data,
-                              size_t len) {}
+                              size_t len)
+  {
+  }
 
   /**
    * \brief  A path TO 'sender' has been received. (also with optional 'extra' data encoded)
    *         NOTE: these can be received multiple times (per sender), via differen routes
    */
   virtual void onPathRecv(Packet *packet, Identity &sender, uint8_t *path, uint8_t path_len,
-                          uint8_t extra_type, uint8_t *extra, uint8_t extra_len) {}
+                          uint8_t extra_type, uint8_t *extra, uint8_t extra_len)
+  {
+  }
 
   /**
    * \brief  A control packet has been received.
@@ -166,7 +181,9 @@ protected:
    * \param  channel  the matching GroupChannel
    */
   virtual void onGroupDataRecv(Packet *packet, uint8_t type, const GroupChannel &channel, uint8_t *data,
-                               size_t len) {}
+                               size_t len)
+  {
+  }
 
   /**
    * \brief  A simple ACK packet has been received.
@@ -175,7 +192,9 @@ protected:
   virtual void onAckRecv(Packet *packet, uint32_t ack_crc) {}
 
   Mesh(Radio &radio, MillisecondClock &ms, RNG &rng, RTCClock &rtc, PacketManager &mgr, MeshTables &tables)
-      : Dispatcher(radio, ms, mgr), _rng(&rng), _rtc(&rtc), _tables(&tables) {}
+      : Dispatcher(radio, ms, mgr), _rng(&rng), _rtc(&rtc), _tables(&tables)
+  {
+  }
 
   MeshTables *getTables() const { return _tables; }
 

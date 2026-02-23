@@ -13,7 +13,8 @@
 #include <helpers/ui/MomentaryButton.h>
 #endif
 
-class ThinkNodeM1SensorManager : public SensorManager {
+class ThinkNodeM1SensorManager : public SensorManager
+{
   bool gps_active = false;
   bool last_gps_switch_state = false;
   LocationProvider *_location;

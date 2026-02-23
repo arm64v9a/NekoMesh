@@ -34,7 +34,8 @@
 #include "WVariant.h"
 
 #ifdef __cplusplus
-extern "C" {
+extern "C"
+{
 #endif // __cplusplus
 
 // Number of pins defined in PinDescription array
@@ -67,14 +68,14 @@ extern "C" {
 #define PIN_A6             (0xff)
 #define PIN_A7             (0xff)
 
-static const uint8_t A0 = PIN_A0;
-static const uint8_t A1 = PIN_A1;
-static const uint8_t A2 = PIN_A2;
-static const uint8_t A3 = PIN_A3;
-static const uint8_t A4 = PIN_A4;
-static const uint8_t A5 = PIN_A5;
-static const uint8_t A6 = PIN_A6;
-static const uint8_t A7 = PIN_A7;
+  static const uint8_t A0 = PIN_A0;
+  static const uint8_t A1 = PIN_A1;
+  static const uint8_t A2 = PIN_A2;
+  static const uint8_t A3 = PIN_A3;
+  static const uint8_t A4 = PIN_A4;
+  static const uint8_t A5 = PIN_A5;
+  static const uint8_t A6 = PIN_A6;
+  static const uint8_t A7 = PIN_A7;
 #define ADC_RESOLUTION 14
 
 // Other pins
@@ -87,7 +88,7 @@ static const uint8_t A7 = PIN_A7;
 #define WB_IO4         (4)
 #define PIN_NFC2       (10)
 
-static const uint8_t AREF = PIN_AREF;
+  static const uint8_t AREF = PIN_AREF;
 
 /*
  * Serial interfaces
@@ -113,10 +114,10 @@ static const uint8_t AREF = PIN_AREF;
 #define PIN_SPI1_MOSI        (30)
 #define PIN_SPI1_SCK         (3)
 
-static const uint8_t SS = 42;
-static const uint8_t MOSI = PIN_SPI_MOSI;
-static const uint8_t MISO = PIN_SPI_MISO;
-static const uint8_t SCK = PIN_SPI_SCK;
+  static const uint8_t SS = 42;
+  static const uint8_t MOSI = PIN_SPI_MOSI;
+  static const uint8_t MISO = PIN_SPI_MISO;
+  static const uint8_t SCK = PIN_SPI_SCK;
 
 /*
  * Wire Interfaces

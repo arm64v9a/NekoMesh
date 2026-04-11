@@ -292,7 +292,7 @@ bool MyMesh::shouldAutoAddContactType(uint8_t contact_type) const {
   if ((_prefs.manual_add_contacts & 1) == 0) {
     return true;
   }
-  
+
   uint8_t type_bit = 0;
   switch (contact_type) {
     case ADV_TYPE_CHAT:
@@ -310,7 +310,7 @@ bool MyMesh::shouldAutoAddContactType(uint8_t contact_type) const {
     default:
       return false;  // Unknown type, don't auto-add
   }
-  
+
   return (_prefs.autoadd_config & type_bit) != 0;
 }
 
@@ -914,17 +914,25 @@ struct FreqRange {
 };
 
 static FreqRange repeat_freq_ranges[] = {
+#if DISABLE_REPEATER_RESTRICTIONS == 1
+  { 300000, 2500000 } // min/max
+#else
   { 433000, 433000 },
   { 869000, 869000 },
   { 918000, 918000 }
+#endif
 };
 
 bool MyMesh::isValidClientRepeatFreq(uint32_t f) const {
+#if DISABLE_REPEATER_RESTRICTIONS == 1
+  return true;
+#else
   for (int i = 0; i < sizeof(repeat_freq_ranges)/sizeof(repeat_freq_ranges[0]); i++) {
     auto r = &repeat_freq_ranges[i];
     if (f >= r->lower_freq && f <= r->upper_freq) return true;
   }
   return false;
+#endif
 }
 
 void MyMesh::startInterface(BaseSerialInterface &serial) {
@@ -1620,7 +1628,7 @@ void MyMesh::handleCmdFrame(size_t len) {
   } else if (cmd_frame[0] == CMD_SEND_TRACE_PATH && len > 10 && len - 10 < MAX_PACKET_PAYLOAD-5) {
     uint8_t path_len = len - 10;
     uint8_t flags = cmd_frame[9];
-    uint8_t path_sz = flags & 0x03;  // NEW v1.11+ 
+    uint8_t path_sz = flags & 0x03;  // NEW v1.11+
     if ((path_len >> path_sz) > MAX_PATH_SIZE || (path_len % (1 << path_sz)) != 0) { // make sure is multiple of path_sz
       writeErrFrame(ERR_CODE_ILLEGAL_ARG);
     } else {
@@ -1927,7 +1935,7 @@ void MyMesh::checkCLIRescueCmd() {
 
       // get path from command e.g: "cat /contacts3"
       const char *path = &cli_command[4];
-      
+
       bool is_fs2 = false;
       if (memcmp(path, "UserData/", 9) == 0) {
         path += 8; // skip "UserData"

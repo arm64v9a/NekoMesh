@@ -1,5 +1,6 @@
 #include "UITask.h"
 #include <helpers/TxtDataHelpers.h>
+#include <time.h>
 #include "../MyMesh.h"
 #include "target.h"
 #ifdef WIFI_SSID
@@ -82,12 +83,16 @@ class HomeScreen : public UIScreen {
     RADIO,
     BLUETOOTH,
     ADVERT,
+#if DISABLE_REPEATER_RESTRICTIONS == 1
+    REPEAT,
+#endif
 #if ENV_INCLUDE_GPS == 1
     GPS,
 #endif
 #if UI_SENSORS_PAGE == 1
     SENSORS,
 #endif
+    CLOCK,
     SHUTDOWN,
     Count    // keep as last
   };
@@ -146,7 +151,7 @@ class HomeScreen : public UIScreen {
   bool sensors_scroll = false;
   int sensors_scroll_offset = 0;
   int next_sensors_refresh = 0;
-  
+
   void refresh_sensors() {
     if (millis() > next_sensors_refresh) {
       sensors_lpp.reset();
@@ -170,7 +175,7 @@ class HomeScreen : public UIScreen {
 
 public:
   HomeScreen(UITask* task, mesh::RTCClock* rtc, SensorManager* sensors, NodePrefs* node_prefs)
-     : _task(task), _rtc(rtc), _sensors(sensors), _node_prefs(node_prefs), _page(0), 
+     : _task(task), _rtc(rtc), _sensors(sensors), _node_prefs(node_prefs), _page(0),
        _shutdown_init(false), sensors_lpp(200) {  }
 
   void poll() override {
@@ -213,7 +218,7 @@ public:
         IPAddress ip = WiFi.localIP();
         snprintf(tmp, sizeof(tmp), "IP: %d.%d.%d.%d", ip[0], ip[1], ip[2], ip[3]);
         display.setTextSize(1);
-        display.drawTextCentered(display.width() / 2, 54, tmp); 
+        display.drawTextCentered(display.width() / 2, 54, tmp);
       #endif
       if (_task->hasConnection()) {
         display.setColor(DisplayDriver::GREEN);
@@ -241,10 +246,10 @@ public:
         } else {
           sprintf(tmp, "%dh", secs / (60*60));
         }
-        
+
         int timestamp_width = display.getTextWidth(tmp);
         int max_name_width = display.width() - timestamp_width - 1;
-        
+
         char filtered_recent_name[sizeof(a->name)];
         display.translateUTF8ToBlocks(filtered_recent_name, a->name, sizeof(filtered_recent_name));
         display.drawTextEllipsized(0, y, max_name_width, filtered_recent_name);
@@ -281,6 +286,13 @@ public:
       display.setColor(DisplayDriver::GREEN);
       display.drawXbm((display.width() - 32) / 2, 18, advert_icon, 32, 32);
       display.drawTextCentered(display.width() / 2, 64 - 11, "advert: " PRESS_LABEL);
+#if DISABLE_REPEATER_RESTRICTIONS == 1
+    } else if (_page == HomePage::REPEAT) {
+      display.setColor(DisplayDriver::GREEN);
+      display.drawXbm((display.width() - 32) / 2, 18, _node_prefs->client_repeat ? repeater_on : repeater_off,
+                      32, 32);
+      display.drawTextCentered(display.width() / 2, 64 - 11, "toggle: " PRESS_LABEL);
+#endif
 #if ENV_INCLUDE_GPS == 1
     } else if (_page == HomePage::GPS) {
       LocationProvider* nmea = sensors.getLocationProvider();
@@ -310,7 +322,7 @@ public:
         display.drawTextRightAlign(display.width()-1, y, buf);
         y = y + 12;
         display.drawTextLeftAlign(0, y, "pos");
-        sprintf(buf, "%.4f %.4f", 
+        sprintf(buf, "%.4f %.4f",
           nmea->getLatitude()/1000000., nmea->getLongitude()/1000000.);
         display.drawTextRightAlign(display.width()-1, y, buf);
         y = y + 12;
@@ -392,6 +404,20 @@ public:
       if (sensors_scroll) sensors_scroll_offset = (sensors_scroll_offset+1)%sensors_nb;
       else sensors_scroll_offset = 0;
 #endif
+    } else if (_page == HomePage::CLOCK) {
+      time_t now = (time_t)_rtc->getCurrentTime() + (3 * 60 * 60);
+      struct tm *timeinfo = localtime(&now);
+      char buf[11];
+      strftime(buf, sizeof(buf), "%d.%m.%Y", timeinfo);
+      display.drawTextCentered(display.width() / 2, 20, buf);
+
+      display.setTextSize(2);
+      strftime(buf, sizeof(buf), "%R", timeinfo);
+      display.drawTextCentered(display.width() / 2, 35, buf);
+      display.setTextSize(1);
+      display.drawTextCentered(display.width() / 2, 64 - 11, "aod: " PRESS_LABEL);
+
+      return 5000; // next draw in 5 seconds
     } else if (_page == HomePage::SHUTDOWN) {
       display.setColor(DisplayDriver::GREEN);
       display.setTextSize(1);
@@ -434,6 +460,17 @@ public:
       }
       return true;
     }
+    if (c == KEY_ENTER && _page == HomePage::CLOCK)
+    {
+      _task->gotoClockScreen();
+    }
+#if DISABLE_REPEATER_RESTRICTIONS == 1
+    if (c == KEY_ENTER && _page == HomePage::REPEAT) {
+        _node_prefs->client_repeat = !_node_prefs->client_repeat;
+        the_mesh.savePrefs();
+        return true;
+    }
+#endif
 #if ENV_INCLUDE_GPS == 1
     if (c == KEY_ENTER && _page == HomePage::GPS) {
       _task->toggleGPS();
@@ -455,6 +492,7 @@ public:
   }
 };
 
+#if DISABLE_MSG_PREVIEW_SCREEN != 1
 class MsgPreviewScreen : public UIScreen {
   UITask* _task;
   mesh::RTCClock* _rtc;
@@ -545,6 +583,56 @@ public:
     return false;
   }
 };
+#endif
+
+class ClockScreen : public UIScreen
+{
+  UITask *_task;
+  mesh::RTCClock *_rtc;
+  NodePrefs *_node_prefs;
+
+public:
+  ClockScreen(UITask *task, mesh::RTCClock *rtc, NodePrefs *node_prefs)
+      : _task(task), _rtc(rtc), _node_prefs(node_prefs)
+  {
+  }
+
+  int render(DisplayDriver &display) override
+  {
+    display.setTextSize(1);
+    display.setColor(DisplayDriver::GREEN);
+    char filtered_name[sizeof(_node_prefs->node_name)];
+    display.translateUTF8ToBlocks(filtered_name, _node_prefs->node_name, sizeof(filtered_name));
+    display.setCursor(0, 0);
+    display.print(filtered_name);
+
+    time_t now = (time_t)_rtc->getCurrentTime() + (3 * 60 * 60); // msk tz
+    struct tm *timeinfo = localtime(&now);
+    char buf[14];
+    strftime(buf, sizeof(buf), "%d.%m.%Y", timeinfo);
+    display.drawTextRightAlign(display.width() - 1, 0, buf);
+
+    display.setTextSize(3);
+    strftime(buf, sizeof(buf), "%H:%M", timeinfo);
+    display.drawTextCentered(display.width() / 2, 20, buf);
+    display.setTextSize(1);
+
+    if (_task->getMsgCount() > 0)
+    {
+      display.setCursor(0, 64 - 11);
+      sprintf(buf, "unread: %d", _task->getMsgCount());
+      display.print(buf);
+    }
+
+    return 5000;
+  }
+
+  bool handleInput(char c) override
+  {
+    _task->gotoHomeScreen();
+    return true;
+  }
+};
 
 void UITask::begin(DisplayDriver* display, SensorManager* sensors, NodePrefs* node_prefs) {
   _display = display;
@@ -590,7 +678,10 @@ void UITask::begin(DisplayDriver* display, SensorManager* sensors, NodePrefs* no
 
   splash = new SplashScreen(this);
   home = new HomeScreen(this, &rtc_clock, sensors, node_prefs);
+#if DISABLE_MSG_PREVIEW_SCREEN != 1
   msg_preview = new MsgPreviewScreen(this, &rtc_clock);
+#endif
+  clockScr = new ClockScreen(this, &rtc_clock, node_prefs);
   setCurrScreen(splash);
 }
 
@@ -628,10 +719,9 @@ switch(t){
 #endif
 }
 
-
 void UITask::msgRead(int msgcount) {
   _msgcount = msgcount;
-  if (msgcount == 0) {
+  if (msgcount == 0 && !isOnClockScreen()) {
     gotoHomeScreen();
   }
 }
@@ -639,11 +729,11 @@ void UITask::msgRead(int msgcount) {
 void UITask::newMsg(uint8_t path_len, const char* from_name, const char* text, int msgcount) {
   _msgcount = msgcount;
 
-  ((MsgPreviewScreen *) msg_preview)->addPreview(path_len, from_name, text);
-  setCurrScreen(msg_preview);
-
+#if DISABLE_MSG_PREVIEW_SCREEN != 1
   if (_display != NULL) {
-    if (!_display->isOn() && !hasConnection()) {
+    if (!_display->isOn() && !hasConnection() && !isOnClockScreen()) {
+        ((MsgPreviewScreen *)msg_preview)->addPreview(path_len, from_name, text);
+        setCurrScreen(msg_preview);
       _display->turnOn();
     }
     if (_display->isOn()) {
@@ -651,6 +741,7 @@ void UITask::newMsg(uint8_t path_len, const char* from_name, const char* text, i
     _next_refresh = 100;  // trigger refresh
     }
   }
+#endif
 }
 
 void UITask::userLedHandler() {
@@ -812,7 +903,7 @@ void UITask::loop() {
       _display->endFrame();
     }
 #if AUTO_OFF_MILLIS > 0
-    if (millis() > _auto_off) {
+    if (millis() > _auto_off && !isOnClockScreen()) {
       _display->turnOff();
     }
 #endif
@@ -890,7 +981,7 @@ bool UITask::getGPSState() {
         return !strcmp(_sensors->getSettingValue(i), "1");
       }
     }
-  } 
+  }
   return false;
 }
 

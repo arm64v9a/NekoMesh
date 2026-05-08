@@ -38,6 +38,28 @@ mesh::Packet* BaseChatMesh::createSelfAdvert(const char* name, double lat, doubl
   return createAdvert(self_id, app_data, app_data_len);
 }
 
+mesh::Packet* BaseChatMesh::createSelfAdvert(uint8_t adv_t, const char* name) {
+  uint8_t app_data[MAX_ADVERT_DATA_SIZE];
+  uint8_t app_data_len;
+  {
+    AdvertDataBuilder builder(adv_t, name);
+    app_data_len = builder.encodeTo(app_data);
+  }
+
+  return createAdvert(self_id, app_data, app_data_len);
+}
+
+mesh::Packet* BaseChatMesh::createSelfAdvert(uint8_t adv_t, const char* name, double lat, double lon) {
+  uint8_t app_data[MAX_ADVERT_DATA_SIZE];
+  uint8_t app_data_len;
+  {
+    AdvertDataBuilder builder(adv_t, name, lat, lon);
+    app_data_len = builder.encodeTo(app_data);
+  }
+
+  return createAdvert(self_id, app_data, app_data_len);
+}
+
 void BaseChatMesh::sendAckTo(const ContactInfo& dest, uint32_t ack_hash) {
   if (dest.out_path_len == OUT_PATH_UNKNOWN) {
     mesh::Packet* ack = createAck(ack_hash);

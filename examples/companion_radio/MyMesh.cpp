@@ -1234,6 +1234,32 @@ void MyMesh::handleCmdFrame(size_t len) {
     } else {
       pkt = createSelfAdvert(_prefs.node_name, sensors.node_lat, sensors.node_lon);
     }
+#if ENABLE_ADVERT_AS_REPEATER == 1
+    if (_prefs.client_repeat != 0) 
+    {
+      mesh::Packet* pkt_repeater;
+      if (_prefs.advert_loc_policy == ADVERT_LOC_NONE)
+      {
+        pkt_repeater = createSelfAdvert(ADV_TYPE_REPEATER, _prefs.node_name);
+      }
+      else
+      {
+        pkt_repeater = createSelfAdvert(ADV_TYPE_REPEATER, _prefs.node_name, sensors.node_lat, sensors.node_lon);
+      }
+      if (pkt_repeater)
+      {
+        if (len >= 2 && cmd_frame[1] == 1) { // optional param (1 = flood, 0 = zero hop)
+          unsigned long delay_millis = 0;
+          TransportKey default_scope;
+          memcpy(&default_scope.key, _prefs.default_scope_key, sizeof(default_scope.key));
+          sendFloodScoped(default_scope, pkt_repeater, delay_millis);
+        } else {
+          sendZeroHop(pkt_repeater);
+        }
+      }
+    }
+#endif
+
     if (pkt) {
       if (len >= 2 && cmd_frame[1] == 1) { // optional param (1 = flood, 0 = zero hop)
         unsigned long delay_millis = 0;
@@ -2192,6 +2218,24 @@ bool MyMesh::advert() {
   } else {
     pkt = createSelfAdvert(_prefs.node_name, sensors.node_lat, sensors.node_lon);
   }
+#if ENABLE_ADVERT_AS_REPEATER == 1
+  if (_prefs.client_repeat != 0) 
+  {
+    mesh::Packet* pkt_repeater;
+    if (_prefs.advert_loc_policy == ADVERT_LOC_NONE)
+    {
+      pkt_repeater = createSelfAdvert(ADV_TYPE_REPEATER, _prefs.node_name);
+    }
+    else
+    {
+      pkt_repeater = createSelfAdvert(ADV_TYPE_REPEATER, _prefs.node_name, sensors.node_lat, sensors.node_lon);
+    }
+    if (pkt_repeater)
+    {
+      sendZeroHop(pkt_repeater);
+    }
+  }
+#endif
   if (pkt) {
     sendZeroHop(pkt);
     return true;
